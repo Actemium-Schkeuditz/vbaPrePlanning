@@ -1,13 +1,13 @@
 Attribute VB_Name = "Datensortieren"
 Option Explicit
 ' Skript zum sortieren der Datensätze
-' V0.1
-' 03.02.2020
-' Ersterllung Entwurf
+' V0.2
+' 04.02.2020
+' erste Funktion getestet, weitere Filter müssen noch rein
 ' Christian Langrock
 ' christian.langrock@actemium.de
 
-
+' ToDO: weitere Filter müssen noch rein
 Public Sub sortieren()
 
  Dim wkb As Workbook
