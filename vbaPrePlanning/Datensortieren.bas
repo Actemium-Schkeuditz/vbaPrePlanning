@@ -3,7 +3,7 @@ Option Explicit
 ' Skript zum sortieren der Datensätze
 ' V0.1
 ' 03.02.2020
-' Erstellung Entwurf
+' Ersterllung Entwurf
 ' Christian Langrock
 ' christian.langrock@actemium.de
 
