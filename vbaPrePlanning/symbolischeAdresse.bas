@@ -1,8 +1,8 @@
 Attribute VB_Name = "symbolischeAdresse"
 ' Skript zur Ermittlung der symbolischen Adressen
-' V1.2
-'22.01.2020
-'angepasst für MH04
+' V1.3
+'07.02.2020
+'angepasst um alle Leerzeichen zu entfernen in den Symbolischen Adressen
 '
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -42,7 +42,7 @@ Public Sub symbolische_Adresse()
 
 
         For i = 3 To zeilenanzahl
-            Cells(i, "BJ") = LTrim(Cells(i, "B")) 'führende Leerzeichen entfernen
+            Cells(i, "BJ") = Trim(Cells(i, "B")) 'führende Leerzeichen entfernen
         Next i
 
     End With

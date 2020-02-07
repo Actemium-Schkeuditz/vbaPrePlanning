@@ -1,8 +1,8 @@
 Attribute VB_Name = "SPSRackBMK"
 ' Skript zur Ermittlung der Anlagen und Ortskennzeichen der IO-Racks
-' V0.3
+' V0.4
 ' nicht fertig
-' 28.01.2020
+' 07.02.2020
 ' angepasst für MH04
 '
 ' Christian Langrock
@@ -63,26 +63,27 @@ Public Sub SPS_RackBMK()
                 ' lesen von Feld Anlagenkennzeichen, führende Leerzeichen entfernen
                 dataAnlagenkennzeichen = LTrim(Cells(i, spalteAnlagenkennzeichen))
                 ' Prüfe ob Stationsnummer mit Eintrag
-                If Cells(i, spalteStationsNummer) <> vbNullString Then
+                If .Cells(i, spalteStationsNummer) <> vbNullString Then
                     ' Anlagenkennzeichen ermitteln
                     dataRackAnlagenkennzeichen = "=" + Left(dataAnlagenkennzeichen, InStr(1, dataAnlagenkennzeichen, "."))
-                    If Len(Cells(i, spalteStationsNummer)) = 1 Then
-                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen + "A.S0" + Cells(i, spalteStationsNummer)
+                    If Len(.Cells(i, spalteStationsNummer)) = 1 Then
+                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen + "A.S0" + .Cells(i, spalteStationsNummer)
                     Else
-                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen + "A.S" + Cells(i, spalteStationsNummer)
+                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen + "A.S" + .Cells(i, spalteStationsNummer)
                     End If
                     ' wenn Einbauort nicht leer
-                    If Cells(i, spalteEinbauortRack) <> vbNullString Then
-                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen + "+" + Cells(i, spalteEinbauortRack)
+                    If .Cells(i, spalteEinbauortRack) <> vbNullString Then
+                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen + "+" + .Cells(i, spalteEinbauortRack)
                     End If
                     ' Daten schreiben
-                    Cells(i, spalteRackAnlagenkennzeichen) = dataRackAnlagenkennzeichen
+                    .Cells(i, spalteRackAnlagenkennzeichen) = dataRackAnlagenkennzeichen
+                Else
+                    ' Daten leeren
+                    .Cells(i, spalteRackAnlagenkennzeichen) = vbNullString
                 End If
-                ' Daten leeren
-                Cells(i, spalteRackAnlagenkennzeichen) = vbNullString
             Next i
         Else
-            MsgBox "Bitte Skript Stationsnummer ausführen"
+            MsgBox "Bitte Skript Stationsnummer ausführen und prüfen!"
         End If
     
     End With

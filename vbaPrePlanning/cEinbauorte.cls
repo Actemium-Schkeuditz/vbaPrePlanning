@@ -54,6 +54,7 @@ End Property
 'Attribute NewEnum.VB_UserMemId = -4
 'danach im Notepad die exortierte Klasse bearbeiten, die Auskommentierung für: "' Attribute NewEnum.VB_UserMemId = -4" entfernen und wieder importieren
 Public Property Get NewEnum() As IUnknown
+Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = objEinbauorte.[_NewEnum]
 End Property
 

@@ -73,6 +73,7 @@ Public Property Get Item(Index As Variant) As cAnschluss
 End Property
 
 Public Property Get NewEnum() As IUnknown
+Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = objSPSAnschluesse.[_NewEnum]
 End Property
 
