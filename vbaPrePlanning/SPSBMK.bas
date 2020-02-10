@@ -85,17 +85,17 @@ Public Sub SPS_BMK()
                     '  MsgBox "Treffer" + Str(i)
                     ' erzeuge SPS-BMK wenn Steckplatz beschrieben ist
                     If Cells(i, spalteSPSSteckplatz) <> vbNullString Then
-                        Cells(i, spalteSPSBMK) = Str(Cells(i, spalteSPSSteckplatz) + 3) + "K5"
+                        Cells(i, spalteSPSBMK) = str(Cells(i, spalteSPSSteckplatz) + 3) + "K5"
                     Else
                         ' makiere fehlende Steckplatz Daten
                         Cells(i, spalteSPSSteckplatz).Interior.ColorIndex = 3
                     End If
                     ' ET200AL
                 ElseIf Left(Cells(i, spalteSPSKartentyp), 7) = "ET200AL" Then
-                    MsgBox "Treffer" + Str(i) + "nicht fertig programmiert"
+                    MsgBox "Treffer" + str(i) + "nicht fertig programmiert"
                     If Cells(i, spalteSPSSteckplatz) <> vbNullString Then
-                        MsgBox "ET200AL" + Str(i) + "nicht fertig programmiert, BMK prüfen"
-                        Cells(i, spalteSPSBMK) = Str(Cells(i, spalteSPSSteckplatz) + 3) + "K5"
+                        MsgBox "ET200AL" + str(i) + "nicht fertig programmiert, BMK prüfen"
+                        Cells(i, spalteSPSBMK) = str(Cells(i, spalteSPSSteckplatz) + 3) + "K5"
                     Else
                         ' makiere fehlende Steckplatz Daten
                         Cells(i, spalteSPSSteckplatz).Interior.ColorIndex = 3
@@ -105,7 +105,7 @@ Public Sub SPS_BMK()
                     'MsgBox "CPX " + Str(i) + "nicht fertig programmiert"
                     If Cells(i, spalteSPSSteckplatz) <> vbNullString Then
                         ' MsgBox "CPX" + Str(i) + "nicht fertig programmiert, BMK prüfen"
-                        Cells(i, spalteSPSBMK) = Str(Cells(i, spalteSPSSteckplatz) + 3) + "KF2"
+                        Cells(i, spalteSPSBMK) = str(Cells(i, spalteSPSSteckplatz) + 3) + "KF2"
                     Else
                         ' makiere fehlende Steckplatz Daten
                         Cells(i, spalteSPSSteckplatz).Interior.ColorIndex = 3
@@ -115,7 +115,7 @@ Public Sub SPS_BMK()
                     'MsgBox "CPX " + Str(i) + "nicht fertig programmiert"
                     If Cells(i, spalteSPSSteckplatz) <> vbNullString Then
                         ' MsgBox "CPX " + Str(i) + "nicht fertig programmiert, BMK prüfen"
-                        Cells(i, spalteSPSBMK) = "KH" + Str(Cells(i, spalteSPSSteckplatz))
+                        Cells(i, spalteSPSBMK) = "KH" + str(Cells(i, spalteSPSSteckplatz))
                     Else
                         ' makiere fehlende Steckplatz Daten
                         Cells(i, spalteSPSSteckplatz).Interior.ColorIndex = 3

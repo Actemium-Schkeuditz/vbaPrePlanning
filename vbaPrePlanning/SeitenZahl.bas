@@ -1,9 +1,10 @@
 Attribute VB_Name = "SeitenZahl"
 Option Explicit
-' Skript zum sortieren der Datensätze und schreiben der Seitenzahlen
-' V0.3
-' 07.02.2020
+' Skript zum schreiben der Seitenzahlen
+' V0.4
+' 10.02.2020
 ' erste Funktion getestet, weitere Filter müssen noch rein
+' Auslagern der Sortierfunktion
 ' Christian Langrock
 ' christian.langrock@actemium.de
 
@@ -34,7 +35,7 @@ Public Sub SeitenZahlschreiben()
     Set wkb = ActiveWorkbook
     Set ws1 = Worksheets(tabelleDaten)
    
-    Application.ScreenUpdating = False
+    'Application.ScreenUpdating = False
 
 
     Sortierspalte = "B"                          ' sortieren nach KWS-BMK
@@ -48,6 +49,8 @@ Public Sub SeitenZahlschreiben()
     'Prüfe Stationsnummer
     If answer = vbYes Then
     
+        ThisWorkbook.Worksheets(tabelleDaten).Activate
+    
         ' Tabelle mit Daten bearbeiten
         With ws1
    
@@ -57,21 +60,13 @@ Public Sub SeitenZahlschreiben()
 
             ' sortieren nach KWS-BMK
             ' nach Einbauort SPS Rack (Stationsnummer)
+            ' Daten sortieren
+            SortTable tabelleDaten, SpalteAnlage, Sortierspalte2, Sortierspalte
     
-            Dim Bereich As String
-            Bereich = "A3:EZ10000"
-    
-            ActiveSheet.Range(Bereich).Sort _
-        Key1:=Range(SpalteAnlage & "3"), Order1:=xlAscending, _
-        Key2:=Range(Sortierspalte & "3"), Order1:=xlAscending, _
-        Key3:=Range(Sortierspalte2 & "3"), Order1:=xlAscending, _
-        Header:=xlNo, MatchCase:=False, _
-        Orientation:=xlTopToBottom
 
             ' ab hier Seitenzahlen vergeben
             ' sowie sortiert vergebeben, dabei berücksichtigen ob Pneumatik oder nicht
             KennzeichenOld = "Leerplatz"
-
 
             For i = 3 To zeilenanzahl
                 If .Cells(i, SpalteAnlage) <> KennzeichenOld Then
@@ -109,5 +104,4 @@ ErrorHandle:
     MsgBox Err.Description & " Fehler im Modul Sortieren.", vbCritical, "Error"
     Resume BeforeExit
 End Sub
-
 

@@ -20,7 +20,7 @@ Public Sub RACK_STATIONSNUMMERN()
     Dim zeilenanzahl As Integer
     Dim i As Integer
     Dim y As Integer
-    Dim spalteStationsNummer As String
+    Dim spalteStationsnummer As String
     Dim spalteKWS_StationsNummer As String
     'Dim spalteEinbauortRack As String
     
@@ -42,7 +42,7 @@ Public Sub RACK_STATIONSNUMMERN()
 
    
         spalteKWS_StationsNummer = "BC"
-        spalteStationsNummer = "BU"
+        spalteStationsnummer = "BU"
         'spalteEinbauortRack = "BV"
    
     
@@ -53,11 +53,11 @@ Public Sub RACK_STATIONSNUMMERN()
             If Cells(i, spalteKWS_StationsNummer) <> "" Then
                 If IsNumeric(Cells(i, spalteKWS_StationsNummer)) Then
                     ' Mache
-                    Cells(i, spalteStationsNummer) = Cells(i, spalteKWS_StationsNummer)
+                    Cells(i, spalteStationsnummer) = Cells(i, spalteKWS_StationsNummer)
                 Else
-                    Cells(i, spalteStationsNummer) = Cells(i, spalteKWS_StationsNummer)
-                    Cells(i, spalteStationsNummer).Interior.ColorIndex = 3
-                    MsgBox "Stationsnummer Prüfen!  Zeile: " + Str(i)
+                    Cells(i, spalteStationsnummer) = Cells(i, spalteKWS_StationsNummer)
+                    Cells(i, spalteStationsnummer).Interior.ColorIndex = 3
+                    MsgBox "Stationsnummer Prüfen!  Zeile: " + str(i)
                 End If
             End If
     

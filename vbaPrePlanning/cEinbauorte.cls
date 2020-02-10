@@ -101,7 +101,7 @@ Public Sub ReadExcelDataToCollection(tablename As String, dataColection As cEinb
     For Each rCell In rTable
         With rCell
             If IsNumeric(.Value) Then
-                sEinbauort = Str$(.Value)
+                sEinbauort = str$(.Value)
             Else
                 sEinbauort = .Value
             End If

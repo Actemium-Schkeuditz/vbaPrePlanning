@@ -66,12 +66,12 @@ Public Sub Remove(NameOrNumber As Variant)
     'remove this Anschluesse from collection
     objSPSAnschluesse.Remove NameOrNumber
 End Sub
-
+'Attribute Item.VB_UserMemId = 0
 Public Property Get Item(Index As Variant) As cAnschluss
-    'Attribute Item.VB_UserMemId = 0
+Attribute Item.VB_UserMemId = 0
     Set Item = objSPSAnschluesse.Item(Index)
 End Property
-
+'Attribute NewEnum.VB_UserMemId = -4
 Public Property Get NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = objSPSAnschluesse.[_NewEnum]
@@ -121,7 +121,7 @@ Public Sub ReadExcelDataConnectionToCollection(dataColection As CSPSAnschluesse)
     For Each rCell In rTable
         With rCell
             If IsNumeric(.Value) Then
-                sEinbauort = Str$(.Value)
+                sEinbauort = str$(.Value)
             Else
                 sEinbauort = .Value
             End If

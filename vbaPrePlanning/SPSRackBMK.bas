@@ -18,7 +18,7 @@ Public Sub SPS_RackBMK()
     Dim zeilenanzahl As Integer
     Dim i As Integer
     Dim y As Integer
-    Dim spalteStationsNummer As String
+    Dim spalteStationsnummer As String
     
     Dim spalteEinbauortRack As String
     Dim spalteRackAnlagenkennzeichen As String
@@ -44,7 +44,7 @@ Public Sub SPS_RackBMK()
         'MsgBox zeilenanzahl
 
         spalteAnlagenkennzeichen = "B"
-        spalteStationsNummer = "BU"
+        spalteStationsnummer = "BU"
         spalteEinbauortRack = "BV"
         spalteRackAnlagenkennzeichen = "BW"
           
@@ -63,13 +63,13 @@ Public Sub SPS_RackBMK()
                 ' lesen von Feld Anlagenkennzeichen, führende Leerzeichen entfernen
                 dataAnlagenkennzeichen = LTrim(Cells(i, spalteAnlagenkennzeichen))
                 ' Prüfe ob Stationsnummer mit Eintrag
-                If .Cells(i, spalteStationsNummer) <> vbNullString Then
+                If .Cells(i, spalteStationsnummer) <> vbNullString Then
                     ' Anlagenkennzeichen ermitteln
                     dataRackAnlagenkennzeichen = "=" + Left(dataAnlagenkennzeichen, InStr(1, dataAnlagenkennzeichen, "."))
-                    If Len(.Cells(i, spalteStationsNummer)) = 1 Then
-                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen + "A.S0" + .Cells(i, spalteStationsNummer)
+                    If Len(.Cells(i, spalteStationsnummer)) = 1 Then
+                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen + "A.S0" + .Cells(i, spalteStationsnummer)
                     Else
-                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen + "A.S" + .Cells(i, spalteStationsNummer)
+                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen + "A.S" + .Cells(i, spalteStationsnummer)
                     End If
                     ' wenn Einbauort nicht leer
                     If .Cells(i, spalteEinbauortRack) <> vbNullString Then
@@ -104,7 +104,7 @@ Public Sub EinbauorteSchreiben()
     'Dim ws2 As Worksheet
     Dim tabelleDaten As String
     Dim dataKWSBMK As String
-    Dim spalteStationsNummer As String
+    Dim spalteStationsnummer As String
     Dim spalteEinbauortRack As String
     Dim spalteEinbauort As String
     Dim sResult As String
@@ -115,7 +115,7 @@ Public Sub EinbauorteSchreiben()
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
     spalteKWS_BMK = "B"
-    spalteStationsNummer = "BU"
+    spalteStationsnummer = "BU"
     spalteEinbauortRack = "BV"
     spalteEinbauort = "BQ"
     Set wkb = ActiveWorkbook
@@ -171,7 +171,7 @@ Public Sub EinbauorteSchreiben()
         'MsgBox zeilenanzahl
 
         For i = 3 To zeilenanzahl
-            iSearchNumber = .Cells(i, spalteStationsNummer)
+            iSearchNumber = .Cells(i, spalteStationsnummer)
 
             'Suchen nach den passenden Einbauort zur Station
             sResult = EinbauorteData.searchEinbauort(iSearchNumber, EinbauorteData)
