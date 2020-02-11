@@ -11,12 +11,9 @@ Option Explicit
 'this collection could contain anything, but the class
 'controls access to it and ensures it will just contain Chanels for PLC
 
+'@folder (Daten.Kanalbelegung)
 
 Private objKanalBelegungen As New Collection
-'Private objKanalBelegungen As Collection
-
-'Public Kartentyp As String                'Key
-'Public Kanal As Integer               'Secondary key
 
 Private Sub Class_Initialize()
     Set objKanalBelegungen = New Collection
@@ -26,10 +23,11 @@ Private Sub Class_Terminate()
     Set objKanalBelegungen = Nothing
 End Sub
 
-Public Sub Add(KWSBMK As String, Signal As Integer, Stationsnummer As Integer, Kartentyp As String, Optional Steckplatz As Integer, Optional Kanal As Integer, Optional Segmentvorlage As String, Optional Adresse As String)
+Public Sub Add(ByRef key As String, ByRef KWSBMK As String, ByRef Signal As Integer, ByRef Stationsnummer As Integer, ByRef Kartentyp As String, Optional ByRef Steckplatz As Integer, Optional ByRef Kanal As Integer, Optional ByRef Segmentvorlage As String, Optional ByRef Adresse As String)
     'create a dataset for Chanel and add to collection
 
     Dim p As New cBelegung
+    p.key = key
     p.KWSBMK = KWSBMK
     p.Signal = Signal
     p.Stationsnummer = Stationsnummer
@@ -42,14 +40,14 @@ Public Sub Add(KWSBMK As String, Signal As Integer, Stationsnummer As Integer, K
     objKanalBelegungen.Add p
 End Sub
 
-
-Public Sub Addobj(obj As cBelegung)
+Public Sub Addobj(ByRef obj As cBelegung)
     objKanalBelegungen.Add obj
 End Sub
 
-Public Sub AddDataSet(dataSet As cBelegung)
+Public Sub AddDataSet(ByRef dataSet As cBelegung)
     'create a new dataset and add to collection
     Dim p As New cBelegung
+    p.key = dataSet.key
     p.KWSBMK = dataSet.KWSBMK
     p.Signal = dataSet.Signal
     p.Stationsnummer = dataSet.Stationsnummer
@@ -67,12 +65,14 @@ Public Property Get Count() As Long
     Count = objKanalBelegungen.Count
 End Property
 
-Public Sub Remove(NameOrNumber As Variant)
+Public Sub Remove(ByRef NameOrNumber As Variant)
     'remove this Anschluesse from collection
     objKanalBelegungen.Remove NameOrNumber
 End Sub
+
 'Attribute Item.VB_UserMemId = 0
-Public Property Get Item(Index As Variant) As cBelegung
+'@DefaultMember
+Public Property Get Item(ByRef Index As Variant) As cBelegung
 Attribute Item.VB_UserMemId = 0
     Set Item = objKanalBelegungen.Item(Index)
 End Property
@@ -80,14 +80,21 @@ End Property
 'VBA BUG falls die Suchfunktion nicht funktioniert folgendes hier einfügen:
 'Attribute NewEnum.VB_UserMemId = -4
 'danach im Notepad die exortierte Klasse bearbeiten, die Auskommentierung für: "' Attribute NewEnum.VB_UserMemId = -4" entfernen und wieder importieren
+'@Enumerator
 Public Property Get NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = objKanalBelegungen.[_NewEnum]
 End Property
 
 Public Function Sort() As cKanalBelegungen
-    Dim i As Long, j As Long, k As Long, bln As Boolean
-    Dim lngCount As Long, arr() As Long, ppl As cKanalBelegungen
+    Dim i As Long
+    Dim j As Long
+    Dim k As Long
+    Dim bln As Boolean
+    Dim lngCount As Long
+    Dim arr() As Long
+    Dim ppl As cKanalBelegungen
+    
     lngCount = Me.Count
     If lngCount > 0 Then
         ReDim arr(0 To lngCount - 1)
@@ -98,7 +105,7 @@ Public Function Sort() As cKanalBelegungen
             j = i - 1
             bln = False
             Do
-                If Me(arr(j)).CompareTo(Me(k)) > 0 Then
+                If Me.Item(arr(j)).CompareTo(Me.Item(k)) > 0 Then
                     arr(j + 1) = arr(j)
                     j = j - 1
                     If j < 0 Then bln = True
@@ -111,19 +118,18 @@ Public Function Sort() As cKanalBelegungen
     End If
 
     Set ppl = New cKanalBelegungen
-    For i = 0 To lngCount - 1: ppl.Addobj Me(arr(i)): Next
+    For i = 0 To lngCount - 1: ppl.Addobj Me.Item(arr(i)): Next
 
     Set Sort = ppl
 End Function
 
-
-Public Sub ReadExcelDataChanelToCollection(tablename As String, dataColection As cKanalBelegungen, spalteStationsnummer As String, spalteKartentyp As String)
+Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef dataColection As cKanalBelegungen, ByRef spalteStationsnummer As String, ByRef spalteKartentyp As String)
     'Reads the table on the "EplSheet" sheet and adds
     'Chanels to the collection. It also adds values
     'to the product's properties.
     Dim rCell As Range
     Dim rTable As Range
-    Dim sEinbauort As String
+    'Dim sEinbauort As String
     Dim iSpalteIntStationsnummer As Integer
     Dim ispalteKartentyp As Integer
     
@@ -158,9 +164,9 @@ Public Sub ReadExcelDataChanelToCollection(tablename As String, dataColection As
     'The range is expanded to include the last
     'cell with content.
     If Len(rTable.Offset(2, 0).Formula) = 0 Then
-        Set rTable = rTable.Offset(1, 9)
+        Set rTable = rTable.Offset(0, 9)
     Else
-        Set rTable = Range(rTable.Offset(1, 0), rTable.End(xlDown))
+        Set rTable = Range(rTable.Offset(0, 0), rTable.End(xlDown))
     End If
 
     For Each rCell In rTable
@@ -170,22 +176,22 @@ Public Sub ReadExcelDataChanelToCollection(tablename As String, dataColection As
                 '      sEinbauort = str$(.Value)
                 ' die gelesenen Daten anhängen
                 'Me.Add CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp).Value, rCell.Offset(0, ispalteKartentyp + 2).Value, rCell.Offset(0, ispalteKartentyp + 3).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4).Value
-                Me.Add rCell.Offset(0, 1).Value, 1, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp).Value, rCell.Offset(0, ispalteKartentyp + 2).Value, rCell.Offset(0, ispalteKartentyp + 3).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4).Value
+                Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 1, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp).Value, rCell.Offset(0, ispalteKartentyp + 2).Value, rCell.Offset(0, ispalteKartentyp + 3).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4).Value
                 'Signal 2
                 If rCell.Offset(0, ispalteKartentyp + 12).Value <> vbNullString Then
-                    Me.Add rCell.Offset(0, 1).Value, 2, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 12).Value, rCell.Offset(0, ispalteKartentyp + 2 + 12).Value, rCell.Offset(0, ispalteKartentyp + 3 + 12).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 12).Value
+                    Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 2, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 12).Value, rCell.Offset(0, ispalteKartentyp + 2 + 12).Value, rCell.Offset(0, ispalteKartentyp + 3 + 12).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 12).Value
                 End If
                 'Signal 3
                 If rCell.Offset(0, ispalteKartentyp + 24).Value <> vbNullString Then
-                    Me.Add rCell.Offset(0, 1).Value, 3, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 24).Value, rCell.Offset(0, ispalteKartentyp + 2 + 24).Value, rCell.Offset(0, ispalteKartentyp + 3 + 24).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 24).Value
+                    Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 3, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 24).Value, rCell.Offset(0, ispalteKartentyp + 2 + 24).Value, rCell.Offset(0, ispalteKartentyp + 3 + 24).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 24).Value
                 End If
                 'Signal 4
                 If rCell.Offset(0, ispalteKartentyp + 36).Value <> vbNullString Then
-                    Me.Add rCell.Offset(0, 1).Value, 4, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 36).Value, rCell.Offset(0, ispalteKartentyp + 2 + 36).Value, rCell.Offset(0, ispalteKartentyp + 3 + 36).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 36).Value
+                    Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 4, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 36).Value, rCell.Offset(0, ispalteKartentyp + 2 + 36).Value, rCell.Offset(0, ispalteKartentyp + 3 + 36).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 36).Value
                 End If
                 'Signal 5
                 If rCell.Offset(0, ispalteKartentyp + 48).Value <> vbNullString Then
-                    Me.Add rCell.Offset(0, 1).Value, 5, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 48).Value, rCell.Offset(0, ispalteKartentyp + 2 + 48).Value, rCell.Offset(0, ispalteKartentyp + 3 + 48).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 48).Value
+                    Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 5, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 48).Value, rCell.Offset(0, ispalteKartentyp + 2 + 48).Value, rCell.Offset(0, ispalteKartentyp + 3 + 48).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 48).Value
                 End If
             End If
             
@@ -199,21 +205,77 @@ BeforeExit:
     Set rTable = Nothing
     Exit Sub
 ErrorHandle:
-    MsgBox Err.Description & " Procedure MakeProductCollection.", vbCritical, "Error"
+    MsgBox Err.Description & " Fehler beim einlesen.", vbCritical, "Error"
     Resume BeforeExit
 End Sub
 
-Public Function searchKanalBelegungenKartentyp(ByRef pStationsnummer As Collection, pKartentyp As String, data As cKanalBelegungen) As cKanalBelegungen
-    ' Suchen nach allen Datensätzten mit einem bestimmten Kartentyp
+Public Sub writeDatsetsToExcel(ByRef tablename As String)
     Dim sData As New cBelegung
+    Dim ws1 As Worksheet
+    Dim sSpalteSteckplatz As String
+    Dim sSpalteKanal As String
+    Dim iSpalteSteckplatz As Long
+    Dim iSpalteKanal As Long
+    Dim i As Long
+    Dim zeilenanzahl As Long
+        
+    ' Spalten definieren
+    sSpalteSteckplatz = "CA"
+    sSpalteKanal = "CB"
+    ' nummerischen Wert ermitteln
+    iSpalteSteckplatz = SpaltenBuchstaben2Int(sSpalteSteckplatz)
+    iSpalteKanal = SpaltenBuchstaben2Int(sSpalteKanal)
+        
+        
+    ThisWorkbook.Worksheets(tablename).Activate
+    'Set wkb = ActiveWorkbook
+    'Set ws1 = Worksheets.[_Default](tabelleDaten)
+    Set ws1 = ThisWorkbook.ActiveSheet
+    ' Tabelle mit Daten bearbeiten
+    With ws1
+        
+        ' Worksheet activate
+        ws1.Activate
+
+        Application.ScreenUpdating = False
+        '##### Herausfinden der Anzahl der Zeilen #####
+        zeilenanzahl = .Cells.Item(Rows.Count, 2).End(xlUp).Row ' zweite Spalte wird gezählt
+
+        
+        For Each sData In Me
+            For i = 3 To zeilenanzahl
+                ' suchen nach dem pasenden key
+                If .Cells.Item(i, "A") = sData.key Then
+                    .Cells.Item(i, (iSpalteSteckplatz + (12 * (sData.Signal - 1)))) = sData.Steckplatz
+                    .Cells.Item(i, (iSpalteKanal + (12 * (sData.Signal - 1)))) = sData.Kanal
+                    'MsgBox "Kanal geschrieben: " & sData.Kanal
+                End If
+            
+            Next i
+        Next
+    End With
+
+BeforeExit:
+    'Set rCell = Nothing
+    'Set rTable = Nothing
+    Exit Sub
+ErrorHandle:
+    MsgBox Err.Description & " Fehler beim einlesen.", vbCritical, "Error"
+    Resume BeforeExit
+End Sub
+
+Public Function searchKanalBelegungenKartentyp(ByRef pStationsnummer As Collection, ByRef pKartentyp As String) As cKanalBelegungen
+    ' Suchen nach allen Datensätzten mit einem bestimmten Kartentyp und sortiert nach Stationsnummer
+    Dim sData As New cBelegung
+    Dim rData As New cKanalBelegungen
     'searchAnschluss = Nothing
     Dim station As Variant
     
     For Each station In pStationsnummer
-        For Each sData In data
+        For Each sData In Me
             If sData.Stationsnummer = station Then
                 If sData.Kartentyp = pKartentyp Then
-                    Me.AddDataSet sData
+                    rData.AddDataSet sData
                     'Debug.Print searchAnschluss.Item(1).Kartentyp;
                     '    Exit For                         ' nur einmal suchen dann beenden
                 End If
@@ -221,38 +283,178 @@ Public Function searchKanalBelegungenKartentyp(ByRef pStationsnummer As Collecti
         Next
     Next
     If Me.Count = 0 Then
-        Me.Add vbNullString, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
+        rData.Add vbNullString, vbNullString, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
     End If
     
+    Set searchKanalBelegungenKartentyp = rData
     'Test der Suche
     '  Debug.Print searchAnschluss.Item(1).Kartentyp; vbTab; searchAnschluss.Item(1).Kanal; vbTab; searchAnschluss.Item(1).Anschluss_1; vbTab; searchAnschluss.Item(1).Anschluss_2; vbTab; searchAnschluss.Item(1).Anschluss_3; vbTab; searchAnschluss.Item(1).Anschluss_4; vbTab; searchAnschluss.Item(1).Anschluss_M; vbTab; searchAnschluss.Item(1).Anschluss_VS
 End Function
 
-
-Public Function zuweisenKanal(data As cKanalBelegungen) As cKanalBelegungen
-    ' hochzählen der Kanäle und zurückgeben as Class
-    Dim iKanal As Integer
-    Dim iStationOld As Integer
-    'Dim rData As cKanalBelegungen
-    iKanal = 0
-    iStationOld = 0
+Public Function searchDatasetPerStation(ByVal pStationsnummer As Integer) As cKanalBelegungen
+    ' Suchen nach allen Datensätzten mit einer bestimmten  Stationsnummer
     Dim sData As New cBelegung
-    For Each sData In data
-    If iStationOld = 0 Or iStationOld = sData.Stationsnummer Then
-        iKanal = iKanal + 1
-        Else
-        iKanal = 0
+    Dim rData As New cKanalBelegungen
+   
+    For Each sData In Me
+        If sData.Stationsnummer = pStationsnummer Then
+            rData.AddDataSet sData
         End If
-        sData.Kanal = iKanal
-        sData.Steckplatz = 0
-        Me.AddDataSet sData
-        '       rData.AddDataSet sData
-        
-        iStationOld = sData.Stationsnummer
     Next
-    'Set zuweisenKanal = rData
+ 
+    If Me.Count = 0 Then
+        rData.Add vbNullString, vbNullString, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
+    End If
+    
+    Set searchDatasetPerStation = rData
+
 End Function
 
+Public Function searchDatasetPlcTyp(ByVal pKartentyp As String) As cKanalBelegungen
+    ' Suchen nach allen Datensätzten mit einem bestimmten Kartentyp
+    Dim sData As New cBelegung
+    Dim rData As New cKanalBelegungen
+   
+    For Each sData In Me
+        If sData.Kartentyp = pKartentyp Then
+            rData.AddDataSet sData
+        End If
+    Next
+ 
+    If Me.Count = 0 Then
+        rData.Add vbNullString, vbNullString, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
+    End If
+    
+    Set searchDatasetPlcTyp = rData
+   
+End Function
 
+Public Function zuweisenKanal(offsetSlot As Integer) As cKanalBelegungen
 
+    ' hochzählen der Kanäle und zurückgeben als Class
+    Dim iKanal As Integer
+    Dim iSteckplatz As Integer
+    Dim iStationOld As Integer
+    Dim rData As New cKanalBelegungen
+    
+    ' Startwerte
+    iKanal = 0
+    If offsetSlot = 0 Then
+        iSteckplatz = 1
+    Else
+        iSteckplatz = 0
+    End If
+    
+    iStationOld = 0
+    Dim sData As New cBelegung
+    
+    For Each sData In Me
+       
+            sData.Kanal = iKanal
+            sData.Steckplatz = iSteckplatz + offsetSlot
+            rData.AddDataSet sData
+             If iStationOld = 0 Or iStationOld = sData.Stationsnummer Then
+                If iKanal < sData.MaxChannelPerSlot Then
+                    iKanal = iKanal + 1
+                Else
+                    iKanal = 0
+                    iSteckplatz = iSteckplatz + 1
+                End If
+            Else
+                iKanal = 0
+                iSteckplatz = 1
+            End If
+            iStationOld = sData.Stationsnummer
+    Next
+    
+    Set zuweisenKanal = rData
+End Function
 
+Public Function returnStation() As Collection
+    ' collect all Stations without duplicates
+    On Error GoTo ErrorHandler
+    Set returnStation = Nothing
+
+    Dim col As New Collection
+    Dim bSearchinCol As Boolean
+    Dim it As Variant
+    Dim sData As New cBelegung
+    
+    For Each sData In Me
+        ' prüfen ob Stationsnummer schon in Collection
+        bSearchinCol = True
+        For Each it In col
+            If it = sData.Stationsnummer Then
+                bSearchinCol = False
+                
+            End If
+        Next
+        If bSearchinCol = True Then
+            If sData.Stationsnummer <> 0 Then
+                col.Add sData.Stationsnummer     '  dynamically add value to the end
+            End If
+        End If
+    Next
+    ' Rückgabe der Daten
+    Set returnStation = col
+
+    Exit Function
+ErrorHandler:
+    If Err.Number > 0 Then
+        MsgBox "Fehler in den Daten"
+        Err.Clear
+        Resume Next
+    End If
+End Function
+
+Public Function returnKartentyp() As Collection
+
+    ' collect all Kartentyp without duplicates
+    On Error GoTo ErrorHandler
+    Set returnKartentyp = Nothing
+
+    Dim col As New Collection
+    Dim bSearchinCol As Boolean
+    Dim it As Variant
+    Dim sData As New cBelegung
+    
+    For Each sData In Me
+        ' prüfen ob Stationsnummer schon in Collection
+        bSearchinCol = True
+        For Each it In col
+            If it = sData.Kartentyp Then
+                bSearchinCol = False
+                
+            End If
+        Next
+        If bSearchinCol = True Then
+            If sData.Kartentyp <> vbNullString Then
+                col.Add sData.Kartentyp          '  dynamically add value to the end
+            End If
+        End If
+    Next
+    ' Rückgabe der Daten
+    Set returnKartentyp = col
+
+    Exit Function
+ErrorHandler:
+    If Err.Number > 0 Then
+        MsgBox "Fehler in den Daten"
+        Err.Clear
+        Resume Next
+    End If
+End Function
+
+Public Function returnLastSlotNumber() As Integer
+
+    Dim maxSlotNumber As Integer
+    Dim sData As New cBelegung
+    maxSlotNumber = 0
+
+    For Each sData In Me
+        If sData.Steckplatz > maxSlotNumber Then
+        maxSlotNumber = sData.Steckplatz
+        End If
+    Next
+    returnLastSlotNumber = maxSlotNumber
+End Function

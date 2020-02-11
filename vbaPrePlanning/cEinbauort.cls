@@ -13,7 +13,8 @@ Option Explicit
 ' 28.01.2020
 ' Christian Langrock
 ' christian.langrock@actemium.de
- 
+
+'@folder(Kennzeichen.Einbauorte)
     
 Private pStationsnummer As Integer
 Private pEinbauort As String
@@ -25,7 +26,7 @@ Public Property Get Einbauort() As String
     Einbauort = pEinbauort
 End Property
 
-Public Property Let Einbauort(Value As String)
+Public Property Let Einbauort(ByVal Value As String)
     pEinbauort = Value
 End Property
 
@@ -36,7 +37,7 @@ Public Property Get Stationsnummer() As Integer
     Stationsnummer = pStationsnummer
 End Property
 
-Public Property Let Stationsnummer(Value As Integer)
+Public Property Let Stationsnummer(ByVal Value As Integer)
     pStationsnummer = Value
 End Property
 

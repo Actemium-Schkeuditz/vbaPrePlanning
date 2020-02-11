@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 Option Explicit
 'this collection could contain anything, but the class
 'controls access to it and ensures it will just contain people
-
+'@folder (Daten.SPS-Anschlüsse)
 
 Private objSPSAnschluesse As New Collection
 
@@ -25,34 +25,34 @@ Private Sub Class_Terminate()
     Set objSPSAnschluesse = Nothing
 End Sub
 
-Public Sub Add(Kartentyp As String, Kanal As Integer, Optional Anschluss1 As String, Optional Anschluss2 As String, Optional Anschluss3 As String, Optional Anschluss4 As String, Optional AnschlussVS As String, Optional AnschlussM As String)
-    'create a new person and add to collection
+Public Sub Add(ByVal Kartentyp As String, ByVal Kanal As Integer, Optional ByVal Anschluss1 As String, Optional ByVal Anschluss2 As String, Optional ByVal Anschluss3 As String, Optional ByVal Anschluss4 As String, Optional ByVal AnschlussVS As String, Optional ByVal AnschlussM As String)
+    'create a new Dataset and add to collection
 
     Dim p As New cAnschluss
     p.Kartentyp = Kartentyp
     p.Kanal = Kanal
-    p.Anschluss_1 = Anschluss1
-    p.Anschluss_2 = Anschluss2
-    p.Anschluss_3 = Anschluss3
-    p.Anschluss_4 = Anschluss4
-    p.Anschluss_M = AnschlussM
-    p.Anschluss_VS = AnschlussVS
+    p.Anschluss1 = Anschluss1
+    p.Anschluss2 = Anschluss2
+    p.Anschluss3 = Anschluss3
+    p.Anschluss4 = Anschluss4
+    p.AnschlussM = AnschlussM
+    p.AnschlussVS = AnschlussVS
     
     objSPSAnschluesse.Add p
 End Sub
 
-Public Sub AddDataSet(dataSet As cAnschluss)
-    'create a new person and add to collection
+Public Sub AddDataSet(ByRef dataSet As cAnschluss)
+    'create a Dataset and add to collection
 
     Dim p As New cAnschluss
     p.Kartentyp = dataSet.Kartentyp
     p.Kanal = dataSet.Kanal
-    p.Anschluss_1 = dataSet.Anschluss_1
-    p.Anschluss_2 = dataSet.Anschluss_2
-    p.Anschluss_3 = dataSet.Anschluss_3
-    p.Anschluss_4 = dataSet.Anschluss_4
-    p.Anschluss_M = dataSet.Anschluss_M
-    p.Anschluss_VS = dataSet.Anschluss_VS
+    p.Anschluss1 = dataSet.Anschluss1
+    p.Anschluss2 = dataSet.Anschluss2
+    p.Anschluss3 = dataSet.Anschluss3
+    p.Anschluss4 = dataSet.Anschluss4
+    p.AnschlussM = dataSet.AnschlussM
+    p.AnschlussVS = dataSet.AnschlussVS
     
     objSPSAnschluesse.Add p
 End Sub
@@ -62,27 +62,28 @@ Public Property Get Count() As Long
     Count = objSPSAnschluesse.Count
 End Property
 
-Public Sub Remove(NameOrNumber As Variant)
+Public Sub Remove(ByRef NameOrNumber As Variant)
     'remove this Anschluesse from collection
     objSPSAnschluesse.Remove NameOrNumber
 End Sub
 'Attribute Item.VB_UserMemId = 0
-Public Property Get Item(Index As Variant) As cAnschluss
+'@DefaultMember
+Public Property Get Item(ByRef Index As Variant) As cAnschluss
 Attribute Item.VB_UserMemId = 0
     Set Item = objSPSAnschluesse.Item(Index)
 End Property
 'Attribute NewEnum.VB_UserMemId = -4
+'@Enumerator
 Public Property Get NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = objSPSAnschluesse.[_NewEnum]
 End Property
 
-Public Sub ReadExcelDataConnectionToCollection(dataColection As CSPSAnschluesse)
+Public Sub ReadExcelDataConnectionToCollection(ByRef dataColection As CSPSAnschluesse)
     'Reads the table on the Einbauorte sheet and adds
     'Conection points to the collection. It also adds values
     Dim rCell As Range
     Dim rTable As Range
-    Dim sEinbauort As String
     Dim tablename As String
 
     On Error GoTo ErrorHandle
@@ -120,11 +121,11 @@ Public Sub ReadExcelDataConnectionToCollection(dataColection As CSPSAnschluesse)
 
     For Each rCell In rTable
         With rCell
-            If IsNumeric(.Value) Then
-                sEinbauort = str$(.Value)
-            Else
-                sEinbauort = .Value
-            End If
+            'If IsNumeric(.Value) Then
+             '   sEinbauort = str$(.Value)
+            'Else
+             '   sEinbauort = .Value
+            'End If
             ' die gelesenen Daten an hängen
             Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, rCell.Offset(0, 2).Value, rCell.Offset(0, 3).Value, rCell.Offset(0, 4).Value, rCell.Offset(0, 5).Value, rCell.Offset(0, 7).Value, rCell.Offset(0, 6).Value ', rCell.Offset(0, 8).Value
         End With
@@ -139,7 +140,7 @@ ErrorHandle:
     Resume BeforeExit
 End Sub
 
-Public Function searchAnschluss(pKartentyp As String, pKanal As Integer, data As CSPSAnschluesse) As CSPSAnschluesse
+Public Function searchAnschluss(ByVal pKartentyp As String, ByVal pKanal As Integer, ByVal data As CSPSAnschluesse) As CSPSAnschluesse ' only ByVal works
     ' Suchen nach den Anschlüssen passend zum Kartentyp und zum Kanal
     Dim sData As New cAnschluss
     'searchAnschluss = Nothing
@@ -156,6 +157,7 @@ Public Function searchAnschluss(pKartentyp As String, pKanal As Integer, data As
         Me.Add vbNullString, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
     End If
     
+    Set searchAnschluss = Me
     'Test der Suche
     '  Debug.Print searchAnschluss.Item(1).Kartentyp; vbTab; searchAnschluss.Item(1).Kanal; vbTab; searchAnschluss.Item(1).Anschluss_1; vbTab; searchAnschluss.Item(1).Anschluss_2; vbTab; searchAnschluss.Item(1).Anschluss_3; vbTab; searchAnschluss.Item(1).Anschluss_4; vbTab; searchAnschluss.Item(1).Anschluss_M; vbTab; searchAnschluss.Item(1).Anschluss_VS
 End Function

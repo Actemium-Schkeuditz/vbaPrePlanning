@@ -1,5 +1,6 @@
-Attribute VB_Name = "CRC"
+Attribute VB_Name = "mCRC"
 Option Explicit
+ '@folder CRC
  
 ' Polynom-Tabelle
 Dim bCRC32Init As Boolean
@@ -70,7 +71,7 @@ Public Function CRC32FromFile(ByVal sFile As String) As Long
     Dim BytesToRead As Long
     Dim nResult As Long
     Dim Bytes() As Byte
-    Dim F As Integer
+    Dim F As Long
  
     On Error GoTo ErrHandler
  
@@ -122,9 +123,9 @@ Public Sub CRC_Zeile()
     Dim wkb As Workbook
     Dim ws1 As Worksheet
     Dim tabelleDaten As String
-    Dim zeilenanzahl As Integer
-    Dim i As Integer
-    Dim y As Integer
+    Dim zeilenanzahl As Long
+    Dim i As Long
+    Dim y As Long
     Dim nCRCSum As Long
     
     
@@ -137,7 +138,7 @@ Public Sub CRC_Zeile()
 
 
     Set wkb = ActiveWorkbook
-    Set ws1 = Worksheets(tabelleDaten)
+    Set ws1 = Worksheets.[_Default](tabelleDaten)
    
     Application.ScreenUpdating = False
 
@@ -146,7 +147,7 @@ Public Sub CRC_Zeile()
     With ws1
    
         ' Herausfinden der Anzahl der Zeilen
-        zeilenanzahl = .Cells(Rows.Count, 2).End(xlUp).Row ' zweite Spalte wird gezählt
+        zeilenanzahl = .Cells.Item(Rows.Count, 2).End(xlUp).Row ' zweite Spalte wird gezählt
         'MsgBox zeilenanzahl
  
         ' Spaltenbreiten anpassen
@@ -163,7 +164,7 @@ Public Sub CRC_Zeile()
         '*********** Checksumme von aktuell nach alt kopieren******************
  
         For i = 3 To zeilenanzahl
-            Cells(i, "BG") = Cells(i, "BF")
+            .Cells.Item(i, "BG") = .Cells.Item(i, "BF")
         Next i
  
         '***********************************************************************
@@ -172,7 +173,7 @@ Public Sub CRC_Zeile()
         For i = 3 To zeilenanzahl
             sTextGesamt = vbNullString                     ' neue Zeile Text löschen
             For y = 2 To 54
-                sText = Cells(2, y) & .Cells(i, y)
+                sText = .Cells.Item(2, y) & .Cells.Item(i, y)
                 'MsgBox sText
                 sTextGesamt = sTextGesamt & sText
 
@@ -181,24 +182,24 @@ Public Sub CRC_Zeile()
             Next y
             ' CRC schreiben
             nCRCSum = CRC32(StrConv(sTextGesamt, vbFromUnicode))
-            .Cells(i, "BF") = "H" & Hex$(nCRCSum)
+            .Cells.Item(i, "BF") = "H" & Hex$(nCRCSum)
         Next i
  
  
         '*********** Checksumme vergleichen, markieren von Unterschieden und Datum erzeugen******************
         'Datum wird nur bei unterschiedlicher Checksumme neu generiert
         Dim Datum
-        Datum = Format(Date, "dd.mm.yyyy")
+        Datum = Format$(Date, "dd.mm.yyyy")
         For i = 3 To zeilenanzahl
-            If Cells(i, "BG") = Cells(i, "BF") Then
-                Cells(i, "BG").Interior.ColorIndex = 4
-                Cells(i, "BF").Interior.ColorIndex = 4
-                Cells(i, "BI") = Cells(i, "BH")
+            If .Cells.Item(i, "BG") = .Cells.Item(i, "BF") Then
+                .Cells.Item(i, "BG").Interior.ColorIndex = 4
+                .Cells.Item(i, "BF").Interior.ColorIndex = 4
+                .Cells.Item(i, "BI") = .Cells.Item(i, "BH")
             Else
-                Cells(i, "BG").Interior.ColorIndex = 3
-                Cells(i, "BF").Interior.ColorIndex = 3
-                Cells(i, "BI") = Cells(i, "BH")
-                Cells(i, "BH") = Datum
+                .Cells.Item(i, "BG").Interior.ColorIndex = 3
+                .Cells.Item(i, "BF").Interior.ColorIndex = 3
+                .Cells.Item(i, "BI") = .Cells.Item(i, "BH")
+                .Cells.Item(i, "BH") = Datum
             End If
         Next i
 
@@ -208,6 +209,9 @@ Public Sub CRC_Zeile()
      
     End With
 End Sub
+
+
+
 
 
 

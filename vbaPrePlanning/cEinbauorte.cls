@@ -11,6 +11,7 @@ Option Explicit
 'this collection could contain anything, but the class
 'controls access to it and ensures it will just contain people
 
+'@folder(Kennzeichen.Einbauorte)
 
 Private objEinbauorte As New Collection
 
@@ -25,7 +26,7 @@ Private Sub Class_Terminate()
     Set objEinbauorte = Nothing
 End Sub
 
-Public Sub Add(Stationsnummer As Integer, Optional Einbauort As String)
+Public Sub Add(ByRef Stationsnummer As Integer, Optional ByRef Einbauort As String)
     'create a new Dataset Einbauorte and add to collection
 
     Dim p As New cEinbauort
@@ -40,31 +41,32 @@ Public Property Get Count() As Long
     Count = objEinbauorte.Count
 End Property
 
-Public Sub Remove(NameOrNumber As Variant)
+Public Sub Remove(ByRef NameOrNumber As Variant)
     'remove this Anschluesse from collection
     objEinbauorte.Remove NameOrNumber
 End Sub
 
 'Attribute Item.VB_UserMemId = 0
-Public Property Get Item(Index As Variant) As cEinbauort
+Public Property Get Item(ByRef Index As Variant) As cEinbauort
     Set Item = objEinbauorte.Item(Index)
 End Property
 
 'VBA BUG falls die Suchfunktion nicht funktioniert folgendes hier einfügen:
 'Attribute NewEnum.VB_UserMemId = -4
 'danach im Notepad die exortierte Klasse bearbeiten, die Auskommentierung für: "' Attribute NewEnum.VB_UserMemId = -4" entfernen und wieder importieren
+'@Enumerator
 Public Property Get NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = objEinbauorte.[_NewEnum]
 End Property
 
-Public Sub ReadExcelDataToCollection(tablename As String, dataColection As cEinbauorte)
+Public Sub ReadExcelDataToCollection(ByRef tablename As String, ByRef dataColection As cEinbauorte)
     'Reads the table on the Einbauorte sheet and adds
     'Einbauorte to the collection. It also adds values
     'to the product's properties.
     Dim rCell As Range
     Dim rTable As Range
-    Dim sEinbauort As String
+    'Dim sEinbauort As String
 
     On Error GoTo ErrorHandle
 
@@ -100,11 +102,11 @@ Public Sub ReadExcelDataToCollection(tablename As String, dataColection As cEinb
 
     For Each rCell In rTable
         With rCell
-            If IsNumeric(.Value) Then
-                sEinbauort = str$(.Value)
-            Else
-                sEinbauort = .Value
-            End If
+            'If IsNumeric(.Value) Then
+             '   sEinbauort = str$(.Value)
+            'Else
+            '    sEinbauort = .Value
+            'End If
             ' die gelesenen Daten an hängen
             Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value
   
@@ -120,10 +122,10 @@ ErrorHandle:
     Resume BeforeExit
 End Sub
 
-Public Function searchEinbauort(pStationsnumer As Integer, data As cEinbauorte) As String
+Public Function searchEinbauort(ByVal pStationsnumer As Integer, ByVal data As cEinbauorte) As String
     ' Suchen nach dem Einbauort passend zur Stationsnummer
     Dim sData As cEinbauort
-    searchEinbauort = ""
+    searchEinbauort = vbNullString
     For Each sData In data
         If sData.Stationsnummer = pStationsnumer Then
             '        Debug.Print Data.Einbauort; vbTab; Data.Stationsnummer

@@ -13,19 +13,18 @@ Attribute VB_Exposed = True
 ' 28.01.2020
 ' Christian Langrock
 ' christian.langrock@actemium.de
+'@folder (Daten.SPS-Anschlüsse)
  
  Option Explicit
  
-'Public Kartentyp As String
-'Public Kanal As Integer
 Private pKartentyp As String
 Private pKanal As Integer
-Private pAnschluss_1 As String
-Private pAnschluss_2 As String
-Private pAnschluss_3 As String
-Private pAnschluss_4 As String
-Private pAnschluss_M As String
-Private pAnschluss_VS As String
+Private pAnschluss1 As String
+Private pAnschluss2 As String
+Private pAnschluss3 As String
+Private pAnschluss4 As String
+Private pAnschlussM As String
+Private pAnschlussVS As String
 
 ''''''''''''''''''''''
 ' Kartentyp property
@@ -45,73 +44,73 @@ Public Property Get Kanal() As Integer
     Kanal = pKanal
 End Property
 
-Public Property Let Kanal(Value As Integer)
+Public Property Let Kanal(ByVal Value As Integer)
     pKanal = Value
 End Property
 
 ''''''''''''''''''''''
 ' Anschluss_1 property
 ''''''''''''''''''''''
-Public Property Get Anschluss_1() As String
-    Anschluss_1 = pAnschluss_1
+Public Property Get Anschluss1() As String
+    Anschluss1 = pAnschluss1
 End Property
 
-Public Property Let Anschluss_1(Value As String)
-    pAnschluss_1 = Value
+Public Property Let Anschluss1(ByVal Value As String)
+    pAnschluss1 = Value
 End Property
 
 ''''''''''''''''''''''
 ' Anschluss_2 property
 ''''''''''''''''''''''
-Public Property Get Anschluss_2() As String
-    Anschluss_2 = pAnschluss_2
+Public Property Get Anschluss2() As String
+    Anschluss2 = pAnschluss2
 End Property
 
-Public Property Let Anschluss_2(Value As String)
-    pAnschluss_2 = Value
+Public Property Let Anschluss2(ByVal Value As String)
+    pAnschluss2 = Value
 End Property
 
 ''''''''''''''''''''''
 ' Anschluss_3 property
 ''''''''''''''''''''''
-Public Property Get Anschluss_3() As String
-    Anschluss_3 = pAnschluss_3
+Public Property Get Anschluss3() As String
+    Anschluss3 = pAnschluss3
 End Property
 
-Public Property Let Anschluss_3(Value As String)
-    pAnschluss_3 = Value
+Public Property Let Anschluss3(ByVal Value As String)
+    pAnschluss3 = Value
 End Property
 
 ''''''''''''''''''''''
 ' Anschluss_4 property
 ''''''''''''''''''''''
-Public Property Get Anschluss_4() As String
-    Anschluss_4 = pAnschluss_4
+Public Property Get Anschluss4() As String
+    Anschluss4 = pAnschluss4
 End Property
 
-Public Property Let Anschluss_4(Value As String)
-    pAnschluss_4 = Value
+Public Property Let Anschluss4(ByVal Value As String)
+    pAnschluss4 = Value
 End Property
 
 ''''''''''''''''''''''
 ' Anschluss_M property
 ''''''''''''''''''''''
-Public Property Get Anschluss_M() As String
-    Anschluss_M = pAnschluss_M
+Public Property Get AnschlussM() As String
+    AnschlussM = pAnschlussM
 End Property
 
-Public Property Let Anschluss_M(Value As String)
-    pAnschluss_M = Value
+Public Property Let AnschlussM(ByVal Value As String)
+    pAnschlussM = Value
 End Property
 
 ''''''''''''''''''''''
 ' Anschluss_VS property
 ''''''''''''''''''''''
-Public Property Get Anschluss_VS() As String
-    Anschluss_VS = pAnschluss_VS
+Public Property Get AnschlussVS() As String
+    AnschlussVS = pAnschlussVS
 End Property
 
-Public Property Let Anschluss_VS(Value As String)
-    pAnschluss_VS = Value
+Public Property Let AnschlussVS(ByVal Value As String)
+    pAnschlussVS = Value
 End Property
 

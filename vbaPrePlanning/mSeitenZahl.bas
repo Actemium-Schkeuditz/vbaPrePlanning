@@ -1,4 +1,4 @@
-Attribute VB_Name = "SeitenZahl"
+Attribute VB_Name = "mSeitenZahl"
 Option Explicit
 ' Skript zum schreiben der Seitenzahlen
 ' V0.4
@@ -7,6 +7,7 @@ Option Explicit
 ' Auslagern der Sortierfunktion
 ' Christian Langrock
 ' christian.langrock@actemium.de
+'@folder (Daten.Seitenzahl)
 
 ' ToDO: testen
 Public Sub SeitenZahlschreiben()
@@ -14,8 +15,8 @@ Public Sub SeitenZahlschreiben()
     Dim wkb As Workbook
     Dim ws1 As Worksheet
     Dim tabelleDaten As String
-    Dim zeilenanzahl As Integer
-    Dim i As Integer
+    Dim zeilenanzahl As Long
+    Dim i As Long
     Dim Sortierspalte As String
     Dim Sortierspalte2 As String
     Dim SpalteSeitenzahl As String
@@ -23,9 +24,9 @@ Public Sub SeitenZahlschreiben()
     Dim SpaltePneumatik As String
     Dim SpalteSegmentvorlage As String
     Dim KennzeichenOld As String
-    Dim Seite As Integer
-    Dim SeitePneumatik As Integer
-    Dim answer As Integer
+    Dim Seite As Long
+    Dim SeitePneumatik As Long
+    Dim answer As Long
     
     On Error GoTo ErrorHandle
       
@@ -33,7 +34,7 @@ Public Sub SeitenZahlschreiben()
     tabelleDaten = "EplSheet"
 
     Set wkb = ActiveWorkbook
-    Set ws1 = Worksheets(tabelleDaten)
+    Set ws1 = Worksheets.[_Default](tabelleDaten)
    
     'Application.ScreenUpdating = False
 
@@ -49,13 +50,13 @@ Public Sub SeitenZahlschreiben()
     'Prüfe Stationsnummer
     If answer = vbYes Then
     
-        ThisWorkbook.Worksheets(tabelleDaten).Activate
+        ThisWorkbook.Worksheets.[_Default](tabelleDaten).Activate
     
         ' Tabelle mit Daten bearbeiten
         With ws1
    
             ' Herausfinden der Anzahl der Zeilen
-            zeilenanzahl = .Cells(Rows.Count, 2).End(xlUp).Row ' zweite Spalte wird gezählt
+            zeilenanzahl = .Cells.Item(Rows.Count, 2).End(xlUp).Row ' zweite Spalte wird gezählt
             'MsgBox zeilenanzahl
 
             ' sortieren nach KWS-BMK
@@ -69,28 +70,28 @@ Public Sub SeitenZahlschreiben()
             KennzeichenOld = "Leerplatz"
 
             For i = 3 To zeilenanzahl
-                If .Cells(i, SpalteAnlage) <> KennzeichenOld Then
+                If .Cells.Item(i, SpalteAnlage) <> KennzeichenOld Then
                     SeitePneumatik = 1
                     Seite = 1
                 End If
-                KennzeichenOld = .Cells(i, SpalteAnlage)
+                KennzeichenOld = .Cells.Item(i, SpalteAnlage)
                 ' Prüfen ob nicht Segmentvorlage ohne Seite
-                If .Cells(i, SpalteSegmentvorlage) <> "Sensor_ohne_SLP" Then
-                    If .Cells(i, Sortierspalte2) <> vbNullString Then ' prüfen ob Sortierspalte nicht leer
-                        If .Cells(i, SpaltePneumatik) = vbNullString Then
-                            .Cells(i, SpalteSeitenzahl) = Seite
+                If .Cells.Item(i, SpalteSegmentvorlage) <> "Sensor_ohne_SLP" Then
+                    If .Cells.Item(i, Sortierspalte2) <> vbNullString Then ' prüfen ob Sortierspalte nicht leer
+                        If .Cells.Item(i, SpaltePneumatik) = vbNullString Then
+                            .Cells.Item(i, SpalteSeitenzahl) = Seite
                             Seite = Seite + 1
-                        ElseIf .Cells(i, SpaltePneumatik) <> vbNullString Then
-                            .Cells(i, SpalteSeitenzahl) = SeitePneumatik
+                        ElseIf .Cells.Item(i, SpaltePneumatik) <> vbNullString Then
+                            .Cells.Item(i, SpalteSeitenzahl) = SeitePneumatik
                             SeitePneumatik = SeitePneumatik + 1
                         Else
-                            .Cells(i, SpalteSeitenzahl) = vbNullString
+                            .Cells.Item(i, SpalteSeitenzahl) = vbNullString
                         End If
                     Else
-                        .Cells(i, SpalteSeitenzahl) = vbNullString
+                        .Cells.Item(i, SpalteSeitenzahl) = vbNullString
                     End If
                 Else
-                    .Cells(i, SpalteSeitenzahl) = vbNullString
+                    .Cells.Item(i, SpalteSeitenzahl) = vbNullString
                 End If
             Next i
         End With
