@@ -2,7 +2,7 @@ Attribute VB_Name = "mSPSZuweisenKanal"
 ' Skript zur Ermittlung der SPS Kanäle
 ' V0.2
 ' nicht fertig
-' 11.02.2020
+' 12.02.2020
 'diverse Fehler müssen abgefangen werden, Offset der Kartenn fehlt noch
 '
 ' Christian Langrock
@@ -66,11 +66,12 @@ Public Sub SPSZuweisenKanal()
         offsetSlot = 0
         For Each pKartentyp In iKartentyp
             Set dataSearchPlcTyp = dataSort.searchDatasetPlcTyp(pKartentyp)
-            Set dataResult = dataSearchPlcTyp.zuweisenKanal(offsetSlot)
+            Set dataResult = dataSearchPlcTyp.zuweisenKanal(offsetSlot, pKartentyp)
             'MsgBox "Zuweisung durchgeführt"
             'TODO Offset verbessern
             'todo Behandlung Not-Aus und Festo CPX-8DE-D wegen doppel Stecker
             offsetSlot = dataResult.returnLastSlotNumber
+            offsetSlot = offsetSlot + 1
             '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
             dataResult.writeDatsetsToExcel tabelleDaten
         Next

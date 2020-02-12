@@ -237,7 +237,9 @@ End Property
 
 Public Function CompareTo(ByRef per As cBelegung) As Long
     Dim i As Long
-
+    'Sort first:    Stationsnummer
+    'Sort second:   SortingIdentifier
+    'Sort third:    KWSBMK
     If Me.Stationsnummer = per.Stationsnummer Then
         If Me.SortingIdentifier = per.SortingIdentifier Then
             If Me.KWSBMK = per.KWSBMK Then
@@ -259,5 +261,34 @@ Public Function CompareTo(ByRef per As cBelegung) As Long
     End If
 
     CompareTo = i
+End Function
+
+Public Function CompareToSegment(ByRef per As cBelegung) As Long
+    Dim i As Long
+  
+    'Sort first:    Segmentvorlage
+    'Sort second:   KWSBMK
+    'Sort third:    Signal
+    If Me.Segmentvorlage = per.Segmentvorlage Then
+        If Me.KWSBMK = per.KWSBMK Then
+            If Me.Signal = per.Signal Then
+                i = 0
+            ElseIf Me.Signal < per.Signal Then
+                i = -1
+            Else
+                i = 1
+            End If
+        ElseIf Me.KWSBMK < per.KWSBMK Then
+            i = -1
+        Else
+            i = 1
+        End If
+    ElseIf Me.Segmentvorlage < per.Segmentvorlage Then
+        i = -1
+    Else
+        i = 1
+    End If
+
+    CompareToSegment = i
 End Function
 

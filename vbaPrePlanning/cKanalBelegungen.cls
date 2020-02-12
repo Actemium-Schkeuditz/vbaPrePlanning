@@ -123,6 +123,45 @@ Public Function Sort() As cKanalBelegungen
     Set Sort = ppl
 End Function
 
+Public Function SortSegment() As cKanalBelegungen
+    ' Sort Segmentdefinition
+    Dim i As Long
+    Dim j As Long
+    Dim k As Long
+    Dim bln As Boolean
+    Dim lngCount As Long
+    Dim arr() As Long
+    Dim ppl As cKanalBelegungen
+    
+    lngCount = Me.Count
+    If lngCount > 0 Then
+        ReDim arr(0 To lngCount - 1)
+        For i = 0 To lngCount - 1: arr(i) = i + 1: Next
+
+        For i = 1 To lngCount - 1
+            k = arr(i)
+            j = i - 1
+            bln = False
+            Do
+                If Me.Item(arr(j)).CompareToSegment(Me.Item(k)) > 0 Then
+                    arr(j + 1) = arr(j)
+                    j = j - 1
+                    If j < 0 Then bln = True
+                Else
+                    bln = True
+                End If
+            Loop Until bln
+            arr(j + 1) = k
+        Next
+    End If
+
+    Set ppl = New cKanalBelegungen
+    For i = 0 To lngCount - 1: ppl.Addobj Me.Item(arr(i)): Next
+
+    Set SortSegment = ppl
+End Function
+
+
 Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef dataColection As cKanalBelegungen, ByRef spalteStationsnummer As String, ByRef spalteKartentyp As String)
     'Reads the table on the "EplSheet" sheet and adds
     'Chanels to the collection. It also adds values
@@ -214,6 +253,7 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
     Dim ws1 As Worksheet
     Dim sSpalteSteckplatz As String
     Dim sSpalteKanal As String
+    Dim sSpalteSegmentvorlage As String
     Dim iSpalteSteckplatz As Long
     Dim iSpalteKanal As Long
     Dim i As Long
@@ -222,6 +262,7 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
     ' Spalten definieren
     sSpalteSteckplatz = "CA"
     sSpalteKanal = "CB"
+    sSpalteSegmentvorlage = "BL"
     ' nummerischen Wert ermitteln
     iSpalteSteckplatz = SpaltenBuchstaben2Int(sSpalteSteckplatz)
     iSpalteKanal = SpaltenBuchstaben2Int(sSpalteKanal)
@@ -248,6 +289,8 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
                 If .Cells.Item(i, "A") = sData.key Then
                     .Cells.Item(i, (iSpalteSteckplatz + (12 * (sData.Signal - 1)))) = sData.Steckplatz
                     .Cells.Item(i, (iSpalteKanal + (12 * (sData.Signal - 1)))) = sData.Kanal
+                    .Cells.Item(i, (iSpalteKanal + 1 + (12 * (sData.Signal - 1)))) = sData.Adress
+                    .Cells.Item(i, sSpalteSegmentvorlage) = sData.Segmentvorlage
                     'MsgBox "Kanal geschrieben: " & sData.Kanal
                 End If
             
@@ -329,44 +372,129 @@ Public Function searchDatasetPlcTyp(ByVal pKartentyp As String) As cKanalBelegun
    
 End Function
 
-Public Function zuweisenKanal(offsetSlot As Integer) As cKanalBelegungen
+Public Function zuweisenKanal(offsetSlot As Integer, ByVal pKartentyp As String) As cKanalBelegungen
 
     ' hochzählen der Kanäle und zurückgeben als Class
     Dim iKanal As Integer
+    Dim iNextKanal As Integer
     Dim iSteckplatz As Integer
-    Dim iStationOld As Integer
+
     Dim rData As New cKanalBelegungen
+    Dim sortData As New cKanalBelegungen
+    Dim sKWSBMKold As String
+    Dim bET200SPNothalt As Boolean
     
     ' Startwerte
     iKanal = 0
+    bET200SPNothalt = False
     If offsetSlot = 0 Then
         iSteckplatz = 1
     Else
         iSteckplatz = 0
     End If
     
-    iStationOld = 0
+    sKWSBMKold = ""
+
     Dim sData As New cBelegung
-    
-    For Each sData In Me
-       
-            sData.Kanal = iKanal
-            sData.Steckplatz = iSteckplatz + offsetSlot
-            rData.AddDataSet sData
-             If iStationOld = 0 Or iStationOld = sData.Stationsnummer Then
+    If pKartentyp = "ET200SP 8FDI" Then
+        'Sortierung nach Segmentvorlage
+       Set sortData = Me.SortSegment
+        For Each sData In sortData
+            ' Kanäle müssen passend aufgelgt werden
+            If Left(sData.Segmentvorlage, 20) = "FDI_ET200SP_NOT_HALT" Or ((sData.Segmentvorlage = "FDI_ET200SP_ZUHALTUNG_AZM201B") And Not sData.Signal = 3) Then
+                bET200SPNothalt = True
+                If sData.Signal = 2 Then
+                    ' Kanäle 4, 5, 6 und 7
+                    sData.Kanal = iNextKanal
+                    sData.Steckplatz = iSteckplatz + offsetSlot
+                    'iKanal = iKanal + 1
+                Else
+                    ' Kanäle 0, 1, 2 und 3
+                    If iKanal <= (sData.MaxChannelPerSlot / 2) Then
+                        sData.Kanal = iKanal
+                        sData.Steckplatz = iSteckplatz + offsetSlot
+                        iNextKanal = iKanal + 4
+                        iKanal = iKanal + 1
+                    Else
+                        iKanal = 0
+                        iNextKanal = iKanal + 4
+                        iSteckplatz = iSteckplatz + 1
+                        sData.Kanal = iKanal
+                        sData.Steckplatz = iSteckplatz + offsetSlot
+                    End If
+                End If
+            Else
+                If bET200SPNothalt = True Then
+                    
+                    'If iKanal = 0 Then
+                        iKanal = iNextKanal + 1
+                End If
+                bET200SPNothalt = False
+                sData.Kanal = iKanal
+                sData.Steckplatz = iSteckplatz + offsetSlot
                 If iKanal < sData.MaxChannelPerSlot Then
                     iKanal = iKanal + 1
                 Else
                     iKanal = 0
                     iSteckplatz = iSteckplatz + 1
                 End If
+                   
+            End If
+            sKWSBMKold = sData.KWSBMK
+            rData.AddDataSet sData
+        Next
+    ElseIf pKartentyp = "CPX-8DE-D" Then
+        'Sortierung nach Segmentvorlage
+        Set sortData = Me.SortSegment
+        For Each sData In sortData
+            'pro Stecker werden zwei Kanäle belegt
+            'todo Segmentvorlage muss ebenfalls angepasst werden
+            If iKanal = 1 Or iKanal = 3 Or iKanal = 5 Or iKanal = 7 Then
+                'ungerade Kanäle 1, 3, 5 und 7
+                If iKanal <= sData.MaxChannelPerSlot Then
+                    sData.Kanal = iKanal
+                    sData.Steckplatz = iSteckplatz + offsetSlot
+                  
+                Else
+                    iKanal = 0
+                    iSteckplatz = iSteckplatz + 1
+                    sData.Kanal = iKanal
+                    sData.Steckplatz = iSteckplatz + offsetSlot
+                End If
+                  'sData.Segmentvorlage = "ungerade"
+            Else
+                ' Kanäle 0, 2, 4 und 6
+                If iKanal < sData.MaxChannelPerSlot Then
+                    sData.Kanal = iKanal
+                    sData.Steckplatz = iSteckplatz + offsetSlot
+                    iNextKanal = iKanal + 4
+                Else
+                    iKanal = 0
+                    iSteckplatz = iSteckplatz + 1
+                    sData.Kanal = iKanal
+                    sData.Steckplatz = iSteckplatz + offsetSlot
+                End If
+                'sData.Segmentvorlage = "gerade"
+       
+            End If
+            rData.AddDataSet sData
+            iKanal = iKanal + 1
+        Next
+    Else
+        'hier bearbeiten alles was keine extra Behandlung benötigt
+        For Each sData In Me
+       
+            sData.Kanal = iKanal
+            sData.Steckplatz = iSteckplatz + offsetSlot
+            rData.AddDataSet sData
+            If iKanal < sData.MaxChannelPerSlot Then
+                iKanal = iKanal + 1
             Else
                 iKanal = 0
-                iSteckplatz = 1
+                iSteckplatz = iSteckplatz + 1
             End If
-            iStationOld = sData.Stationsnummer
-    Next
-    
+        Next
+    End If
     Set zuweisenKanal = rData
 End Function
 
