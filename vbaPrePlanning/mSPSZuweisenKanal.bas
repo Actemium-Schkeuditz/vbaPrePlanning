@@ -36,6 +36,7 @@ Public Sub SPSZuweisenKanal()
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
     dataKanaele.ReadExcelDataChanelToCollection tabelleDaten, dataKanaele, spalteStationsnummer, spalteKartentyp
     
+    
     '##### Suche nach allen Stationsnummern
     Dim iStation As Collection
     Set iStation = dataKanaele.returnStation
@@ -46,7 +47,7 @@ Public Sub SPSZuweisenKanal()
     
     '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
     Dim sortierung As cBelegung
-    Dim dataSort As cKanalBelegungen             'Ergebnis der Sortierung
+    Dim dataSort As New cKanalBelegungen             'Ergebnis der Sortierung
     'Set dataSort = dataKanaele.Sort
         
   
@@ -55,10 +56,11 @@ Public Sub SPSZuweisenKanal()
     Dim pStation As Variant
     Dim pKartentyp As Variant
     
-   
+    
     
     For Each pStation In iStation
         Set dataSearchStation = dataKanaele.searchDatasetPerStation(pStation)
+        
         '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
         Set dataSort = dataSearchStation.Sort
         '##### Suche nach allen verwendeten Kartentypen

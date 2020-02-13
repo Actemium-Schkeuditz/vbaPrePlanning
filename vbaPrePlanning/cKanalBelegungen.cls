@@ -31,7 +31,7 @@ Public Sub Add(ByRef key As String, ByRef KWSBMK As String, ByRef Signal As Inte
     p.KWSBMK = KWSBMK
     p.Signal = Signal
     p.Stationsnummer = Stationsnummer
-    p.Kartentyp = Kartentyp
+    p.Kartentyp.Kartentyp = Kartentyp
     p.Steckplatz = Steckplatz
     p.Kanal = Kanal
     p.Segmentvorlage = Segmentvorlage
@@ -44,14 +44,14 @@ Public Sub Addobj(ByRef obj As cBelegung)
     objKanalBelegungen.Add obj
 End Sub
 
-Public Sub AddDataSet(ByRef dataSet As cBelegung)
+Public Sub AddDataSet(ByVal dataSet As cBelegung)
     'create a new dataset and add to collection
     Dim p As New cBelegung
     p.key = dataSet.key
     p.KWSBMK = dataSet.KWSBMK
     p.Signal = dataSet.Signal
     p.Stationsnummer = dataSet.Stationsnummer
-    p.Kartentyp = dataSet.Kartentyp
+    p.Kartentyp.Kartentyp = dataSet.Kartentyp.Kartentyp
     p.Steckplatz = dataSet.Steckplatz
     p.Kanal = dataSet.Kanal
     p.Segmentvorlage = dataSet.Segmentvorlage
@@ -123,6 +123,7 @@ Public Function Sort() As cKanalBelegungen
     Set Sort = ppl
 End Function
 
+
 Public Function SortSegment() As cKanalBelegungen
     ' Sort Segmentdefinition
     Dim i As Long
@@ -172,7 +173,7 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
     Dim iSpalteIntStationsnummer As Integer
     Dim ispalteKartentyp As Integer
     
-    On Error GoTo ErrorHandle
+    'On Error GoTo ErrorHandle
 
     ' Konvertierung Spaltenbuchstaben in INTEGER
     iSpalteIntStationsnummer = SpaltenBuchstaben2Int(spalteStationsnummer) - 1
@@ -359,14 +360,14 @@ Public Function searchDatasetPlcTyp(ByVal pKartentyp As String) As cKanalBelegun
     Dim rData As New cKanalBelegungen
    
     For Each sData In Me
-        If sData.Kartentyp = pKartentyp Then
+        If sData.Kartentyp.Kartentyp = pKartentyp Then
             rData.AddDataSet sData
         End If
     Next
  
-    If Me.Count = 0 Then
-        rData.Add vbNullString, vbNullString, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
-    End If
+    'If Me.Count = 0 Then
+    '    rData.Add vbNullString, vbNullString, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
+    'End If
     
     Set searchDatasetPlcTyp = rData
    
@@ -383,10 +384,13 @@ Public Function zuweisenKanal(offsetSlot As Integer, ByVal pKartentyp As String)
     Dim sortData As New cKanalBelegungen
     Dim sKWSBMKold As String
     Dim bET200SPNothalt As Boolean
+    Dim bRunOnce As Boolean
+    Dim sSegmentcorrection As String
     
     ' Startwerte
     iKanal = 0
     bET200SPNothalt = False
+    bRunOnce = False
     If offsetSlot = 0 Then
         iSteckplatz = 1
     Else
@@ -398,19 +402,19 @@ Public Function zuweisenKanal(offsetSlot As Integer, ByVal pKartentyp As String)
     Dim sData As New cBelegung
     If pKartentyp = "ET200SP 8FDI" Then
         'Sortierung nach Segmentvorlage
-       Set sortData = Me.SortSegment
+        Set sortData = Me.SortSegment
         For Each sData In sortData
             ' Kanäle müssen passend aufgelgt werden
-            If Left(sData.Segmentvorlage, 20) = "FDI_ET200SP_NOT_HALT" Or ((sData.Segmentvorlage = "FDI_ET200SP_ZUHALTUNG_AZM201B") And Not sData.Signal = 3) Then
-                bET200SPNothalt = True
+            If Left(sData.Segmentvorlage, 20) = "FDI_ET200SP_NOT_HALT" Or ((sData.Segmentvorlage = "FDI_ET200SP_ZUHALTUNG_AZM201B") And (sData.Signal = 1 Or sData.Signal = 2)) Then
+                bET200SPNothalt = True           ' Hier FDI doppelte Auswertung der Signale
                 If sData.Signal = 2 Then
                     ' Kanäle 4, 5, 6 und 7
                     sData.Kanal = iNextKanal
                     sData.Steckplatz = iSteckplatz + offsetSlot
-                    'iKanal = iKanal + 1
+                    bRunOnce = True
                 Else
                     ' Kanäle 0, 1, 2 und 3
-                    If iKanal <= (sData.MaxChannelPerSlot / 2) Then
+                    If iKanal <= (sData.Kartentyp.MaxChannelPerSlot / 2) Then
                         sData.Kanal = iKanal
                         sData.Steckplatz = iSteckplatz + offsetSlot
                         iNextKanal = iKanal + 4
@@ -423,22 +427,39 @@ Public Function zuweisenKanal(offsetSlot As Integer, ByVal pKartentyp As String)
                         sData.Steckplatz = iSteckplatz + offsetSlot
                     End If
                 End If
-            Else
-                If bET200SPNothalt = True Then
-                    
-                    'If iKanal = 0 Then
-                        iKanal = iNextKanal + 1
+            ElseIf bET200SPNothalt = True Then
+            ' hier weiter wenn einmal ein Not-Aus kam
+                If bRunOnce = False Then
+                    ' Kanäle 4, 5, 6 und 7
+                    sData.Kanal = iNextKanal
+                    sData.Steckplatz = iSteckplatz + offsetSlot
+                    bRunOnce = True
+                Else
+                    ' Kanäle 0, 1, 2 und 3
+                    bRunOnce = False
+                    If iKanal <= (sData.Kartentyp.MaxChannelPerSlot / 2) Then
+                        sData.Kanal = iKanal
+                        sData.Steckplatz = iSteckplatz + offsetSlot
+                        iNextKanal = iKanal + 4
+                        iKanal = iKanal + 1
+                    Else
+                        iKanal = 0
+                        iNextKanal = iKanal + 4
+                        iSteckplatz = iSteckplatz + 1
+                        sData.Kanal = iKanal
+                        sData.Steckplatz = iSteckplatz + offsetSlot
+                    End If
                 End If
-                bET200SPNothalt = False
+                'normale Belegung
+            Else
                 sData.Kanal = iKanal
                 sData.Steckplatz = iSteckplatz + offsetSlot
-                If iKanal < sData.MaxChannelPerSlot Then
+                If iKanal < sData.Kartentyp.MaxChannelPerSlot Then
                     iKanal = iKanal + 1
                 Else
                     iKanal = 0
                     iSteckplatz = iSteckplatz + 1
                 End If
-                   
             End If
             sKWSBMKold = sData.KWSBMK
             rData.AddDataSet sData
@@ -448,10 +469,10 @@ Public Function zuweisenKanal(offsetSlot As Integer, ByVal pKartentyp As String)
         Set sortData = Me.SortSegment
         For Each sData In sortData
             'pro Stecker werden zwei Kanäle belegt
-            'todo Segmentvorlage muss ebenfalls angepasst werden
+            sSegmentcorrection = Right(sData.Segmentvorlage, 2)
             If iKanal = 1 Or iKanal = 3 Or iKanal = 5 Or iKanal = 7 Then
                 'ungerade Kanäle 1, 3, 5 und 7
-                If iKanal <= sData.MaxChannelPerSlot Then
+                If iKanal <= sData.Kartentyp.MaxChannelPerSlot Then
                     sData.Kanal = iKanal
                     sData.Steckplatz = iSteckplatz + offsetSlot
                   
@@ -461,10 +482,13 @@ Public Function zuweisenKanal(offsetSlot As Integer, ByVal pKartentyp As String)
                     sData.Kanal = iKanal
                     sData.Steckplatz = iSteckplatz + offsetSlot
                 End If
-                  'sData.Segmentvorlage = "ungerade"
+                'sData.Segmentvorlage = "ungerade"
+                If sSegmentcorrection = "_1" Then
+               sData.Segmentvorlage = Left(sData.Segmentvorlage, Len(sData.Segmentvorlage) - 2) & "_2"
+               End If
             Else
                 ' Kanäle 0, 2, 4 und 6
-                If iKanal < sData.MaxChannelPerSlot Then
+                If iKanal < sData.Kartentyp.MaxChannelPerSlot Then
                     sData.Kanal = iKanal
                     sData.Steckplatz = iSteckplatz + offsetSlot
                     iNextKanal = iKanal + 4
@@ -474,7 +498,9 @@ Public Function zuweisenKanal(offsetSlot As Integer, ByVal pKartentyp As String)
                     sData.Kanal = iKanal
                     sData.Steckplatz = iSteckplatz + offsetSlot
                 End If
-                'sData.Segmentvorlage = "gerade"
+               If sSegmentcorrection = "_2" Then
+               sData.Segmentvorlage = Left(sData.Segmentvorlage, Len(sData.Segmentvorlage) - 2) & "_1"
+               End If
        
             End If
             rData.AddDataSet sData
@@ -487,7 +513,7 @@ Public Function zuweisenKanal(offsetSlot As Integer, ByVal pKartentyp As String)
             sData.Kanal = iKanal
             sData.Steckplatz = iSteckplatz + offsetSlot
             rData.AddDataSet sData
-            If iKanal < sData.MaxChannelPerSlot Then
+            If iKanal < sData.Kartentyp.MaxChannelPerSlot Then
                 iKanal = iKanal + 1
             Else
                 iKanal = 0
@@ -538,7 +564,7 @@ End Function
 Public Function returnKartentyp() As Collection
 
     ' collect all Kartentyp without duplicates
-    On Error GoTo ErrorHandler
+    'On Error GoTo ErrorHandler
     Set returnKartentyp = Nothing
 
     Dim col As New Collection
@@ -550,14 +576,14 @@ Public Function returnKartentyp() As Collection
         ' prüfen ob Stationsnummer schon in Collection
         bSearchinCol = True
         For Each it In col
-            If it = sData.Kartentyp Then
+            If it = sData.Kartentyp.Kartentyp Then
                 bSearchinCol = False
                 
             End If
         Next
         If bSearchinCol = True Then
-            If sData.Kartentyp <> vbNullString Then
-                col.Add sData.Kartentyp          '  dynamically add value to the end
+            If sData.Kartentyp.Kartentyp <> vbNullString Then
+                col.Add sData.Kartentyp.Kartentyp          '  dynamically add value to the end
             End If
         End If
     Next

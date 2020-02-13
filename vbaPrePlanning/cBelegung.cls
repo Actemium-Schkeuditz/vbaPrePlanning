@@ -21,14 +21,21 @@ Option Explicit
 Private pKey As String
 Private pKWSBMK As String
 Private pSignal As Integer
-Private pKartentyp As String
+'test
+'Private pKartentyp As String
+Public Kartentyp As cPLCdata
+
 Private pStationsnummer As Integer
 Private pSteckplatz As Integer
 Private pKanal As Integer
 Private pAdress As String
 Private pSegmentvorlage As String
-Private pSortingIdentifier As Long
-Private pMaxChannelPerSlot As Long
+'Private pSortingIdentifier As Long
+'Private pMaxChannelPerSlot As Long
+
+Private Sub Class_Initialize()
+    Set Me.Kartentyp = New cPLCdata
+End Sub
 
 ''''''''''''''''''''''
 ' KWSBMK property
@@ -79,102 +86,103 @@ End Property
 ''''''''''''''''''''''
 ' Kartentyp property
 ''''''''''''''''''''''
-Public Property Get Kartentyp() As String
-    Kartentyp = pKartentyp
-End Property
+' für test raus genommen
+'Public Property Get Kartentyp() As String
+'    Kartentyp = pKartentyp
+'End Property
 
-Public Property Let Kartentyp(ByVal Value As String)
-    pKartentyp = Value
-    Select Case pKartentyp
-    Case "ET200SP 4IO-LINK"
-        pSortingIdentifier = 1
-        pMaxChannelPerSlot = 3
-    Case "ET200SP 8DI"
-        pSortingIdentifier = 2
-        pMaxChannelPerSlot = 7
-    Case "ET200SP 8DI HS"
-        pSortingIdentifier = 3
-        pMaxChannelPerSlot = 7
-    Case "ET200SP 8DI CNT"
-        pSortingIdentifier = 4
-        pMaxChannelPerSlot = 3
-    Case "ET200SP 8DO"
-        pSortingIdentifier = 5
-        pMaxChannelPerSlot = 7
-    Case "ET200SP 4DO"
-        pSortingIdentifier = 6
-        pMaxChannelPerSlot = 3
-    Case "ET200SP 4RQ"
-        pSortingIdentifier = 7
-        pMaxChannelPerSlot = 3
-    Case "ET200SP 2AI I"
-        pSortingIdentifier = 8
-        pMaxChannelPerSlot = 1
-    Case "ET200SP 2AI U"
-        pSortingIdentifier = 9
-        pMaxChannelPerSlot = 1
-    Case "ET200SP 4AI PT100"
-        pSortingIdentifier = 10
-        pMaxChannelPerSlot = 3
-    Case "ET200SP 2AO I"
-        pSortingIdentifier = 11
-        pMaxChannelPerSlot = 1
-    Case "ET200SP 2AO U"
-        pSortingIdentifier = 12
-        pMaxChannelPerSlot = 1
-    Case "ET200SP PTP"
-        pSortingIdentifier = 13
-        pMaxChannelPerSlot = 0
-    Case "ET200SP SIWAREX"
-        pSortingIdentifier = 14
-        pMaxChannelPerSlot = 0
-    Case "ET200SP 8FDI"
-        pSortingIdentifier = 15
-        pMaxChannelPerSlot = 7
-    Case "ET200SP 4FDO"
-        pSortingIdentifier = 16
-        pMaxChannelPerSlot = 3
-    Case "ET200SP STARTER"
-        pSortingIdentifier = 17
-        pMaxChannelPerSlot = 0
-    Case "ET200SP WENDESTARTER"
-        pSortingIdentifier = 18
-        pMaxChannelPerSlot = 0
+'Public Property Let Kartentyp(ByVal Value As String)
+ '   pKartentyp = Value
+ '   Select Case pKartentyp
+ '   Case "ET200SP 4IO-LINK"
+'        pSortingIdentifier = 1
+'        pMaxChannelPerSlot = 3
+'    Case "ET200SP 8DI"
+'        pSortingIdentifier = 2
+'        pMaxChannelPerSlot = 7
+'    Case "ET200SP 8DI HS"
+'        pSortingIdentifier = 3
+'        pMaxChannelPerSlot = 7
+'    Case "ET200SP 8DI CNT"
+'        pSortingIdentifier = 4
+'        pMaxChannelPerSlot = 3
+'    Case "ET200SP 8DO"
+'        pSortingIdentifier = 5
+'        pMaxChannelPerSlot = 7
+'    Case "ET200SP 4DO"
+'        pSortingIdentifier = 6
+'        pMaxChannelPerSlot = 3
+'    Case "ET200SP 4RQ"
+'        pSortingIdentifier = 7
+'        pMaxChannelPerSlot = 3
+'    Case "ET200SP 2AI I"
+'        pSortingIdentifier = 8
+'        pMaxChannelPerSlot = 1
+'    Case "ET200SP 2AI U"
+'        pSortingIdentifier = 9
+'        pMaxChannelPerSlot = 1
+'    Case "ET200SP 4AI PT100"
+'        pSortingIdentifier = 10
+'        pMaxChannelPerSlot = 3
+'    Case "ET200SP 2AO I"
+'        pSortingIdentifier = 11
+'        pMaxChannelPerSlot = 1
+'    Case "ET200SP 2AO U"
+'        pSortingIdentifier = 12
+'        pMaxChannelPerSlot = 1
+'    Case "ET200SP PTP"
+'        pSortingIdentifier = 13
+'        pMaxChannelPerSlot = 0
+'    Case "ET200SP SIWAREX"
+'        pSortingIdentifier = 14
+'        pMaxChannelPerSlot = 0
+'    Case "ET200SP 8FDI"
+'        pSortingIdentifier = 15
+'        pMaxChannelPerSlot = 7
+'    Case "ET200SP 4FDO"
+'        pSortingIdentifier = 16
+'        pMaxChannelPerSlot = 3
+'    Case "ET200SP STARTER"
+'        pSortingIdentifier = 17
+'        pMaxChannelPerSlot = 0
+'    Case "ET200SP WENDESTARTER"
+'        pSortingIdentifier = 18
+'        pMaxChannelPerSlot = 0
         ' FESTO
-    Case "CPX-8DE-D"
-        pSortingIdentifier = 30
-        pMaxChannelPerSlot = 7
-    Case "CPX-4DA"
-        pSortingIdentifier = 31
-        pMaxChannelPerSlot = 3
-    Case "CPX-4AE-T"
-        pSortingIdentifier = 32
-        pMaxChannelPerSlot = 3
-    Case "CPX 2x3/2 mono"
-        pSortingIdentifier = 40
-        pMaxChannelPerSlot = 1
-    Case "CPX 5/2 mono"
-        pSortingIdentifier = 41
-        pMaxChannelPerSlot = 1
-    Case "CPX 5/2 bistabil"
-        pSortingIdentifier = 42
-        pMaxChannelPerSlot = 0
+'    Case "CPX-8DE-D"
+'        pSortingIdentifier = 30
+'        pMaxChannelPerSlot = 7
+'    Case "CPX-4DA"
+'        pSortingIdentifier = 31
+'        pMaxChannelPerSlot = 3
+'    Case "CPX-4AE-T"
+'        pSortingIdentifier = 32
+'        pMaxChannelPerSlot = 3
+'    Case "CPX 2x3/2 mono"
+'        pSortingIdentifier = 40
+'        pMaxChannelPerSlot = 1
+'    Case "CPX 5/2 mono"
+'        pSortingIdentifier = 41
+'        pMaxChannelPerSlot = 1
+'    Case "CPX 5/2 bistabil"
+'        pSortingIdentifier = 42
+'        pMaxChannelPerSlot = 0
         'IFM IO-Link Master
-    Case "IFM IO-LINK"
-        pSortingIdentifier = 50
-        pMaxChannelPerSlot = 7
-    Case "ET200AL 16DI"
-        pSortingIdentifier = 60
-        pMaxChannelPerSlot = 15
-    Case "ET200AL 8DO"
-        pSortingIdentifier = 61
-        pMaxChannelPerSlot = 7
-    Case Else
-        pSortingIdentifier = 200
-        pMaxChannelPerSlot = 100
-    End Select
+'    Case "IFM IO-LINK"
+'        pSortingIdentifier = 50
+'        pMaxChannelPerSlot = 7
+'    Case "ET200AL 16DI"
+'        pSortingIdentifier = 60
+'        pMaxChannelPerSlot = 15
+'    Case "ET200AL 8DO"
+'        pSortingIdentifier = 61
+'        pMaxChannelPerSlot = 7
+'    Case Else
+'        pSortingIdentifier = 200
+'        pMaxChannelPerSlot = 100
+'    End Select
     
-End Property
+'End Property
 
 ''''''''''''''''''''''
 ' Steckplatz property
@@ -223,16 +231,16 @@ End Property
 ''''''''''''''''''''''
 ' SortingIdentifier property
 ''''''''''''''''''''''
-Public Property Get SortingIdentifier() As Long
-    SortingIdentifier = pSortingIdentifier
-End Property
+'Public Property Get SortingIdentifier() As Long
+'    SortingIdentifier = pSortingIdentifier
+'End Property
 
 ''''''''''''''''''''''
 ' MaxChannelPerSlot property
 ''''''''''''''''''''''
-Public Property Get MaxChannelPerSlot() As Long
-    MaxChannelPerSlot = pMaxChannelPerSlot
-End Property
+'Public Property Get MaxChannelPerSlot() As Long
+'    MaxChannelPerSlot = pMaxChannelPerSlot
+'End Property
 
 
 Public Function CompareTo(ByRef per As cBelegung) As Long
@@ -241,7 +249,8 @@ Public Function CompareTo(ByRef per As cBelegung) As Long
     'Sort second:   SortingIdentifier
     'Sort third:    KWSBMK
     If Me.Stationsnummer = per.Stationsnummer Then
-        If Me.SortingIdentifier = per.SortingIdentifier Then
+        'If Me.SortingIdentifier = per.SortingIdentifier Then
+        If Me.Kartentyp.SortingIdentifier = per.Kartentyp.SortingIdentifier Then
             If Me.KWSBMK = per.KWSBMK Then
                 i = 0
             ElseIf Me.KWSBMK < per.KWSBMK Then
@@ -249,7 +258,8 @@ Public Function CompareTo(ByRef per As cBelegung) As Long
             Else
                 i = 1
             End If
-        ElseIf Me.SortingIdentifier < per.SortingIdentifier Then
+            'elseif Me.SortingIdentifier < per.SortingIdentifier Then
+        ElseIf Me.Kartentyp.SortingIdentifier < per.Kartentyp.SortingIdentifier Then
             i = -1
         Else
             i = 1

@@ -92,50 +92,87 @@
           <Val>65535</Val>
           <Val>65535</Val>
           <Val>65535</Val>
+          <Val>44053</Val>
+          <Val>20100</Val>
           <Val>44051</Val>
           <Val>44005</Val>
           <Val>44004</Val>
           <Val>1828</Val>
           <Val>44041</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>44053</Val>
           <Val>1228</Val>
           <Val>65535</Val>
           <Val>65535</Val>
-          <Val>20100</Val>
           <Val>65535</Val>
           <Val>65535</Val>
           <Val>65535</Val>
           <Val>65535</Val>
           <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>44023</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>44023</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>44023</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>44023</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>44023</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>44040</Val>
          </Setting>
          <Setting name="Index" type="int">
           <Val>3</Val>
@@ -199,26 +236,7 @@
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
-          <Val>0</Val>
+          <Val>1</Val>
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
@@ -242,8 +260,101 @@
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>2</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>3</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>4</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>5</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
          </Setting>
          <Setting name="IsDataId" type="bool">
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
@@ -415,50 +526,87 @@
           <Val/>
           <Val/>
           <Val/>
-          <Val>ACT.PLS.MASTER</Val>
-          <Val>ACT.PLS.RACK</Val>
-          <Val>ACT.PLS.BUS_STRANG</Val>
-          <Val>ACT.PLS.IO_STATION</Val>
-          <Val>ACT.PLS.SIGNAL_1.TYP</Val>
-          <Val>ACT.PLS.SIGNAL_1.BMK_SPS</Val>
-          <Val>ACT.PLS.SIGNAL_1.STECKPLATZ</Val>
-          <Val>ACT.PLS.SIGNAL_1.KANAL</Val>
-          <Val>ACT.PLS.SIGNAL_1.SPS_ADRESSE</Val>
-          <Val>ACT.PLS.SIGNAL_2.TYP</Val>
-          <Val>ACT.PLS.SIGNAL_2.BMK_SPS</Val>
-          <Val>ACT.PLS.SIGNAL_2.STECKPLATZ</Val>
-          <Val>ACT.PLS.SIGNAL_2.KANAL</Val>
-          <Val>ACT.PLS.SIGNAL_2.SPS_ADRESSE</Val>
-          <Val>ACT.PLS.SIGNAL_3.TYP</Val>
-          <Val>ACT.PLS.SIGNAL_3.BMK_SPS</Val>
-          <Val>ACT.PLS.SIGNAL_3.STECKPLATZ</Val>
-          <Val>ACT.PLS.SIGNAL_3.KANAL</Val>
-          <Val>ACT.PLS.SIGNAL_3.SPS_ADRESSE</Val>
-          <Val>ACT.PLS.SIGNAL_4.TYP</Val>
-          <Val>ACT.PLS.SIGNAL_4.BMK_SPS</Val>
-          <Val>ACT.PLS.SIGNAL_4.STECKPLATZ</Val>
-          <Val>ACT.PLS.SIGNAL_4.KANAL</Val>
-          <Val>ACT.PLS.SIGNAL_4.SPS_ADRESSE</Val>
-          <Val>ACT.PLS.SIGNAL_5.TYP</Val>
-          <Val>ACT.PLS.SIGNAL_5.BMK_SPS</Val>
-          <Val>ACT.PLS.SIGNAL_5.STECKPLATZ</Val>
-          <Val>ACT.PLS.SIGNAL_5.KANAL</Val>
-          <Val>ACT.PLS.SIGNAL_5.SPS_ADRESSE</Val>
+          <Val/>
           <Val/>
           <Val/>
           <Val>ACT.DATA.SEITE</Val>
-          <Val>ACT.DATA.NOT_HALT</Val>
+          <Val>ACT.PLS.MASTER</Val>
+          <Val>ACT.PLS.BUS_STRANG</Val>
+          <Val>ACT.PLS.IO_STATION</Val>
+          <Val>ACT.PLS.RACK_EINBAUORT</Val>
+          <Val>ACT.PLS.RACK</Val>
+          <Val>ACT.PLS.SIGNAL_1.TYP</Val>
+          <Val>ACT.PLS.SIGNAL_1.KARTENTYP</Val>
+          <Val>ACT.PLS.SIGNAL_1.BMK_SPS</Val>
+          <Val>ACT.PLS.SIGNAL_1.STECKPLATZ</Val>
+          <Val>ACT.PLS.SIGNAL_1.KANAL</Val>
           <Val/>
+          <Val>ACT.PLS.SIGNAL_1.ANSCHLUSS.1</Val>
+          <Val>ACT.PLS.SIGNAL_1.ANSCHLUSS.2</Val>
+          <Val>ACT.PLS.SIGNAL_1.ANSCHLUSS.3</Val>
+          <Val>ACT.PLS.SIGNAL_1.ANSCHLUSS.4</Val>
+          <Val>ACT.PLS.SIGNAL_1.ANSCHLUSS.M</Val>
+          <Val>ACT.PLS.SIGNAL_1.ANSCHLUSS.VS</Val>
+          <Val>ACT.PLS.SIGNAL_2.TYP</Val>
+          <Val>ACT.PLS.SIGNAL_2.KARTENTYP</Val>
+          <Val>ACT.PLS.SIGNAL_2.BMK_SPS</Val>
+          <Val>ACT.PLS.SIGNAL_2.STECKPLATZ</Val>
+          <Val>ACT.PLS.SIGNAL_2.KANAL</Val>
+          <Val/>
+          <Val>ACT.PLS.SIGNAL_2.ANSCHLUSS.1</Val>
+          <Val>ACT.PLS.SIGNAL_2.ANSCHLUSS.2</Val>
+          <Val>ACT.PLS.SIGNAL_2.ANSCHLUSS.3</Val>
+          <Val>ACT.PLS.SIGNAL_2.ANSCHLUSS.4</Val>
+          <Val>ACT.PLS.SIGNAL_2.ANSCHLUSS.M</Val>
+          <Val>ACT.PLS.SIGNAL_2.ANSCHLUSS.VS</Val>
+          <Val>ACT.PLS.SIGNAL_3.TYP</Val>
+          <Val>ACT.PLS.SIGNAL_3.KARTENTYP</Val>
+          <Val>ACT.PLS.SIGNAL_3.BMK_SPS</Val>
+          <Val>ACT.PLS.SIGNAL_3.STECKPLATZ</Val>
+          <Val>ACT.PLS.SIGNAL_3.KANAL</Val>
+          <Val/>
+          <Val>ACT.PLS.SIGNAL_3.ANSCHLUSS.1</Val>
+          <Val>ACT.PLS.SIGNAL_3.ANSCHLUSS.2</Val>
+          <Val>ACT.PLS.SIGNAL_3.ANSCHLUSS.3</Val>
+          <Val>ACT.PLS.SIGNAL_3.ANSCHLUSS.4</Val>
+          <Val>ACT.PLS.SIGNAL_3.ANSCHLUSS.M</Val>
+          <Val>ACT.PLS.SIGNAL_3.ANSCHLUSS.VS</Val>
+          <Val>ACT.PLS.SIGNAL_4.TYP</Val>
+          <Val>ACT.PLS.SIGNAL_4.KARTENTYP</Val>
+          <Val>ACT.PLS.SIGNAL_4.BMK_SPS</Val>
+          <Val>ACT.PLS.SIGNAL_4.STECKPLATZ</Val>
+          <Val>ACT.PLS.SIGNAL_4.KANAL</Val>
+          <Val/>
+          <Val>ACT.PLS.SIGNAL_4.ANSCHLUSS.1</Val>
+          <Val>ACT.PLS.SIGNAL_4.ANSCHLUSS.2</Val>
+          <Val>ACT.PLS.SIGNAL_4.ANSCHLUSS.3</Val>
+          <Val>ACT.PLS.SIGNAL_4.ANSCHLUSS.4</Val>
+          <Val>ACT.PLS.SIGNAL_4.ANSCHLUSS.M</Val>
+          <Val>ACT.PLS.SIGNAL_4.ANSCHLUSS.VS</Val>
+          <Val>ACT.PLS.SIGNAL_5.TYP</Val>
+          <Val>ACT.PLS.SIGNAL_5.KARTENTYP</Val>
+          <Val>ACT.PLS.SIGNAL_5.BMK_SPS</Val>
+          <Val>ACT.PLS.SIGNAL_5.STECKPLATZ</Val>
+          <Val>ACT.PLS.SIGNAL_5.KANAL</Val>
+          <Val/>
+          <Val>ACT.PLS.SIGNAL_5.ANSCHLUSS.1</Val>
+          <Val>ACT.PLS.SIGNAL_5.ANSCHLUSS.2</Val>
+          <Val>ACT.PLS.SIGNAL_5.ANSCHLUSS.3</Val>
+          <Val>ACT.PLS.SIGNAL_5.ANSCHLUSS.4</Val>
+          <Val>ACT.PLS.SIGNAL_5.ANSCHLUSS.M</Val>
+          <Val>ACT.PLS.SIGNAL_5.ANSCHLUSS.VS</Val>
+          <Val>ACT.DATA.NOT_HALT</Val>
           <Val>ACT.DATA.FERTIG</Val>
           <Val>ACT.DATA.POTENZIAL.NR_AC</Val>
           <Val>ACT.DATA.POTENZIAL.NR_AC_OUT</Val>
           <Val>ACT.DATA.POTENZIAL.NR_DC</Val>
           <Val>ACT.DATA.POTENZIAL.NR_DC_OUT</Val>
+          <Val/>
          </Setting>
         </LEV6>
        </LEV5>
        <Setting name="Description" type="mlstring">
-        <Val>??_??@KWS MH04 Projekte&#10;V1.0&#10;Bearbeitung der Vorplanungsobjekte Stand 20.01.2020&#10;mit CRC Check, SPS-Daten, Artikel;</Val>
+        <Val>??_??@KWS MH04 Projekte&#10;V1.3&#10;Ausgabe mit SPS-Anschlussdaten&#10;Bearbeitung der Vorplanungsobjekte Stand 13.02.2020&#10;mit CRC Check, SPS-Daten, Artikel, Änderung SPS-Daten;</Val>
        </Setting>
        <Setting name="Name" type="mlstring">
         <Val>??_??@KWS_MH04_Vorplanung_Planungsobjekte;</Val>

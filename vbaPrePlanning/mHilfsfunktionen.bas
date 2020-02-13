@@ -8,14 +8,14 @@ Attribute VB_Name = "mHilfsfunktionen"
 '@folder Hilfsfunktionen
 Option Explicit
 
-Public Function SpaltenBuchstaben2Int(ByRef pSpalte As String) As Long
+Public Function SpaltenBuchstaben2Int(ByVal pSpalte As String) As Long
     'ermittel der Spaltennummer aus den Spaltenbuchstaben
     SpaltenBuchstaben2Int = Columns(pSpalte).Column
 
 
 End Function
 
-Public Sub SortTable(ByRef tablename As String, ByRef SortSpalte1 As String, ByRef SortSpalte2 As String, Optional ByRef SortSpalte3 As String)
+Public Sub SortTable(ByVal tablename As String, ByVal SortSpalte1 As String, ByVal SortSpalte2 As String, Optional ByVal SortSpalte3 As String)
     ' sortieren von Daten nach drei oder zwei Spalten
     ' Aufrufen der Tabele und Auswählen dieser
     ThisWorkbook.Worksheets(tablename).Activate
@@ -46,7 +46,54 @@ End Sub
 
 
 
+Public Function newExcelFile(ByVal sNewFileName As String, ByVal sFolder As String) As Boolean
 
+Dim sFolderFile As String
+Dim sConfigFolder As String
+Dim wbnew As Workbook
+
+sConfigFolder = "config"
+sFolder = ThisWorkbook.Path & "\" & sConfigFolder & "\"
+sFolderFile = ThisWorkbook.Path & "\" & sConfigFolder & "\" & sNewFileName
+
+createFolder sFolder
+
+If Dir(sFolderFile) = "" Then
+    newExcelFile = True
+Else
+    newExcelFile = False
+End If
+
+If newExcelFile = True Then
+    Set wbnew = Application.Workbooks.Add
+    wbnew.SaveAs filename:=sFolderFile, FileFormat:=xlOpenXMLStrictWorkbook
+    
+    wbnew.Close
+End If
+End Function
+
+Public Function fileExist(ByVal sFilename As String, ByVal sFolder As String) As Boolean
+
+Dim sTestFile As String
+sTestFile = ThisWorkbook.Path & "\" & sFolder & "\" & sFilename
+    If Dir(sTestFile) <> "" Then
+        'MsgBox "vorhanden"
+        fileExist = True
+    Else
+        'MsgBox "nicht vorhanden"
+        fileExist = False
+    End If
+End Function
+
+Public Function createFolder(ByVal foldername As String) As Boolean
+' create folder if not exist
+If Dir(foldername, vbDirectory) = "" Then
+  MkDir (foldername)
+  createFolder = True
+Else
+  createFolder = False
+End If
+End Function
 
 
 

@@ -119,6 +119,6 @@ Public Sub EinbauorteSchreiben()
             End If
         Next i
     End With
-    MsgBox "Daten gelesen geschrieben. Spalte Einbauort kontollieren"
+    MsgBox "Daten gelesen und geschrieben. Spalte Einbauort kontollieren"
 
 End Sub
