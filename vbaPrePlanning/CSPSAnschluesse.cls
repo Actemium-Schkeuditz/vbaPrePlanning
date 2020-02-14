@@ -121,12 +121,6 @@ Public Sub ReadExcelDataConnectionToCollection(ByRef dataColection As CSPSAnschl
 
     For Each rCell In rTable
         With rCell
-            'If IsNumeric(.Value) Then
-             '   sEinbauort = str$(.Value)
-            'Else
-             '   sEinbauort = .Value
-            'End If
-            ' die gelesenen Daten an hängen
             Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, rCell.Offset(0, 2).Value, rCell.Offset(0, 3).Value, rCell.Offset(0, 4).Value, rCell.Offset(0, 5).Value, rCell.Offset(0, 7).Value, rCell.Offset(0, 6).Value ', rCell.Offset(0, 8).Value
         End With
     Next
@@ -142,12 +136,12 @@ End Sub
 
 Public Function searchAnschluss(ByVal pKartentyp As String, ByVal pKanal As Integer, ByVal data As CSPSAnschluesse) As CSPSAnschluesse ' only ByVal works
     ' Suchen nach den Anschlüssen passend zum Kartentyp und zum Kanal
-    Dim sData As New cAnschluss
+    Dim sdata As New cAnschluss
     'searchAnschluss = Nothing
-    For Each sData In data
-        If sData.Kartentyp = pKartentyp Then
-            If sData.Kanal = pKanal Then
-                Me.AddDataSet sData
+    For Each sdata In data
+        If sdata.Kartentyp = pKartentyp Then
+            If sdata.Kanal = pKanal Then
+                Me.AddDataSet sdata
                 'Debug.Print searchAnschluss.Item(1).Kartentyp;
                 Exit For                         ' nur einmal suchen dann beenden
             End If

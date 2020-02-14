@@ -53,16 +53,12 @@ Dim sConfigFolder As String
 Dim wbnew As Workbook
 
 sConfigFolder = "config"
-sFolder = ThisWorkbook.Path & "\" & sConfigFolder & "\"
-sFolderFile = ThisWorkbook.Path & "\" & sConfigFolder & "\" & sNewFileName
+sFolder = ThisWorkbook.path & "\" & sConfigFolder & "\"
+sFolderFile = ThisWorkbook.path & "\" & sConfigFolder & "\" & sNewFileName
 
 createFolder sFolder
 
-If Dir(sFolderFile) = "" Then
-    newExcelFile = True
-Else
-    newExcelFile = False
-End If
+newExcelFile = Dir(sFolderFile) = vbNullString
 
 If newExcelFile = True Then
     Set wbnew = Application.Workbooks.Add
@@ -75,19 +71,13 @@ End Function
 Public Function fileExist(ByVal sFilename As String, ByVal sFolder As String) As Boolean
 
 Dim sTestFile As String
-sTestFile = ThisWorkbook.Path & "\" & sFolder & "\" & sFilename
-    If Dir(sTestFile) <> "" Then
-        'MsgBox "vorhanden"
-        fileExist = True
-    Else
-        'MsgBox "nicht vorhanden"
-        fileExist = False
-    End If
+sTestFile = ThisWorkbook.path & "\" & sFolder & "\" & sFilename
+    fileExist = Dir(sTestFile) <> vbNullString
 End Function
 
 Public Function createFolder(ByVal foldername As String) As Boolean
 ' create folder if not exist
-If Dir(foldername, vbDirectory) = "" Then
+If Dir(foldername, vbDirectory) = vbNullString Then
   MkDir (foldername)
   createFolder = True
 Else
@@ -96,5 +86,78 @@ End If
 End Function
 
 
+Public Function ReadSecondExcelFile(ByVal sFilname As String, ByVal sFolder As String) As String
+    '** Dimensionierung der Variablen
+    Dim blatt As String
+    Dim bereich As Range
+    Dim zelle As Object
+    Dim sFullFolder As String
+
+    sFullFolder = ThisWorkbook.path & "\" & sFolder
+
+    '** Angaben zur auszulesenden Zelle
+    blatt = "Tabelle1"
+    Set bereich = Range("A1")
+
+    '** Bereich auslesen
+    For Each zelle In bereich
+        '** Zellen umwandeln
+        zelle = zelle.Address(False, False)
+        '** Eintragen in Bereich
+        ReadSecondExcelFile = GetValue(sFullFolder, sFilname, blatt, zelle)
+    Next zelle
+ 
+End Function
+
+Private Function GetValue(ByVal path As String, ByVal file As String, ByVal sheet As String, ByVal ref As String) As String
+    Dim arg As String
+    arg = "'" & path & "\[" & file & "]" & sheet & "'!" & Range(ref).Address(, , xlR1C1)
+    GetValue = ExecuteExcel4Macro(arg)
+End Function
 
 
+Sub xCopy3()
+
+    Dim QWB As Workbook
+    Dim ZWB As Workbook
+    Workbooks.Open "C:\...\xyz.xls"              ' Wenn die Datei erst geöffnet werden muss
+    Set QWB = Workbooks("xyz.xls")               ' Quelle, aus der die Tabelle41 kopiert werden soll
+    Set ZWB = ThisWorkbook                       ' Ziel, Workbook mit diesem Makro
+    Dim QWS As Worksheet
+    Dim ZWS As Worksheet
+    Set QWS = QWB.Worksheets("Tabelle41")        ' Quelle
+    Set ZWS = ZWB.Worksheets("Tabelle1")         ' Ziel
+
+    QWS.Copy after:=ZWS                          ' oder before
+    Workbooks("xyz.xls").Close                   ' Wenn die Datei wieder geschlossen werden soll
+End Sub
+
+Public Function ExtractNumber(ByVal str As String) As Long
+    Dim i As Byte
+    Dim ii As Byte
+    ExtractNumber = 0
+    'Prüfe ob Wert nicht leer
+
+    If str <> vbNullString Then
+    For i = 1 To Len(str)
+        If IsNumeric(Mid(str, i, 1)) Then
+        Exit For
+        End If
+    Next i
+    For ii = i To Len(str)
+        If Not IsNumeric(Mid(str, ii, 1)) Then
+        Exit For
+        End If
+    Next ii
+    ExtractNumber = Mid(str, i, Len(str) - (ii - i))
+    Else
+    ExtractNumber = 0
+    End If
+End Function
+
+Public Function WorksheetExist(ByVal sWorksheetName As String, ByVal ws1 As Worksheet) As Boolean
+ With ws1
+   On Error Resume Next
+   WorksheetExist = Worksheets(sWorksheetName).Index > 0
+   End With
+End Function

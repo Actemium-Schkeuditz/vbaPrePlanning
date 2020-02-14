@@ -490,8 +490,8 @@ End Property
 ''''''''''''''''''''''
 ' OutputAdressLength
 ''''''''''''''''''''''
-Public Property Get OnputAdressLength() As Long
-    OnputAdressLength = pOutputAdressLength
+Public Property Get OutputAdressLength() As Long
+    OutputAdressLength = pOutputAdressLength
 End Property
 
 ''''''''''''''''''''''
@@ -504,8 +504,8 @@ End Property
 ''''''''''''''''''''''
 ' OutputAdressDiagnosticLength
 ''''''''''''''''''''''
-Public Property Get OnputAdressDiagnosticLength() As Long
-    OnputAdressDiagnosticLength = pOutputAdressDiagnosticLength
+Public Property Get OutputAdressDiagnosticLength() As Long
+    OutputAdressDiagnosticLength = pOutputAdressDiagnosticLength
 End Property
 
 ''''''''''''''''''''''

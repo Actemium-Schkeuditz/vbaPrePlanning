@@ -21,8 +21,6 @@ Option Explicit
 Private pKey As String
 Private pKWSBMK As String
 Private pSignal As Integer
-'test
-'Private pKartentyp As String
 Public Kartentyp As cPLCdata
 
 Private pStationsnummer As Integer
@@ -30,15 +28,14 @@ Private pSteckplatz As Integer
 Private pKanal As Integer
 Private pAdress As String
 Private pSegmentvorlage As String
-'Private pSortingIdentifier As Long
-'Private pMaxChannelPerSlot As Long
+
 
 Private Sub Class_Initialize()
     Set Me.Kartentyp = New cPLCdata
 End Sub
 
 ''''''''''''''''''''''
-' KWSBMK property
+' Key property
 ''''''''''''''''''''''
 Public Property Get key() As String
     key = pKey
@@ -84,107 +81,6 @@ Public Property Let Stationsnummer(ByRef Value As Integer)
 End Property
 
 ''''''''''''''''''''''
-' Kartentyp property
-''''''''''''''''''''''
-' für test raus genommen
-'Public Property Get Kartentyp() As String
-'    Kartentyp = pKartentyp
-'End Property
-
-'Public Property Let Kartentyp(ByVal Value As String)
- '   pKartentyp = Value
- '   Select Case pKartentyp
- '   Case "ET200SP 4IO-LINK"
-'        pSortingIdentifier = 1
-'        pMaxChannelPerSlot = 3
-'    Case "ET200SP 8DI"
-'        pSortingIdentifier = 2
-'        pMaxChannelPerSlot = 7
-'    Case "ET200SP 8DI HS"
-'        pSortingIdentifier = 3
-'        pMaxChannelPerSlot = 7
-'    Case "ET200SP 8DI CNT"
-'        pSortingIdentifier = 4
-'        pMaxChannelPerSlot = 3
-'    Case "ET200SP 8DO"
-'        pSortingIdentifier = 5
-'        pMaxChannelPerSlot = 7
-'    Case "ET200SP 4DO"
-'        pSortingIdentifier = 6
-'        pMaxChannelPerSlot = 3
-'    Case "ET200SP 4RQ"
-'        pSortingIdentifier = 7
-'        pMaxChannelPerSlot = 3
-'    Case "ET200SP 2AI I"
-'        pSortingIdentifier = 8
-'        pMaxChannelPerSlot = 1
-'    Case "ET200SP 2AI U"
-'        pSortingIdentifier = 9
-'        pMaxChannelPerSlot = 1
-'    Case "ET200SP 4AI PT100"
-'        pSortingIdentifier = 10
-'        pMaxChannelPerSlot = 3
-'    Case "ET200SP 2AO I"
-'        pSortingIdentifier = 11
-'        pMaxChannelPerSlot = 1
-'    Case "ET200SP 2AO U"
-'        pSortingIdentifier = 12
-'        pMaxChannelPerSlot = 1
-'    Case "ET200SP PTP"
-'        pSortingIdentifier = 13
-'        pMaxChannelPerSlot = 0
-'    Case "ET200SP SIWAREX"
-'        pSortingIdentifier = 14
-'        pMaxChannelPerSlot = 0
-'    Case "ET200SP 8FDI"
-'        pSortingIdentifier = 15
-'        pMaxChannelPerSlot = 7
-'    Case "ET200SP 4FDO"
-'        pSortingIdentifier = 16
-'        pMaxChannelPerSlot = 3
-'    Case "ET200SP STARTER"
-'        pSortingIdentifier = 17
-'        pMaxChannelPerSlot = 0
-'    Case "ET200SP WENDESTARTER"
-'        pSortingIdentifier = 18
-'        pMaxChannelPerSlot = 0
-        ' FESTO
-'    Case "CPX-8DE-D"
-'        pSortingIdentifier = 30
-'        pMaxChannelPerSlot = 7
-'    Case "CPX-4DA"
-'        pSortingIdentifier = 31
-'        pMaxChannelPerSlot = 3
-'    Case "CPX-4AE-T"
-'        pSortingIdentifier = 32
-'        pMaxChannelPerSlot = 3
-'    Case "CPX 2x3/2 mono"
-'        pSortingIdentifier = 40
-'        pMaxChannelPerSlot = 1
-'    Case "CPX 5/2 mono"
-'        pSortingIdentifier = 41
-'        pMaxChannelPerSlot = 1
-'    Case "CPX 5/2 bistabil"
-'        pSortingIdentifier = 42
-'        pMaxChannelPerSlot = 0
-        'IFM IO-Link Master
-'    Case "IFM IO-LINK"
-'        pSortingIdentifier = 50
-'        pMaxChannelPerSlot = 7
-'    Case "ET200AL 16DI"
-'        pSortingIdentifier = 60
-'        pMaxChannelPerSlot = 15
-'    Case "ET200AL 8DO"
-'        pSortingIdentifier = 61
-'        pMaxChannelPerSlot = 7
-'    Case Else
-'        pSortingIdentifier = 200
-'        pMaxChannelPerSlot = 100
-'    End Select
-    
-'End Property
-
-''''''''''''''''''''''
 ' Steckplatz property
 ''''''''''''''''''''''
 Public Property Get Steckplatz() As Integer
@@ -227,20 +123,6 @@ End Property
 Public Property Let Segmentvorlage(ByRef Value As String)
     pSegmentvorlage = Value
 End Property
-
-''''''''''''''''''''''
-' SortingIdentifier property
-''''''''''''''''''''''
-'Public Property Get SortingIdentifier() As Long
-'    SortingIdentifier = pSortingIdentifier
-'End Property
-
-''''''''''''''''''''''
-' MaxChannelPerSlot property
-''''''''''''''''''''''
-'Public Property Get MaxChannelPerSlot() As Long
-'    MaxChannelPerSlot = pMaxChannelPerSlot
-'End Property
 
 
 Public Function CompareTo(ByRef per As cBelegung) As Long

@@ -124,12 +124,12 @@ End Sub
 
 Public Function searchEinbauort(ByVal pStationsnumer As Integer, ByVal data As cEinbauorte) As String
     ' Suchen nach dem Einbauort passend zur Stationsnummer
-    Dim sData As cEinbauort
+    Dim sdata As cEinbauort
     searchEinbauort = vbNullString
-    For Each sData In data
-        If sData.Stationsnummer = pStationsnumer Then
+    For Each sdata In data
+        If sdata.Stationsnummer = pStationsnumer Then
             '        Debug.Print Data.Einbauort; vbTab; Data.Stationsnummer
-            searchEinbauort = sData.Einbauort
+            searchEinbauort = sdata.Einbauort
             Exit For                             ' nur einmal suchen dann beenden
         End If
     Next

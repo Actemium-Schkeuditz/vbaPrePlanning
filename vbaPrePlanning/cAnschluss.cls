@@ -114,3 +114,4 @@ Public Property Let AnschlussVS(ByVal Value As String)
     pAnschlussVS = Value
 End Property
 
+

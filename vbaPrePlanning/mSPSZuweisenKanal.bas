@@ -2,7 +2,7 @@ Attribute VB_Name = "mSPSZuweisenKanal"
 ' Skript zur Ermittlung der SPS Kanäle
 ' V0.2
 ' nicht fertig
-' 12.02.2020
+' 13.02.2020
 'diverse Fehler müssen abgefangen werden, Offset der Kartenn fehlt noch
 '
 ' Christian Langrock
