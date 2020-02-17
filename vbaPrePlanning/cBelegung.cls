@@ -9,8 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 ' Klasse zum speichern der SPS Belegungsdaten
 ' V0.2
-' 11.02.2020
-' Key ist neu
+' 17.02.2020
+' new propertys
 ' Christian Langrock
 ' christian.langrock@actemium.de
 
@@ -28,6 +28,8 @@ Private pSteckplatz As Integer
 Private pKanal As Integer
 Private pAdress As String
 Private pSegmentvorlage As String
+Private pInputAdressSize As Long
+Private pOutputAdressSize As Long
 
 
 Private Sub Class_Initialize()
@@ -37,11 +39,11 @@ End Sub
 ''''''''''''''''''''''
 ' Key property
 ''''''''''''''''''''''
-Public Property Get key() As String
-    key = pKey
+Public Property Get Key() As String
+    Key = pKey
 End Property
 
-Public Property Let key(ByVal Value As String)
+Public Property Let Key(ByVal Value As String)
     pKey = Value
 End Property
 
@@ -122,6 +124,27 @@ End Property
 
 Public Property Let Segmentvorlage(ByRef Value As String)
     pSegmentvorlage = Value
+End Property
+''''''''''''''''''''''
+' InputAdressSize
+''''''''''''''''''''''
+Public Property Get InputAdressSize() As Long
+    InputAdressSize = pInputAdressSize
+End Property
+
+Public Property Let InputAdressSize(ByRef Value As Long)
+    pInputAdressSize = Value
+End Property
+
+''''''''''''''''''''''
+' OutputAdressSize
+''''''''''''''''''''''
+Public Property Get OutputAdressSize() As Long
+    OutputAdressSize = pOutputAdressSize
+End Property
+
+Public Property Let OutputAdressSize(ByRef Value As Long)
+    pOutputAdressSize = Value
 End Property
 
 

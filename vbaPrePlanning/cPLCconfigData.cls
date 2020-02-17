@@ -8,9 +8,9 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 ' Klasse zum speichern der SPS Stationskonfiguratuion
-' V0.1
-' 14.02.2020
-' class ist neu
+' V0.2
+' 17.02.2020
+' new/rename Propertys
 ' Christian Langrock
 ' christian.langrock@actemium.de
 
@@ -18,13 +18,15 @@ Attribute VB_Exposed = False
 
  Option Explicit
  
- Private pKey As String
+ Private pKey As String     ' verwenden wenn aus Excelliste gelesen wird
  Public Kartentyp As cPLCdata
  Private pStationsnummer As Integer
  Private pSteckplatz As Integer
  Private pFirstInputAdress As Long
  Private pFirstOutputAdress As Long
- 
+ Private pReserveChannelsBefor As Long
+ Private pReserveChannelsAfter As Long
+ Private pReserveChannelperSlot As Long
  
  Private Sub Class_Initialize()
     Set Me.Kartentyp = New cPLCdata
@@ -33,11 +35,11 @@ End Sub
 ''''''''''''''''''''''
 ' Key property
 ''''''''''''''''''''''
-Public Property Get key() As String
-    key = pKey
+Public Property Get Key() As String
+    Key = pKey
 End Property
 
-Public Property Let key(ByVal Value As String)
+Public Property Let Key(ByVal Value As String)
     pKey = Value
 End Property
 ''''''''''''''''''''''
@@ -84,7 +86,38 @@ Public Property Let FirstOutputAdress(ByRef Value As Long)
     pFirstOutputAdress = Value
 End Property
 
+''''''''''''''''''''''
+' OffsetSlot
+''''''''''''''''''''''
+Public Property Get ReserveChannelsBefor() As Long
+    ReserveChannelsBefor = pReserveChannelsBefor
+End Property
 
+Public Property Let ReserveChannelsBefor(ByRef Value As Long)
+    pReserveChannelsBefor = Value
+End Property
+''''''''''''''''''''''
+' ReserveSlot
+''''''''''''''''''''''
+Public Property Get ReserveChannelsAfter() As Long
+    ReserveChannelsAfter = pReserveChannelsAfter
+End Property
+
+Public Property Let ReserveChannelsAfter(ByRef Value As Long)
+    pReserveChannelsAfter = Value
+End Property
+''''''''''''''''''''''
+' ReserveChannel
+''''''''''''''''''''''
+Public Property Get ReserveChannelPerSlot() As Long
+    ReserveChannelPerSlot = pReserveChannelperSlot
+End Property
+
+Public Property Let ReserveChannelPerSlot(ByRef Value As Long)
+    pReserveChannelperSlot = Value
+End Property
+
+'#########################################################################
 
 Public Function ComparePLCconfigTo(ByRef per As cPLCconfigData) As Long
     Dim i As Long
@@ -107,3 +140,4 @@ Public Function ComparePLCconfigTo(ByRef per As cPLCconfigData) As Long
 
     ComparePLCconfigTo = i
 End Function
+

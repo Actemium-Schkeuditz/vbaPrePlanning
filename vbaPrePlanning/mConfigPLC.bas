@@ -1,8 +1,8 @@
 Attribute VB_Name = "mConfigPLC"
 ' Skript zum Übertragen der SPS Konifguration nach Excel
-' V0.1
-' 13.02.2020
-' neu
+' V0.2
+' 17.02.2020
+' update
 ' Christian Langrock
 ' christian.langrock@actemium.de
 '@folder (Daten.SPS-Konfig)
@@ -11,13 +11,9 @@ Attribute VB_Name = "mConfigPLC"
 Option Explicit
 
 Public Sub ConfigPLC()
-
-    Dim sFileNameConfig As String
-    Dim sFolder As String
-    Dim bConfigFileIsNew As Boolean
-    Dim bConfigFileExist As Boolean
+    'writes PLC Config to Excel sheets
     Dim i As Long
-    Dim offsetSlot As Integer
+    Dim OffsetSlot As Integer
 
     ' Class einbinden
     Dim sdata As New cBelegung
@@ -46,8 +42,6 @@ Public Sub ConfigPLC()
    
     Application.ScreenUpdating = False
 
-    
-    
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
     dataKanaele.ReadExcelDataChanelToCollection tablename, dataKanaele, spalteStationsnummer, spalteKartentyp
     'todo Belegungsdaten ermitteln pro Station für jeden Steckplatz den ersten Kanal mit Adresse und Typ ermitteln
@@ -60,7 +54,7 @@ Public Sub ConfigPLC()
     Dim iKartentyp As Collection
    
     
-    '####### zuweisen der Kanäle #######
+    '####### bearbeiten der Daten #######
     ' Durchlauf für jede Station einzeln
     Dim pStation As Variant
     Dim pKartentyp As Variant
@@ -68,7 +62,7 @@ Public Sub ConfigPLC()
     ' Variablen zum Schreiben
       Dim rTable As Range
         Set rTable = Range("A1")
-        Dim wData As New cPLCconfigData
+        'Dim wdata As New cPLCconfigData
     
     For Each pStation In iStation
         ' suchen der Datensätze pro Station
@@ -92,79 +86,48 @@ Public Sub ConfigPLC()
             If sdata.Kartentyp.OutputAdressLength > 0 Or sdata.Kartentyp.OutputAdressDiagnosticLength > 0 Then
                 iAdressOutput = ExtractNumber(sdata.Adress)
             End If
-            dataConfig.Add sdata.Stationsnummer, sdata.Steckplatz, sdata.Kartentyp.Kartentyp, iAdressInput, iAdressOutput
+            dataConfig.Add sdata.Stationsnummer, sdata.Steckplatz, sdata.Kartentyp.Kartentyp, sdata.Key, iAdressInput, iAdressOutput
         Next
-    
     
         ' Sortieren der Steckplätze
         Set dataConfigSort = dataConfig.Sort
      
-        ' Tabelle mit Daten bearbeiten
-        'With ws1
-     With ThisWorkbook
-            ' alte Daten löschen
+        ' Tabelle für jede Station schreiben
+      dataConfigSort.writePLCConfigToExcel "Station_" & pStation
             
-            If WorksheetExist(("Station" & pStation), ws1) = True Then
-            Application.DisplayAlerts = False
-            .Sheets("Station" & pStation).Delete
-            Application.DisplayAlerts = True
-            End If
-            'Worksheets anlegen
-            .Sheets.Add after:=Sheets(Worksheets.Count)
-            .ActiveSheet.Name = "Station" & pStation
-            
-            ' Daten einschreiben
-      
-        ThisWorkbook.Worksheets("Station" & pStation).Activate
-        
-      
-        
-     ' Tabellen kopf
-     .ActiveSheet.Cells(1, 1) = "Stationsnummer"
-     .ActiveSheet.Cells(1, 2) = "Steckplatz"
-     .ActiveSheet.Cells(1, 3) = "Kartentyp"
-     .ActiveSheet.Cells(1, 4) = "Eingangsadresse"
-     .ActiveSheet.Cells(1, 5) = "Ausgangsadresse"
-     .ActiveSheet.Cells(1, 6) = "Reservekanäle"
-     .ActiveSheet.Cells(1, 7) = "Reservekanäle"
-     .ActiveSheet.Cells(1, 8) = "ReserveSteckplätze"
-     
-            i = 2
-            For Each wData In dataConfigSort
-            .ActiveSheet.Cells(i, 1) = wData.Stationsnummer
-            .ActiveSheet.Cells(i, 2) = wData.Steckplatz
-            .ActiveSheet.Cells(i, 3) = wData.Kartentyp.Kartentyp
-            .ActiveSheet.Cells(i, 4) = wData.FirstInputAdress
-            .ActiveSheet.Cells(i, 5) = wData.FirstOutputAdress
-            i = i + 1
-            Next
-            i = 0
-   
-      End With
+            CopySheetToClosedWB "SPS_CONFIG_2.xlsx", "Station_" & pStation
     Next
-    
-    
-    
-    ''''''''''''' Testen lesen in andere Exceltabelle
 
-    sFolder = "config"
-    sFileNameConfig = "SPSConfig.xlsx"
+    ' copy PLS config to file
+          '  xCopyWorksheets "config"
+End Sub
+
+Sub readConfigFromSavedFile()
+    'works fine
+    Dim sfolder As String
+    Dim sFileNameConfig As String
+    Dim bConfigFileIsNew As Boolean
+    Dim bConfigFileExist As Boolean
+  
+    ''''''''''''' Testen lesen in andere Exceltabelle
+    sfolder = "config"
+    sFileNameConfig = "SPSConfig.xlsm"
 
 
     ' Lege Datei an wenn nicht da
-    bConfigFileIsNew = newExcelFile(sFileNameConfig, sFolder)
+    bConfigFileIsNew = newExcelFile(sFileNameConfig, sfolder)
 
     ' wenn die Datei nicht angelegt wurde prüfe ob es diese schon gibt
     If bConfigFileIsNew = False Then
         'prüfe ob Datei vorhanden
 
-        bConfigFileExist = fileExist(sFileNameConfig, sFolder)
+        bConfigFileExist = fileExist(sFileNameConfig, sfolder)
 
         If bConfigFileExist Then
             'todo hier dann weiter wenn die Datei schon da ist
             'MsgBox "Datei gibt es schon"
             Dim Result As String
-            Result = ReadSecondExcelFile(sFileNameConfig, sFolder)
+            Result = ReadSecondExcelFile(sFileNameConfig, sfolder)
    
             MsgBox Result
     
@@ -180,4 +143,18 @@ Public Sub ConfigPLC()
 
 End Sub
 
+Sub testenLesenConfig()
+' Class einbinden
+Dim dataConfig As New cPLCconfig
+Dim tablename As String
+
+    tablename = "Station_1"
+    dataConfig.ReadPLCConfigData tablename
+
+   MsgBox "daten gelesen"
+
+tablename = "Station_16"
+    dataConfig.ReadPLCConfigData tablename
+   MsgBox "daten gelesen"
+End Sub
 

@@ -1,18 +1,18 @@
-Attribute VB_Name = "mSPSZuweisenKanal"
-' Skript zur Ermittlung der SPS Kanäle
-' V0.2
+Attribute VB_Name = "mAssignAddresses"
+' Skript zur Ermittlung der SPS Adressen
+' V0.1
 ' nicht fertig
-' 13.02.2020
+' 17.02.2020
 'diverse Fehler müssen abgefangen werden, Offset der Kartenn fehlt noch
 '
 ' Christian Langrock
 ' christian.langrock@actemium.de
 
-'@folder (Daten.Kanalbelegung)
+'@folder (Daten.SPS-Adressen)
 
 Option Explicit
 
-Public Sub SPSZuweisenKanal()
+Public Sub assignAddresses()
 
     Dim tabelleDaten As String
     Dim i As Long
@@ -70,11 +70,12 @@ Public Sub SPSZuweisenKanal()
         '##### Suche nach allen verwendeten Kartentypen
         Set iKartentyp = dataSort.returnKartentyp
         OffsetSlot = 0  'starten mit Slot 0
+        'todo ab hier überarbeiten
         For Each pKartentyp In iKartentyp
             Set dataConfigPerPLCTyp = Nothing
             Set dataConfigPerPLCTyp = dataPLCConfig.returnDatasetPerSlottyp(pStation, pKartentyp)
             Set dataSearchPlcTyp = dataSort.searchDatasetPlcTyp(pKartentyp)
-            Set dataResult = dataSearchPlcTyp.zuweisenKanal(OffsetSlot, pKartentyp, dataConfigPerPLCTyp)
+           ' Set dataResult = dataSearchPlcTyp.zuweisenKanal(OffsetSlot, pKartentyp, dataConfigPerPLCTyp)
             'MsgBox "Zuweisung durchgeführt"
             'TODO Offset verbessern
             'todo Behandlung Not-Aus und Festo CPX-8DE-D wegen doppel Stecker
@@ -85,16 +86,5 @@ Public Sub SPSZuweisenKanal()
         Next
     Next
     
-   
     
-    
-    '##### Anschlüsse zuordnen ####
-      SPS_KartenAnschluss
-    '##### SPS Karten BMK erzeugen ####
-    SPS_BMK
-    
-MsgBox "Zuweisen fertig"
-
-End Sub
-
-
+    End Sub

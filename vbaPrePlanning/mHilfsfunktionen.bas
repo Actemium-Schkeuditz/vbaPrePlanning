@@ -46,17 +46,17 @@ End Sub
 
 
 
-Public Function newExcelFile(ByVal sNewFileName As String, ByVal sFolder As String) As Boolean
+Public Function newExcelFile(ByVal sNewFileName As String, ByVal sfolder As String) As Boolean
 
 Dim sFolderFile As String
 Dim sConfigFolder As String
 Dim wbnew As Workbook
 
 sConfigFolder = "config"
-sFolder = ThisWorkbook.path & "\" & sConfigFolder & "\"
+sfolder = ThisWorkbook.path & "\" & sConfigFolder & "\"
 sFolderFile = ThisWorkbook.path & "\" & sConfigFolder & "\" & sNewFileName
 
-createFolder sFolder
+createFolder sfolder
 
 newExcelFile = Dir(sFolderFile) = vbNullString
 
@@ -68,10 +68,10 @@ If newExcelFile = True Then
 End If
 End Function
 
-Public Function fileExist(ByVal sFilename As String, ByVal sFolder As String) As Boolean
+Public Function fileExist(ByVal sFilename As String, ByVal sfolder As String) As Boolean
 
 Dim sTestFile As String
-sTestFile = ThisWorkbook.path & "\" & sFolder & "\" & sFilename
+sTestFile = ThisWorkbook.path & "\" & sfolder & "\" & sFilename
     fileExist = Dir(sTestFile) <> vbNullString
 End Function
 
@@ -86,14 +86,14 @@ End If
 End Function
 
 
-Public Function ReadSecondExcelFile(ByVal sFilname As String, ByVal sFolder As String) As String
+Public Function ReadSecondExcelFile(ByVal sFilname As String, ByVal sfolder As String) As String
     '** Dimensionierung der Variablen
     Dim blatt As String
     Dim bereich As Range
     Dim zelle As Object
     Dim sFullFolder As String
 
-    sFullFolder = ThisWorkbook.path & "\" & sFolder
+    sFullFolder = ThisWorkbook.path & "\" & sfolder
 
     '** Angaben zur auszulesenden Zelle
     blatt = "Tabelle1"
@@ -116,20 +116,32 @@ Private Function GetValue(ByVal path As String, ByVal file As String, ByVal shee
 End Function
 
 
-Sub xCopy3()
+Sub CopySheetFromClosedWB(sSheetname As String)
+Application.ScreenUpdating = False
+ 
+    Set closedBook = Workbooks.Open("D:\Dropbox\excel\articles\example.xlsm")
+    closedBook.Sheets("Sheet1").Copy Before:=ThisWorkbook.Sheets(1)
+    closedBook.Close SaveChanges:=False
+ 
+Application.ScreenUpdating = True
+End Sub
 
-    Dim QWB As Workbook
-    Dim ZWB As Workbook
-    Workbooks.Open "C:\...\xyz.xls"              ' Wenn die Datei erst geöffnet werden muss
-    Set QWB = Workbooks("xyz.xls")               ' Quelle, aus der die Tabelle41 kopiert werden soll
-    Set ZWB = ThisWorkbook                       ' Ziel, Workbook mit diesem Makro
-    Dim QWS As Worksheet
-    Dim ZWS As Worksheet
-    Set QWS = QWB.Worksheets("Tabelle41")        ' Quelle
-    Set ZWS = ZWB.Worksheets("Tabelle1")         ' Ziel
+Sub CopySheetToClosedWB(ByVal sNewFileName As String, sSheetname As String)
+Application.ScreenUpdating = False
+    
+    Dim sFolderFile As String
+    Dim sConfigFolder As String
+    Dim wbnew As Workbook
 
-    QWS.Copy after:=ZWS                          ' oder before
-    Workbooks("xyz.xls").Close                   ' Wenn die Datei wieder geschlossen werden soll
+    sConfigFolder = "config"
+    sfolder = ThisWorkbook.path & "\" & sConfigFolder & "\"
+    sFolderFile = ThisWorkbook.path & "\" & sConfigFolder & "\" & sNewFileName
+    
+    Set closedBook = Workbooks.Open(sFolderFile)
+    Sheets(sSheetname).Copy Before:=closedBook.Sheets(sSheetname)
+    closedBook.Close SaveChanges:=True
+ 
+Application.ScreenUpdating = True
 End Sub
 
 Public Function ExtractNumber(ByVal str As String) As Long
