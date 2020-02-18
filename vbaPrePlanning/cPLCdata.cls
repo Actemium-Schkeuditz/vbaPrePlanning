@@ -234,7 +234,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputMaxLength = 16
         pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
-        pVariableAdressRange = True
+        pVariableAdressRange = False
     Case "ET200SP 8FDI"
         pSortingIdentifier = 15
         pMaxChannelPerSlot = 7
@@ -248,7 +248,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputMaxLength = 0
         pInputAdressDiagnosticLength = 5
         pOutputAdressDiagnosticLength = 4
-        pVariableAdressRange = True
+        pVariableAdressRange = False
     Case "ET200SP 4FDO"
         pSortingIdentifier = 16
         pMaxChannelPerSlot = 3
@@ -262,7 +262,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputMaxLength = 8
         pInputAdressDiagnosticLength = 4
         pOutputAdressDiagnosticLength = 5
-        pVariableAdressRange = True
+        pVariableAdressRange = False
     Case "ET200SP STARTER"
         pSortingIdentifier = 17
         pMaxChannelPerSlot = 0
@@ -405,7 +405,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputMaxLength = 0
         pInputAdressDiagnosticLength = 1
         pOutputAdressDiagnosticLength = 0
-        pVariableAdressRange = False
+        pVariableAdressRange = True
     Case "ET200AL 16DI"
         pSortingIdentifier = 60
         pMaxChannelPerSlot = 15

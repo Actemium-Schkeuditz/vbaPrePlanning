@@ -166,6 +166,45 @@ Public Function SortSegment() As cKanalBelegungen
     Set SortSegment = ppl
 End Function
 
+Public Function SortChannel() As cKanalBelegungen
+    ' Sort Station, Slot and Channel
+    Dim i As Long
+    Dim j As Long
+    Dim k As Long
+    Dim bln As Boolean
+    Dim lngCount As Long
+    Dim arr() As Long
+    Dim ppl As cKanalBelegungen
+    
+    lngCount = Me.Count
+    If lngCount > 0 Then
+        ReDim arr(0 To lngCount - 1)
+        For i = 0 To lngCount - 1: arr(i) = i + 1: Next
+
+        For i = 1 To lngCount - 1
+            k = arr(i)
+            j = i - 1
+            bln = False
+            Do
+                If Me.Item(arr(j)).CompareToChannel(Me.Item(k)) > 0 Then
+                    arr(j + 1) = arr(j)
+                    j = j - 1
+                    If j < 0 Then bln = True
+                Else
+                    bln = True
+                End If
+            Loop Until bln
+            arr(j + 1) = k
+        Next
+    End If
+
+    Set ppl = New cKanalBelegungen
+    For i = 0 To lngCount - 1: ppl.Addobj Me.Item(arr(i)): Next
+
+    Set SortChannel = ppl
+End Function
+
+
 
 Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef dataColection As cKanalBelegungen, ByRef spalteStationsnummer As String, ByRef spalteKartentyp As String)
     'Reads the table on the "EplSheet" sheet and adds
@@ -336,6 +375,33 @@ Public Function searchKanalBelegungenKartentyp(ByRef pStationsnummer As Collecti
     End If
     
     Set searchKanalBelegungenKartentyp = rData
+    'Test der Suche
+    '  Debug.Print searchAnschluss.Item(1).Kartentyp; vbTab; searchAnschluss.Item(1).Kanal; vbTab; searchAnschluss.Item(1).Anschluss_1; vbTab; searchAnschluss.Item(1).Anschluss_2; vbTab; searchAnschluss.Item(1).Anschluss_3; vbTab; searchAnschluss.Item(1).Anschluss_4; vbTab; searchAnschluss.Item(1).Anschluss_M; vbTab; searchAnschluss.Item(1).Anschluss_VS
+End Function
+
+Public Function searchKanalBelegungenSteckplatz(ByRef pStationsnummer As Collection, ByVal pSteckplatz As Integer) As cKanalBelegungen
+    ' Suchen nach allen Datensätzten mit einem bestimmten Steckplatz und sortiert nach Stationsnummer
+    Dim sdata As New cBelegung
+    Dim rData As New cKanalBelegungen
+    Set searchKanalBelegungenSteckplatz = Nothing
+    Dim Station As Variant
+    
+    For Each Station In pStationsnummer
+        For Each sdata In Me
+            If sdata.Stationsnummer = Station Then
+                If sdata.Steckplatz = pSteckplatz Then
+                    rData.AddDataSet sdata
+                    'Debug.Print searchAnschluss.Item(1).Kartentyp;
+                    '    Exit For                         ' nur einmal suchen dann beenden
+                End If
+            End If
+        Next
+    Next
+    If Me.Count = 0 Then
+        rData.Add vbNullString, vbNullString, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
+    End If
+    
+    Set searchKanalBelegungenSteckplatz = rData
     'Test der Suche
     '  Debug.Print searchAnschluss.Item(1).Kartentyp; vbTab; searchAnschluss.Item(1).Kanal; vbTab; searchAnschluss.Item(1).Anschluss_1; vbTab; searchAnschluss.Item(1).Anschluss_2; vbTab; searchAnschluss.Item(1).Anschluss_3; vbTab; searchAnschluss.Item(1).Anschluss_4; vbTab; searchAnschluss.Item(1).Anschluss_M; vbTab; searchAnschluss.Item(1).Anschluss_VS
 End Function
@@ -744,37 +810,104 @@ End Function
 
 Public Function sumAdresses(ByVal Station As Integer, ByVal dataPLCConfig As cPLCconfig) As cKanalBelegungen
     'berechnen pro Station
-    ' sortiert nach Steckplatz und Kanal
+    'sortiert nach Steckplatz und Kanal
     Dim InputAdress As Long
     Dim OutputAdress As Long
-    'Dim tmpInputAdress As Long
-    'Dim tmpOutputAdress As Long
+    Dim iStartInputAdress As Long
+    Dim iStartOutputAdress As Long
+    Dim iTmpInputAdress As Long
+    Dim iTmpOutputAdress As Long
     Dim iStartSteckplatz As Long
     Dim iSteckplatzdifferenz As Long
     Dim sdata As New cBelegung
     Dim rData As New cKanalBelegungen
+    Dim sPLCData As New cPLCconfigData
+    Dim sPLCDataAdress As New cPLCconfig
+    Dim sPLCDataAdressPerSlot As New cPLCconfigData
+    Dim sPLCassignmentsPerSlot As New cKanalBelegungen
+    Dim sDataPLCSlot As New cBelegung
       
     ' Startwerte setzen
-    InputAdress = dataPLCConfig.Item(1).FirstInputAdress
-    OutputAdress = dataPLCConfig.Item(1).FirstOutputAdress
+    iStartInputAdress = dataPLCConfig.Item(1).FirstInputAdress
+    iStartOutputAdress = dataPLCConfig.Item(1).FirstOutputAdress
     iStartSteckplatz = dataPLCConfig.Item(1).Steckplatz
     
-    For Each sdata In Me
-        If sdata.Kartentyp.VariableAdressRange = False Then
-            If sdata.Steckplatz > iStartSteckplatz Then
+    ' berechnen der Adressen für jeden Steckplatz
+    For Each sPLCData In dataPLCConfig
+        If sPLCData.Kartentyp.VariableAdressRange = False Then
+            If sPLCData.Steckplatz > iStartSteckplatz Then
                 ' Berechnung wenn sich Steckplatz ändert
                 iSteckplatzdifferenz = sdata.Steckplatz - iStartSteckplatz
                 iStartSteckplatz = sdata.Steckplatz
-                InputAdress = InputAdress + (iSteckplatzdifferenz * (sdata.Kartentyp.InputAdressLength + sdata.Kartentyp.InputAdressDiagnosticLength))
-                OutputAdress = OutputAdress + (iSteckplatzdifferenz * (sdata.Kartentyp.OutputAdressLength + sdata.Kartentyp.OutputAdressDiagnosticLength))
-  
+                InputAdress = iStartInputAdress + InputAdress + (iSteckplatzdifferenz * (sPLCData.Kartentyp.InputAdressLength + sPLCData.Kartentyp.InputAdressDiagnosticLength))
+                OutputAdress = iStartOutputAdress + OutputAdress + (iSteckplatzdifferenz * (sPLCData.Kartentyp.OutputAdressLength + sPLCData.Kartentyp.OutputAdressDiagnosticLength))
             End If
-     
+            'sPLCData.FirstInputAdress = InputAdress
+            'sPLCData.FirstOutputAdress = OutputAdress
+            'sPLCDataAdress.Addobj sPLCData
+        Else
+            'Variable Adressvergabe
+            'Für jede Karte einzeln berechnen
+            'Suchen nach den Belegungen der Karten mit variabler Länge
+            Set sPLCassignmentsPerSlot = Me.searchKanalBelegungenSteckplatz(sPLCData.Stationsnummer, sPLCData.Steckplatz)
+            sPLCassignmentsPerSlot.SortChannel
+            iTmpInputAdress = 0
+            iTmpOutputAdress = 0
+            If sPLCData.Kartentyp.Kartentyp = "ET200SP 4IO-LINK" Then
+                For Each sDataPLCSlot In sPLCassignmentsPerSlot
+                    ' zusammenzählen der Adressbereiche der Sensoren
+                    iTmpInputAdress = iTmpInputAdress + sDataPLCSlot.InputAdressSize
+                    iTmpOutputAdress = iTmpOutputAdress + sDataPLCSlot.OutputAdressSize
+                Next
+                If iTmpInputAdress < 16 And iTmpOutputAdress < 16 Then
+                    InputAdress = iStartInputAdress + InputAdress + 16
+                    OutputAdress = iStartOutputAdress + OutputAdress + 16
+                ElseIf iTmpInputAdress < 32 And iTmpOutputAdress < 32 Then
+                    InputAdress = iStartInputAdress + InputAdress + 32
+                    OutputAdress = iStartOutputAdress + OutputAdress + 32
+                ElseIf iTmpInputAdress < 64 And iTmpOutputAdress < 64 Then
+                    InputAdress = iStartInputAdress + InputAdress + 64
+                    OutputAdress = iStartOutputAdress + OutputAdress + 64
+                ElseIf iTmpInputAdress <= 126 And iTmpOutputAdress <= 128 Then
+                    InputAdress = iStartInputAdress + InputAdress + 144
+                    OutputAdress = iStartOutputAdress + OutputAdress + 128
+                Else
+                    MsgBox "Fehler Adressbereich des Steckplatzes" & sDataPLCSlot.Steckplatz & " auf Station: " & sDataPLCSlot.Stationsnummer
+                End If
+            ElseIf sPLCData.Kartentyp.Kartentyp = "IFM IO-LINK" Then
+                'todo Adressierung der IO-LINK master funktioniert nicht
+                InputAdress = iStartInputAdress
+                OutputAdress = iStartOutputAdress
+                 
+            End If
+        End If
+        sPLCData.FirstInputAdress = InputAdress
+        sPLCData.FirstOutputAdress = OutputAdress
+        sPLCDataAdress.Addobj sPLCData
+    Next
+    
+    
+    'Sortieren nach Steckplatz und Kanal
+    Me.SortChannel
+    ' Startwerte setzen
+    iTmpInputAdress = 0
+    iTmpOutputAdress = 0
+    'Schreiben der Adressen an die Signale
+    For Each sdata In Me
+        ' auslesen der ermittelten Adressen
+        For Each sPLCDataAdressPerSlot In sPLCDataAdress
+            If sPLCDataAdressPerSlot.Stationsnummer = sdata.Stationsnummer And sPLCDataAdressPerSlot.Steckplatz = sdata.Steckplatz Then
+                InputAdress = sPLCDataAdressPerSlot.FirstInputAdress
+                OutputAdress = sPLCDataAdressPerSlot.FirstOutputAdress
+            End If
+        Next
+        
+        If sdata.Kartentyp.VariableAdressRange = False Then
             If sdata.Kartentyp.Datatyp = "Bit" Then
                 If sdata.Kanal >= 8 Then
                     ' Berechnung wenn Kanal größer 7
                     ' -> +1 Byte
-                If sdata.Kartentyp.InputAdressLength > 0 Then
+                    If sdata.Kartentyp.InputAdressLength > 0 Then
                         sdata.Adress = "E" & InputAdress + 1 & "." & sdata.Kanal - 8
                     End If
                     If sdata.Kartentyp.OutputAdressLength > 0 Then
@@ -791,21 +924,52 @@ Public Function sumAdresses(ByVal Station As Integer, ByVal dataPLCConfig As cPL
             ElseIf sdata.Kartentyp.Datatyp = "Byte" Then
                 'Ausgabe Byte
                 If sdata.Kartentyp.InputAdressLength > 0 Then
-                sdata.Adress = "EW" & InputAdress + (sdata.Kanal * sdata.Kartentyp.InputAdressLength)
+                    sdata.Adress = "EW" & InputAdress + (sdata.Kanal * sdata.Kartentyp.InputAdressLength)
                 End If
                 If sdata.Kartentyp.OutputAdressLength > 0 Then
-                sdata.Adress = "AW" & OutputAdress + (sdata.Kanal * sdata.Kartentyp.OutputAdressLength)
+                    sdata.Adress = "AW" & OutputAdress + (sdata.Kanal * sdata.Kartentyp.OutputAdressLength)
                 End If
             End If
         Else
-                'todo variable Adressbereiche
+            If sPLCData.Steckplatz > iStartSteckplatz Then
+                ' erkenne wenn sich Steckplatz ändert
+                iStartSteckplatz = sdata.Steckplatz
+                iTmpInputAdress = 0
+                iTmpOutputAdress = 0
+            End If
+            'variable Adressvergabe
+            'Ausgabe Byte
+            If sdata.Kartentyp.Datatyp = "Byte" Then
+                If sdata.InputAdressSize > 0 Then
+                    sdata.Adress = "EW" & InputAdress + iTmpInputAdress
+                    iTmpInputAdress = iTmpInputAdress + sdata.InputAdressSize
+                End If
+                If sdata.OutputAdressSize > 0 Then
+                    sdata.Adress = "AW" & OutputAdress + iTmpOutputAdress
+                    iTmpOutputAdress = iTmpOutputAdress + sdata.OutputAdressSize
+                End If
+            Else
+                MsgBox "Anderer Datentyp als 'Byte' ist nicht vorgesehen für Datensatz: " & sdata.KWSBMK
+            End If
+             
         End If
+        
     Next
     
     
     Set sumAdresses = rData
 
 End Function
+
+
+
+
+
+
+
+
+
+
 
 
 

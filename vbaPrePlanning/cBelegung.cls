@@ -207,3 +207,31 @@ Public Function CompareToSegment(ByRef per As cBelegung) As Long
     CompareToSegment = i
 End Function
 
+Public Function CompareToChannel(ByRef per As cBelegung) As Long
+    Dim i As Long
+  
+    'Sort first:    Station
+    'Sort second:   Slot
+    'Sort third:    Channel
+    If Me.Stationsnummer = per.Stationsnummer Then
+        If Me.Steckplatz = per.Steckplatz Then
+            If Me.Kanal = per.Kanal Then
+                i = 0
+            ElseIf Me.Kanal < per.Kanal Then
+                i = -1
+            Else
+                i = 1
+            End If
+        ElseIf Me.Steckplatz < per.Steckplatz Then
+            i = -1
+        Else
+            i = 1
+        End If
+    ElseIf Me.Stationsnummer < per.Stationsnummer Then
+        i = -1
+    Else
+        i = 1
+    End If
+
+    CompareToChannel = i
+End Function

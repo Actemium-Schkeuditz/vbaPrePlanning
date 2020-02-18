@@ -1,9 +1,9 @@
 Attribute VB_Name = "mAssignAddresses"
-' Skript zur Ermittlung der SPS Adressen
-' V0.1
+' Funktion zur Ermittlung der SPS Adressen
+' V0.3
 ' nicht fertig
-' 17.02.2020
-'diverse Fehler müssen abgefangen werden, Offset der Kartenn fehlt noch
+' 18.02.2020
+'diverse Fehler müssen abgefangen werden, Offset der Karten fehlt noch
 '
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -13,7 +13,7 @@ Attribute VB_Name = "mAssignAddresses"
 Option Explicit
 
 Public Sub assignAddresses()
-
+    'todo testen der Adressvergabe
     Dim tabelleDaten As String
     Dim i As Long
     Dim spalteStationsnummer As String
@@ -26,7 +26,7 @@ Public Sub assignAddresses()
     Dim dataSearchStation As New cKanalBelegungen
     Dim dataSearchPlcTyp As New cKanalBelegungen
     Dim dataResult As New cKanalBelegungen
-    Dim dataPLCConfig As New cPLCconfig         'Config from File
+    Dim dataPLCConfig As New cPLCconfig          'Config from File
     Dim dataConfigPerPLCTyp As New cPLCconfig
     
     ' Tabellen definieren
@@ -49,42 +49,25 @@ Public Sub assignAddresses()
     
     '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
     Dim sortierung As cBelegung
-    Dim dataSort As New cKanalBelegungen             'Ergebnis der Sortierung
+    Dim dataSort As New cKanalBelegungen         'Ergebnis der Sortierung
     'Set dataSort = dataKanaele.Sort
         
-  
-    '####### zuweisen der Kanäle #######
-    ' Durchlauf für jede Station einzeln
-    Dim pStation As Variant
-    Dim pKartentyp As Variant
-    
     
     
     For Each pStation In iStation
+        '### suchen der Signale für die Station
         Set dataSearchStation = dataKanaele.searchDatasetPerStation(pStation)
         '### lesen der PLC Konfiguartionsdaten ######
         Set dataPLCConfig = Nothing
         dataPLCConfig.ReadPLCConfigData "Station_" & pStation
-        '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
-        Set dataSort = dataSearchStation.Sort
-        '##### Suche nach allen verwendeten Kartentypen
-        Set iKartentyp = dataSort.returnKartentyp
-        OffsetSlot = 0  'starten mit Slot 0
-        'todo ab hier überarbeiten
-        For Each pKartentyp In iKartentyp
-            Set dataConfigPerPLCTyp = Nothing
-            Set dataConfigPerPLCTyp = dataPLCConfig.returnDatasetPerSlottyp(pStation, pKartentyp)
-            Set dataSearchPlcTyp = dataSort.searchDatasetPlcTyp(pKartentyp)
-           ' Set dataResult = dataSearchPlcTyp.zuweisenKanal(OffsetSlot, pKartentyp, dataConfigPerPLCTyp)
-            'MsgBox "Zuweisung durchgeführt"
-            'TODO Offset verbessern
-            'todo Behandlung Not-Aus und Festo CPX-8DE-D wegen doppel Stecker
-            OffsetSlot = dataResult.returnLastSlotNumber
-            OffsetSlot = OffsetSlot + 1
-            '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
-            dataResult.writeDatsetsToExcel tabelleDaten
-        Next
+        '### ermitteln der Adressen pro Station und schreiben der Datensätze
+        Set dataResult = dataSearchPlcTyp.sumAdresses(pStation, dataPLCConfig)
+       
+        '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
+        dataResult.writeDatsetsToExcel tabelleDaten
+        'Next
     Next
     
     
-    End Sub
+End Sub
+

@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 'this collection could contain anything, but the class
-'controls access to it and ensures it will just contain people
+'controls access to it and ensures it will just contain cPLCconfigData
 ' V0.2
 ' 17.02.2020
 ' new Propertys
@@ -281,4 +281,11 @@ ErrorHandle:
     End If
 
 End Function
-
+ 
+ Public Function returnAdressePerPLCStation() As cPLCconfig
+ ' berechnen der Adressen für eine gesamte Station
+ 
+ 
+ 
+ 
+ End Function

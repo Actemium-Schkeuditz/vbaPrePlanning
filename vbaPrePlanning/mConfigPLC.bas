@@ -102,6 +102,99 @@ Public Sub ConfigPLC()
           '  xCopyWorksheets "config"
 End Sub
 
+Public Sub ConfigPLCToDataset()
+    'writes PLC Config to Dataset
+    'todo not testet
+    Dim i As Long
+    Dim OffsetSlot As Integer
+
+    ' Class einbinden
+    Dim sdata As New cBelegung
+    Dim dataConfig As New cPLCconfig
+    Dim dataConfigSort As cPLCconfig
+    Dim dataKanaele As New cKanalBelegungen
+    Dim dataSearchStation As New cKanalBelegungen
+    Dim dataSearchConfig As New cKanalBelegungen
+    
+     Workbook
+    Dim wkb As Workbook
+    Dim ws1 As Worksheet
+    Dim tablename As String
+    Dim zeilenanzahl As Long
+    Dim spalteStationsnummer As String
+    Dim spalteKartentyp As String
+    
+ 
+    ' Tabellen definieren
+    tablename = "EplSheet"
+    spalteStationsnummer = "BU"                  'erste Spalte der Anschlüsse
+    spalteKartentyp = "BY"
+    
+    Set wkb = ActiveWorkbook
+    Set ws1 = Worksheets.[_Default](tablename)
+   
+    Application.ScreenUpdating = False
+
+    '##### lesen der belegten Kanäle aus Excel Tabelle #####
+    dataKanaele.ReadExcelDataChanelToCollection tablename, dataKanaele, spalteStationsnummer, spalteKartentyp
+    'todo Belegungsdaten ermitteln pro Station für jeden Steckplatz den ersten Kanal mit Adresse und Typ ermitteln
+   
+    '##### Suche nach allen Stationsnummern
+    Dim iStation As Collection
+    Set iStation = dataKanaele.returnStation
+    
+    '##### Suche nach allen verwendeten Kartentypen
+    Dim iKartentyp As Collection
+   
+    
+    '####### bearbeiten der Daten #######
+    ' Durchlauf für jede Station einzeln
+    Dim pStation As Variant
+    Dim pKartentyp As Variant
+    
+    ' Variablen zum Schreiben
+      'Dim rTable As Range
+      '  Set rTable = Range("A1")
+        'Dim wdata As New cPLCconfigData
+    
+    For Each pStation In iStation
+        ' suchen der Datensätze pro Station
+        Set dataSearchStation = dataKanaele.searchDatasetPerStation(pStation)
+        'Set dataSearchStation = dataKanaele.returnAllSlotsPerRack
+        Set dataSearchConfig = dataSearchStation.returnAllSlotsPerRack
+        'dataSearchStation.returnAllSlotsPerRack
+    
+        ' Übertragen der Daten
+        Dim iAdressOutput As Long
+        Dim iAdressInput As Long
+        Set dataConfig = Nothing                 ' Rücksetzen der Datensammlung
+        For Each sdata In dataSearchConfig
+            'sdata.Stationsnummer
+            'sdata.Steckplatz
+            'sdata.Kartentyp
+            'sdata.Adress
+            If sdata.Kartentyp.InputAdressLength > 0 Or sdata.Kartentyp.InputAdressDiagnosticLength > 0 Then
+                iAdressInput = ExtractNumber(sdata.Adress)
+            End If
+            If sdata.Kartentyp.OutputAdressLength > 0 Or sdata.Kartentyp.OutputAdressDiagnosticLength > 0 Then
+                iAdressOutput = ExtractNumber(sdata.Adress)
+            End If
+            dataConfig.Add sdata.Stationsnummer, sdata.Steckplatz, sdata.Kartentyp.Kartentyp, sdata.Key, iAdressInput, iAdressOutput
+        Next
+    
+        ' Sortieren der Steckplätze
+        Set dataConfigSort = dataConfig.Sort
+     
+        ' Tabelle für jede Station schreiben
+     ' dataConfigSort.writePLCConfigToExcel "Station_" & pStation
+            
+     '       CopySheetToClosedWB "SPS_CONFIG_2.xlsx", "Station_" & pStation
+    Next
+
+    ' copy PLS config to file
+          '  xCopyWorksheets "config"
+End Sub
+
 Sub readConfigFromSavedFile()
     'works fine
     Dim sfolder As String
