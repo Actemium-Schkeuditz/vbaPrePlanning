@@ -7,16 +7,18 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Option Explicit
-'this collection could contain anything, but the class
-'controls access to it and ensures it will just contain people
+' Coolection / class zum speichern der Einbauorte
+' V0.2
+' 19.02.2020
+' new property "Geraetetyp"
+' Christian Langrock
+' christian.langrock@actemium.de
 
+Option Explicit
 '@folder(Kennzeichen.Einbauorte)
 
 Private objEinbauorte As New Collection
 
-'Public Kartentyp As String                'Key
-'Public Kanal As Integer               'Secondary key
 
 Private Sub Class_Initialize()
     Set objEinbauorte = New Collection
@@ -26,12 +28,13 @@ Private Sub Class_Terminate()
     Set objEinbauorte = Nothing
 End Sub
 
-Public Sub Add(ByRef Stationsnummer As Integer, Optional ByRef Einbauort As String)
+Public Sub Add(ByRef Stationsnummer As Integer, Optional ByRef Einbauort As String, Optional ByRef Geraetetyp As String)
     'create a new Dataset Einbauorte and add to collection
 
     Dim p As New cEinbauort
     p.Stationsnummer = Stationsnummer
     p.Einbauort = Einbauort
+    p.Geraetetyp = Geraetetyp
     
     objEinbauorte.Add p
 End Sub
@@ -108,7 +111,7 @@ Public Sub ReadExcelDataToCollection(ByRef tablename As String, ByRef dataColect
             '    sEinbauort = .Value
             'End If
             ' die gelesenen Daten an hängen
-            Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value
+            Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, rCell.Offset(0, 2).Value
   
         End With
     Next

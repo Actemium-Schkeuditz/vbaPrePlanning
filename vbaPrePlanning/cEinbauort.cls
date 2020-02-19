@@ -7,17 +7,20 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Option Explicit
 ' Klasse zum speichern der Einbauorte
-' V0.1
-' 28.01.2020
+' V0.2
+' 19.02.2020
+' new property "Geraetetyp"
 ' Christian Langrock
 ' christian.langrock@actemium.de
 
 '@folder(Kennzeichen.Einbauorte)
     
+    Option Explicit
+
 Private pStationsnummer As Integer
 Private pEinbauort As String
+Private pGeraetetyp As String
 
 ''''''''''''''''''''''
 ' Einbauort property
@@ -41,3 +44,13 @@ Public Property Let Stationsnummer(ByVal Value As Integer)
     pStationsnummer = Value
 End Property
 
+''''''''''''''''''''''
+' Geraetetyp property
+''''''''''''''''''''''
+Public Property Get Geraetetyp() As String
+    Geraetetyp = pGeraetetyp
+End Property
+
+Public Property Let Geraetetyp(ByVal Value As String)
+    pGeraetetyp = Value
+End Property

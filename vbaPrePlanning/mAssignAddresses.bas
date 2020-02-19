@@ -71,3 +71,42 @@ Public Sub assignAddresses()
     
 End Sub
 
+
+Public Function assignAddressesFromDataset(dataKanaele As cKanalBelegungen) As cKanalBelegungen
+    'todo testen der Adressvergabe
+
+    Dim i As Long
+
+ 
+    
+    ' Class einbinden
+    Dim dataSearchStation As New cKanalBelegungen
+    Dim dataSearchPlcTyp As New cKanalBelegungen
+    Dim dataResult As New cKanalBelegungen
+    Dim dataPLCConfig As New cPLCconfig          'Config from File
+    Dim dataConfigPerPLCTyp As New cPLCconfig
+    
+   
+    
+    '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
+    Dim sortierung As cBelegung
+    Dim dataSort As New cKanalBelegungen         'Ergebnis der Sortierung
+    Set dataSort = dataKanaele.SortChannel
+        
+    
+    
+    For Each pStation In iStation
+        '### suchen der Signale für die Station
+        Set dataSearchStation = dataKanaele.searchDatasetPerStation(pStation)
+        '### lesen der PLC Konfiguartionsdaten ######
+        Set dataPLCConfig = Nothing
+        dataPLCConfig.ReadPLCConfigData "Station_" & pStation
+        '### ermitteln der Adressen pro Station und schreiben der Datensätze
+        Set dataResult = dataSearchPlcTyp.sumAdresses(pStation, dataPLCConfig)
+       
+   
+        'Next
+    Next
+    assignAddressesFromDataset = dataResult
+    
+End Function

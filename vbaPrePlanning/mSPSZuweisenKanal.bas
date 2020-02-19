@@ -28,6 +28,7 @@ Public Sub SPSZuweisenKanal()
     Dim dataResult As New cKanalBelegungen
     Dim dataPLCConfig As New cPLCconfig         'Config from File
     Dim dataConfigPerPLCTyp As New cPLCconfig
+    Dim dataPLCConfigResult As New cPLCconfig
     
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
@@ -57,14 +58,17 @@ Public Sub SPSZuweisenKanal()
     ' Durchlauf für jede Station einzeln
     Dim pStation As Variant
     Dim pKartentyp As Variant
-    
-    
+    Dim iInputStartAdress As Long
+    Dim iOutputStartAdress As Long
     
     For Each pStation In iStation
         Set dataSearchStation = dataKanaele.searchDatasetPerStation(pStation)
         '### lesen der PLC Konfiguartionsdaten ######
         Set dataPLCConfig = Nothing
         dataPLCConfig.ReadPLCConfigData "Station_" & pStation
+        ' Auslesen der Startadresse für eine Station
+        iInputStartAdress = dataPLCConfig.returnFirstInputAdressePLCStation(pStation)
+        iOutputStartAdress = dataPLCConfig.returnFirstOutputAdressePLCStation(pStation)
         '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
         Set dataSort = dataSearchStation.Sort
         '##### Suche nach allen verwendeten Kartentypen
@@ -77,8 +81,16 @@ Public Sub SPSZuweisenKanal()
             Set dataResult = dataSearchPlcTyp.zuweisenKanal(OffsetSlot, pKartentyp, dataConfigPerPLCTyp)
             'MsgBox "Zuweisung durchgeführt"
             'TODO Offset verbessern
-            'todo Behandlung Not-Aus und Festo CPX-8DE-D wegen doppel Stecker
+            'todo Behandlung Festo CPX-8DE-D wegen Doppelstecker
             OffsetSlot = dataResult.returnLastSlotNumber
+            
+            Set dataPLCConfigResult = ConfigPLCToDataset(dataResult)
+            ' ermitteln der Startadressen der einzelnen Steckplätze
+                dataPLCConfigResult.sumAdressesPerSlot pStation, dataResult
+            ' den Kanälen Adressen zuweisen
+            'dataPLCConfigResult.sumAdresses
+            dataPLCConfigResult.Addobj (ConfigPLCToDataset(dataResult)) 'Datensätze der Stationskonfiguration anhängen
+            
             OffsetSlot = OffsetSlot + 1
             '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
             dataResult.writeDatsetsToExcel tabelleDaten

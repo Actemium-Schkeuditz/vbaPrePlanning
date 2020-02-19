@@ -94,17 +94,20 @@ Public Sub ConfigPLC()
      
         ' Tabelle für jede Station schreiben
       dataConfigSort.writePLCConfigToExcel "Station_" & pStation
+            'todo copy Data works not
+           ' newExcelFile "SPS_CONFIG_3.xlsx", "config"
             
-            CopySheetToClosedWB "SPS_CONFIG_2.xlsx", "Station_" & pStation
+            'CopySheetToClosedWB "SPS_CONFIG_3.xlsx", "Station_" & pStation
     Next
 
     ' copy PLS config to file
           '  xCopyWorksheets "config"
 End Sub
 
-Public Sub ConfigPLCToDataset()
+Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfig
+    'extract data from a Class cKanalbelegungen to cPLCconfig
     'writes PLC Config to Dataset
-    'todo not testet
+    'todo Adressen für die Steckplätze ermitteln fehlt hier
     Dim i As Long
     Dim OffsetSlot As Integer
 
@@ -116,28 +119,7 @@ Public Sub ConfigPLCToDataset()
     Dim dataSearchStation As New cKanalBelegungen
     Dim dataSearchConfig As New cKanalBelegungen
     
-     Workbook
-    Dim wkb As Workbook
-    Dim ws1 As Worksheet
-    Dim tablename As String
-    Dim zeilenanzahl As Long
-    Dim spalteStationsnummer As String
-    Dim spalteKartentyp As String
     
- 
-    ' Tabellen definieren
-    tablename = "EplSheet"
-    spalteStationsnummer = "BU"                  'erste Spalte der Anschlüsse
-    spalteKartentyp = "BY"
-    
-    Set wkb = ActiveWorkbook
-    Set ws1 = Worksheets.[_Default](tablename)
-   
-    Application.ScreenUpdating = False
-
-    '##### lesen der belegten Kanäle aus Excel Tabelle #####
-    dataKanaele.ReadExcelDataChanelToCollection tablename, dataKanaele, spalteStationsnummer, spalteKartentyp
-    'todo Belegungsdaten ermitteln pro Station für jeden Steckplatz den ersten Kanal mit Adresse und Typ ermitteln
    
     '##### Suche nach allen Stationsnummern
     Dim iStation As Collection
@@ -151,49 +133,27 @@ Public Sub ConfigPLCToDataset()
     ' Durchlauf für jede Station einzeln
     Dim pStation As Variant
     Dim pKartentyp As Variant
-    
-    ' Variablen zum Schreiben
-      'Dim rTable As Range
-      '  Set rTable = Range("A1")
-        'Dim wdata As New cPLCconfigData
+    Set dataConfig = Nothing
+    'Dim iAdressOutput As Long
+    'Dim iAdressInput As Long
     
     For Each pStation In iStation
         ' suchen der Datensätze pro Station
-        Set dataSearchStation = dataKanaele.searchDatasetPerStation(pStation)
-        'Set dataSearchStation = dataKanaele.returnAllSlotsPerRack
+        Set dataSearchStation = Stationdata.searchDatasetPerStation(pStation)
         Set dataSearchConfig = dataSearchStation.returnAllSlotsPerRack
-        'dataSearchStation.returnAllSlotsPerRack
-    
         ' Übertragen der Daten
-        Dim iAdressOutput As Long
-        Dim iAdressInput As Long
-        Set dataConfig = Nothing                 ' Rücksetzen der Datensammlung
         For Each sdata In dataSearchConfig
-            'sdata.Stationsnummer
-            'sdata.Steckplatz
-            'sdata.Kartentyp
-            'sdata.Adress
-            If sdata.Kartentyp.InputAdressLength > 0 Or sdata.Kartentyp.InputAdressDiagnosticLength > 0 Then
-                iAdressInput = ExtractNumber(sdata.Adress)
-            End If
-            If sdata.Kartentyp.OutputAdressLength > 0 Or sdata.Kartentyp.OutputAdressDiagnosticLength > 0 Then
-                iAdressOutput = ExtractNumber(sdata.Adress)
-            End If
-            dataConfig.Add sdata.Stationsnummer, sdata.Steckplatz, sdata.Kartentyp.Kartentyp, sdata.Key, iAdressInput, iAdressOutput
+            dataConfig.Add sdata.Stationsnummer, sdata.Steckplatz, sdata.Kartentyp.Kartentyp, sdata.Key
         Next
     
         ' Sortieren der Steckplätze
         Set dataConfigSort = dataConfig.Sort
-     
-        ' Tabelle für jede Station schreiben
-     ' dataConfigSort.writePLCConfigToExcel "Station_" & pStation
-            
-     '       CopySheetToClosedWB "SPS_CONFIG_2.xlsx", "Station_" & pStation
+          
     Next
-
-    ' copy PLS config to file
-          '  xCopyWorksheets "config"
-End Sub
+    ' Rückgabe des Ergebnises
+    Set ConfigPLCToDataset = dataConfigSort
+    
+End Function
 
 Sub readConfigFromSavedFile()
     'works fine

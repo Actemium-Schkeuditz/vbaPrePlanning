@@ -128,10 +128,12 @@ End Sub
 
 Sub CopySheetToClosedWB(ByVal sNewFileName As String, sSheetname As String)
 Application.ScreenUpdating = False
-    
+    'todo works not fine
     Dim sFolderFile As String
+    Dim sfolder As String
     Dim sConfigFolder As String
     Dim wbnew As Workbook
+    Dim closedBook As Workbook
 
     sConfigFolder = "config"
     sfolder = ThisWorkbook.path & "\" & sConfigFolder & "\"

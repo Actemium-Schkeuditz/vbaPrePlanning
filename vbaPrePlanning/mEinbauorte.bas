@@ -31,7 +31,7 @@ Public Sub EinbauorteSchreiben()
     Dim iSearchNumber As Long
 
     'Tabellenamen ermitteln
-    'ToDo
+    'ToDo Einbauorte übertragen AL1400 und AL1402
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
     spalteKWS_BMK = "B"
@@ -59,8 +59,10 @@ Public Sub EinbauorteSchreiben()
                 tablennameEinbauorte = "Einbauorte_MH04.PPP"
             ElseIf Left$(dataKWSBMK, 5) = "SRN01" Then
                 tablennameEinbauorte = "Einbauorte_MH04.SRN"
-            ElseIf Left$(dataKWSBMK, 5) = "TRP01" Or Left$(dataKWSBMK, 5) = "TRP03" Then
-                tablennameEinbauorte = "Einbauorte_MH03.KT1000"
+            ElseIf Left$(dataKWSBMK, 5) = "TRP01" Then
+                tablennameEinbauorte = "Einbauorte_MH03.TRP01"
+                ElseIf Left$(dataKWSBMK, 5) = "TRP03" Then
+                tablennameEinbauorte = "Einbauorte_MH03.TRP03"
             Else
                 MsgBox "Keine passenden Daten mit Einbauorten gefunden, für KWS-BMK: " & dataKWSBMK
                 tablennameEinbauorte = vbNullString
