@@ -9,8 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 ' Klasse zum speichern der Einbauorte
 ' V0.2
-' 19.02.2020
-' new property "Geraetetyp"
+' 20.02.2020
+' new property "BMK"
 ' Christian Langrock
 ' christian.langrock@actemium.de
 
@@ -21,6 +21,8 @@ Attribute VB_Exposed = False
 Private pStationsnummer As Integer
 Private pEinbauort As String
 Private pGeraetetyp As String
+Private pBMK As String
+
 
 ''''''''''''''''''''''
 ' Einbauort property
@@ -54,3 +56,15 @@ End Property
 Public Property Let Geraetetyp(ByVal Value As String)
     pGeraetetyp = Value
 End Property
+
+''''''''''''''''''''''
+' BMK property
+''''''''''''''''''''''
+Public Property Get BMK() As String
+    BMK = pBMK
+End Property
+
+Public Property Let BMK(ByVal Value As String)
+    pBMK = Value
+End Property
+

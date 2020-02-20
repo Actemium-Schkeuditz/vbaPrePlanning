@@ -19,6 +19,7 @@ Public Sub EinbauorteSchreiben()
     Dim spalteKWS_BMK As String
     Dim zeilenanzahl As Long
     Dim i As Long
+    Dim j As Long
     Dim wkb As Workbook
     Dim ws1 As Worksheet
     'Dim ws2 As Worksheet
@@ -27,8 +28,11 @@ Public Sub EinbauorteSchreiben()
     Dim spalteStationsnummer As String
     Dim spalteEinbauortRack As String
     Dim spalteEinbauort As String
-    Dim sResult As String
+    Dim spalteStationstyp As String
+    Dim sResult As cEinbauorte
     Dim iSearchNumber As Long
+    Dim iSpalteStationstyp As Long
+    Dim tmpSpalteStationstyp As Long
 
     'Tabellenamen ermitteln
     'ToDo Einbauorte übertragen AL1400 und AL1402
@@ -38,14 +42,18 @@ Public Sub EinbauorteSchreiben()
     spalteStationsnummer = "BU"
     spalteEinbauortRack = "BV"
     spalteEinbauort = "BQ"
+    spalteStationstyp = "BY"
     Set wkb = ActiveWorkbook
     Set ws1 = Worksheets.[_Default](tabelleDaten)
-      
+    iSpalteStationstyp = SpaltenBuchstaben2Int(spalteStationstyp)
    
     Application.ScreenUpdating = False
 
     ' Tabelle mit Planungsdaten auslesen
     With ws1
+    'Filter aus, aber nicht löschen
+    If ws1.AutoFilterMode Then ws1.ShowAllData
+    
         dataKWSBMK = LTrim$(.Cells.Item(3, spalteKWS_BMK))
     
         If dataKWSBMK <> vbNullString Then
@@ -61,7 +69,7 @@ Public Sub EinbauorteSchreiben()
                 tablennameEinbauorte = "Einbauorte_MH04.SRN"
             ElseIf Left$(dataKWSBMK, 5) = "TRP01" Then
                 tablennameEinbauorte = "Einbauorte_MH03.TRP01"
-                ElseIf Left$(dataKWSBMK, 5) = "TRP03" Then
+            ElseIf Left$(dataKWSBMK, 5) = "TRP03" Then
                 tablennameEinbauorte = "Einbauorte_MH03.TRP03"
             Else
                 MsgBox "Keine passenden Daten mit Einbauorten gefunden, für KWS-BMK: " & dataKWSBMK
@@ -78,7 +86,7 @@ Public Sub EinbauorteSchreiben()
 
         ' suchen nach Einbauort passend zur Stationsnummer
         'iSearchNumber = 10
-        sResult = "leer"
+        ' sResult = "leer"
 
         ' Spaltenbreiten anpassen
         ThisWorkbook.Worksheets.[_Default](tabelleDaten).Activate
@@ -96,31 +104,54 @@ Public Sub EinbauorteSchreiben()
             iSearchNumber = .Cells.Item(i, spalteStationsnummer)
 
             'Suchen nach den passenden Einbauort zur Station
-            sResult = EinbauorteData.searchEinbauort(iSearchNumber, EinbauorteData)
-            ' Einbauort des SPS-Racks schreiben
-            If .Cells.Item(i, spalteEinbauortRack) = sResult And (Not Trim$(sResult) = Empty) Then
-                ' Wenn gleich dann grün einfärben
-                .Cells.Item(i, spalteEinbauortRack).Interior.ColorIndex = 35
-            Else                                 ' sonst gelb einfärben
-                .Cells.Item(i, spalteEinbauortRack).Interior.ColorIndex = 6
-            End If
-            .Cells.Item(i, spalteEinbauortRack) = sResult
-            If (Left$(sResult, 2) <> "S1" And Left$(sResult, 2) <> "S2" And Left$(sResult, 2) <> "S3" And Left$(sResult, 2) <> "Sx" And Left$(sResult, 2) <> "SX") Or (Trim$(sResult) = Empty) Then
-                ' Einbauort schreiben
-                If .Cells.Item(i, spalteEinbauort) = sResult Then
-                    ' Wenn gleich dann grün einfärben
-                    .Cells.Item(i, spalteEinbauort).Interior.ColorIndex = 35
-                Else                             ' sonst gelb einfärben
-                    .Cells.Item(i, spalteEinbauort).Interior.ColorIndex = 6
+            Set sResult = Nothing
+            Set sResult = EinbauorteData.searchEinbauortDataset(iSearchNumber)
+            
+            If Not (sResult Is Nothing) Then     ' prüfen ob etwas zurück kam
+                If sResult.Count > 0 Then        ' nur weiter wenn Datensatz wirklich da
+                    ' Einbauort des SPS-Racks schreiben
+                    If .Cells.Item(i, spalteEinbauortRack) = sResult.Item(1).Einbauort And (Not Trim$(sResult.Item(1).Einbauort) = Empty) Then
+                        ' Wenn gleich dann grün einfärben
+                        .Cells.Item(i, spalteEinbauortRack).Interior.ColorIndex = 35
+                    Else                         ' sonst gelb einfärben
+                        .Cells.Item(i, spalteEinbauortRack).Interior.ColorIndex = 6
+                    End If
+                    .Cells.Item(i, spalteEinbauortRack) = sResult.Item(1).Einbauort
+                    If (Left$(sResult.Item(1).Einbauort, 2) <> "S1" And Left$(sResult.Item(1).Einbauort, 2) <> "S2" And Left$(sResult.Item(1).Einbauort, 2) <> "S3" And Left$(sResult.Item(1).Einbauort, 2) <> "Sx" And Left$(sResult.Item(1).Einbauort, 2) <> "SX") Or (Trim$(sResult.Item(1).Einbauort) = Empty) Then
+                        ' Einbauort schreiben
+                        If .Cells.Item(i, spalteEinbauort) = sResult.Item(1).Einbauort Then
+                            ' Wenn gleich dann grün einfärben
+                            .Cells.Item(i, spalteEinbauort).Interior.ColorIndex = 35
+                        Else                     ' sonst gelb einfärben
+                            .Cells.Item(i, spalteEinbauort).Interior.ColorIndex = 6
+                        End If
+                        .Cells.Item(i, spalteEinbauort) = sResult.Item(1).Einbauort
+                    Else
+                        ' makiere fehlende / falsche Steckplatz Daten
+                        .Cells.Item(i, spalteEinbauort).Interior.ColorIndex = 3
+                        .Cells.Item(i, spalteEinbauortRack).Interior.ColorIndex = 3
+                    End If
+                    ' Stationstyp schreiben wenn IFM Master
+                    For j = 0 To 4
+                        tmpSpalteStationstyp = iSpalteStationstyp + (j * 12)
+                        If .Cells.Item(i, tmpSpalteStationstyp) = "IFM IO-LINK" Or .Cells.Item(i, tmpSpalteStationstyp) = "AL1400" Or .Cells.Item(i, tmpSpalteStationstyp) = "AL1402" Then
+                            .Cells.Item(i, tmpSpalteStationstyp) = sResult.Item(1).Geraetetyp
+                            .Cells.Item(i, tmpSpalteStationstyp - 1) = "IFM IO-LINK"
+                        End If
+                    Next j
+                    ' FU schreiben
+                    If sResult.Item(1).Geraetetyp = "FU" Then
+                        .Cells.Item(i, iSpalteStationstyp) = sResult.Item(1).Geraetetyp
+                        .Cells.Item(i, iSpalteStationstyp - 1) = sResult.Item(1).Geraetetyp
+                        
+                    End If
                 End If
-                .Cells.Item(i, spalteEinbauort) = sResult
-            Else
-                ' makiere fehlende / falsche Steckplatz Daten
-                .Cells.Item(i, spalteEinbauort).Interior.ColorIndex = 3
-                .Cells.Item(i, spalteEinbauortRack).Interior.ColorIndex = 3
             End If
         Next i
     End With
     MsgBox "Daten gelesen und geschrieben. Spalte Einbauort kontollieren"
 
 End Sub
+
+
+

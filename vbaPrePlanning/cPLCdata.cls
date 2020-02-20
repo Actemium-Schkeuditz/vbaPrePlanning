@@ -8,8 +8,8 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 ' Klasse zum speichern der SPS Kartendaten
-' V0.2
-' 19.02.2020
+' V0.3
+' 20.02.2020
 ' new property
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -18,11 +18,10 @@ Attribute VB_Exposed = False
   
   Option Explicit
 Private pKartentyp As String
-Private pFirstInputAdress As Long
-Private pFirstOutputAdress As Long
 Private pSortingIdentifier As Long
 Private pMaxChannelPerSlot As Long
 Private pDatatyp As String
+Private pSignalDirection As String
 Private pInputAdressLength As Long                  'per Channel
 Private pInputMinLength As Long                     'per Channel
 Private pInputMaxLength As Long                     'per Channel
@@ -47,12 +46,13 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 3
         ' Adress
         pDatatyp = "Byte"
+        pSignalDirection = "Input"
         pInputAdressLength = 32
         pOutputAdressLength = 32
-        pInputMinLength = 8
-        pInputMaxLength = 64
-        pOutputMinLength = 8
-        pOutputMaxLength = 64
+        pInputMinLength = 0
+        pInputMaxLength = 144
+        pOutputMinLength = 0
+        pOutputMaxLength = 128
         pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = True
@@ -62,6 +62,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 7
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Input"
         pInputAdressLength = 1
         pOutputAdressLength = 0
         pInputMinLength = 8
@@ -77,6 +78,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 7
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Input"
         pInputAdressLength = 1                   'Bit
         pOutputAdressLength = 0
         pInputMinLength = 8
@@ -92,6 +94,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 3
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Input"
         pInputAdressLength = 6
         pOutputAdressLength = 5
         pInputMinLength = 25
@@ -107,6 +110,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 7
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Output"
         pInputAdressLength = 0
         pOutputAdressLength = 1
         pInputMinLength = 0
@@ -122,6 +126,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 3
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Output"
         pInputAdressLength = 0
         pOutputAdressLength = 1
         pInputMinLength = 0
@@ -137,6 +142,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 3
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Output"
         pInputAdressLength = 0
         pOutputAdressLength = 1
         pInputMinLength = 0
@@ -152,6 +158,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 1
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Input"
         pInputAdressLength = 2
         pOutputAdressLength = 0
         pInputMinLength = 4
@@ -167,6 +174,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 1
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Input"
         pInputAdressLength = 2
         pOutputAdressLength = 0
         pInputMinLength = 4
@@ -182,6 +190,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 3
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Input"
         pInputAdressLength = 2
         pOutputAdressLength = 0
         pInputMinLength = 8
@@ -197,6 +206,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 1
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Output"
         pInputAdressLength = 0
         pOutputAdressLength = 2
         pInputMinLength = 0
@@ -211,6 +221,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 1
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Output"
         pInputAdressLength = 0
         pOutputAdressLength = 2
         pInputMinLength = 0
@@ -225,6 +236,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 0
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Input"
         pInputAdressLength = 8
         pOutputAdressLength = 0
         pInputMinLength = 8
@@ -240,6 +252,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 0
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Input"
         pInputAdressLength = 16
         pOutputAdressLength = 16
         pInputMinLength = 16
@@ -255,6 +268,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 7
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Input"
         pInputAdressLength = 1
         pOutputAdressLength = 0
         pInputMinLength = 8
@@ -270,6 +284,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 3
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Output"
         pInputAdressLength = 0
         pOutputAdressLength = 1
         pInputMinLength = 0
@@ -285,6 +300,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 0
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Output"
         pInputAdressLength = 4
         pOutputAdressLength = 2
         pInputMinLength = 4
@@ -300,6 +316,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 0
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Output"
         pInputAdressLength = 4
         pOutputAdressLength = 2
         pInputMinLength = 4
@@ -315,6 +332,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 0
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = ""
         pInputAdressLength = 0
         pOutputAdressLength = 0
         pInputMinLength = 0
@@ -331,6 +349,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 0
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Input"
         pInputAdressLength = 0
         pOutputAdressLength = 0
         pInputMinLength = 0
@@ -346,6 +365,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 7
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Input"
         pInputAdressLength = 1
         pOutputAdressLength = 0
         pInputMinLength = 8
@@ -361,6 +381,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 3
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Output"
         pInputAdressLength = 1
         pOutputAdressLength = 0
         pInputMinLength = 0
@@ -376,6 +397,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 3
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Input"
         pInputAdressLength = 2
         pOutputAdressLength = 0
         pInputMinLength = 8
@@ -391,6 +413,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 1
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Output"
         pInputAdressLength = 0
         pOutputAdressLength = 1
         pInputMinLength = 0
@@ -405,6 +428,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 0
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Output"
         pInputAdressLength = 0
         pOutputAdressLength = 1
         pInputMinLength = 0
@@ -419,6 +443,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 0
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Output"
         pInputAdressLength = 1
         pOutputAdressLength = 0
         pInputMinLength = 0
@@ -435,6 +460,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 7
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Input"
         pInputAdressLength = 32
         pOutputAdressLength = 32
         pInputMinLength = 4
@@ -450,6 +476,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 4
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Input"
         pInputAdressLength = 32
         pOutputAdressLength = 32
         pInputMinLength = 4
@@ -457,7 +484,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputMinLength = 4
         pOutputMaxLength = 0
         pInputAdressDiagnosticLength = 1
-        pOutputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 1
         pVariableAdressRange = True
         pSameAdressRangeForOutput = True
     Case "AL1402"
@@ -465,6 +492,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 7
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = "Input"
         pInputAdressLength = 32
         pOutputAdressLength = 32
         pInputMinLength = 4
@@ -472,7 +500,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputMinLength = 4
         pOutputMaxLength = 0
         pInputAdressDiagnosticLength = 1
-        pOutputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 1
         pVariableAdressRange = True
         pSameAdressRangeForOutput = True
     Case "ET200AL 16DI"
@@ -480,6 +508,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 15
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Input"
         pInputAdressLength = 1
         pOutputAdressLength = 0
         pInputMinLength = 16
@@ -495,6 +524,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 7
         ' Adress
         pDatatyp = "Bit"
+         pSignalDirection = "Output"
         pInputAdressLength = 0
         pOutputAdressLength = 1
         pInputMinLength = 0
@@ -510,6 +540,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 100
         ' Adress
         pDatatyp = "Byte"
+         pSignalDirection = ""
         pInputAdressLength = 100
         pOutputAdressLength = 100
         pInputMinLength = 244
@@ -524,26 +555,7 @@ Public Property Let Kartentyp(ByVal Value As String)
     
 End Property
 
-''''''''''''''''''''''
-' FirstInputAdress
-''''''''''''''''''''''
-Public Property Get FirstInputAdress() As Long
-    FirstInputAdress = pFirstInputAdress
-End Property
 
-Public Property Let FirstInputAdress(ByVal Value As Long)
-    pFirstInputAdress = Value
-End Property
-''''''''''''''''''''''
-' FirstOutputAdress
-''''''''''''''''''''''
-Public Property Get FirstOutputAdress() As Long
-    FirstOutputAdress = pFirstOutputAdress
-End Property
-
-Public Property Let FirstOutputAdress(ByVal Value As Long)
-    pFirstOutputAdress = Value
-End Property
 
 
 ''''''''''''''''''''''
@@ -641,4 +653,10 @@ End Property
 ''''''''''''''''''''''
 Public Property Get SameAdressRangeForOutput() As Boolean
     SameAdressRangeForOutput = pSameAdressRangeForOutput
+End Property
+''''''''''''''''''''''
+' SignalDirection
+''''''''''''''''''''''
+Public Property Get SignalDirection() As String
+    SignalDirection = pSignalDirection
 End Property

@@ -135,21 +135,23 @@ End Function
 Public Sub ReadPLCConfigData(ByRef tablename As String) ', ByRef dataColection As cPLCconfig)
     'Reads the table on the "EplSheet" sheet and adds
     'Chanels to the collection. It also adds values
-    'to the product's properties.
     Dim rCell As Range
     Dim rTable As Range
-        Dim ws1 As Worksheet
+    Dim ws1 As Worksheet
     
     On Error GoTo ErrorHandle
 
     With ThisWorkbook
         ' alte Daten löschen
-              'first check if table exist
+        'first check if table exist
         If WorksheetExist((tablename), ws1) = True Then
-       
+          
             'Second we check if the table is intact. The
             'check is NOT complete.
             ThisWorkbook.Worksheets(tablename).Activate
+            'Filter aus, aber nicht löschen
+            If ActiveSheet.FilterMode Then ActiveSheet.ShowAllData
+            
             If Len(Range("A2")) = 0 Then
                 MsgBox "The table must start in cell A2. Adding products has been aborted.", vbCritical, "Error"
                 'Set dataColection = Nothing
@@ -170,9 +172,9 @@ Public Sub ReadPLCConfigData(ByRef tablename As String) ', ByRef dataColection A
             'The range is expanded to include the last
             'cell with content.
             'If Len(rTable.Offset(2, 0).Formula) = 0 Then
-             '   Set rTable = rTable.Offset(0, 9)
+            '   Set rTable = rTable.Offset(0, 9)
             'Else
-                Set rTable = Range(rTable.Offset(0, 0), rTable.End(xlDown))
+            Set rTable = Range(rTable.Offset(0, 0), rTable.End(xlDown))
             'End If
 
             For Each rCell In rTable
@@ -258,7 +260,7 @@ End Sub
 
 Public Function returnDatasetPerSlottyp(ByVal Station As Integer, ByVal sKartentyp As String) As cPLCconfig
     ' returns first Dataset for Station
-    'On Error GoTo ErrorHandle
+    On Error GoTo ErrorHandle
     Dim sdata As New cPLCconfigData
     Dim rData As New cPLCconfig
     
@@ -271,7 +273,7 @@ Public Function returnDatasetPerSlottyp(ByVal Station As Integer, ByVal sKartent
     Next
     
      If Me.Count = 0 Then
-        rData.Add Station, sKartentyp, vbNullString, vbNullString
+        rData.Add Station, 0, sKartentyp
     End If
     
     Set returnDatasetPerSlottyp = rData
@@ -290,7 +292,7 @@ Public Function returnFirstInputAdressePLCStation(ByVal Station As Integer) As L
     Dim sdata As New cPLCconfigData
     Dim rData As Long
     For Each sdata In Me
-        If sdata.Stationsnummer = Stationsnummer Then
+        If sdata.Stationsnummer = Station Then
             If sdata.FirstInputAdress > 0 Then
                 rData = sdata.FirstInputAdress
                 Exit For
@@ -343,6 +345,7 @@ Public Function sumAdressesPerSlot(ByVal Station As Integer, ByVal Kanaldaten As
     iStartInputAdress = Me.Item(1).FirstInputAdress
     iStartOutputAdress = Me.Item(1).FirstOutputAdress
     iStartSteckplatz = Me.Item(1).Steckplatz
+
 
     ' berechnen der Adressen für jeden Steckplatz
     For Each sPLCData In Me
@@ -414,3 +417,53 @@ Public Function sumAdressesPerSlot(ByVal Station As Integer, ByVal Kanaldaten As
 
 End Function
 
+Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfig
+    'extract data from a Class cKanalbelegungen to cPLCconfig
+    'writes PLC Config to Dataset
+    'todo Adressen für die Steckplätze ermitteln fehlt hier
+    Dim i As Long
+    Dim OffsetSlot As Integer
+
+    ' Class einbinden
+    Dim sdata As New cBelegung
+    Dim dataConfig As New cPLCconfig
+    Dim dataConfigSort As cPLCconfig
+    Dim dataKanaele As New cKanalBelegungen
+    Dim dataSearchStation As New cKanalBelegungen
+    Dim dataSearchConfig As New cKanalBelegungen
+    
+    
+   
+    '##### Suche nach allen Stationsnummern
+    Dim iStation As Collection
+    'Set iStation = dataKanaele.returnStation
+    Set iStation = Stationdata.returnStation
+    '##### Suche nach allen verwendeten Kartentypen
+    Dim iKartentyp As Collection
+   
+    
+    '####### bearbeiten der Daten #######
+    ' Durchlauf für jede Station einzeln
+    Dim pStation As Variant
+    Dim pKartentyp As Variant
+    Set dataConfig = Nothing
+    'Dim iAdressOutput As Long
+    'Dim iAdressInput As Long
+    
+    For Each pStation In iStation
+        ' suchen der Datensätze pro Station
+        Set dataSearchStation = Stationdata.searchDatasetPerStation(pStation)
+        Set dataSearchConfig = dataSearchStation.returnAllSlotsPerRack
+        ' Übertragen der Daten
+        For Each sdata In dataSearchConfig
+            dataConfig.Add sdata.Stationsnummer, sdata.Steckplatz, sdata.Kartentyp.Kartentyp, sdata.Key
+        Next
+    
+        ' Sortieren der Steckplätze
+        Set dataConfigSort = dataConfig.Sort
+          
+    Next
+    ' Rückgabe des Ergebnises
+    Set ConfigPLCToDataset = dataConfigSort
+    
+End Function

@@ -29,6 +29,7 @@ Public Sub SPSZuweisenKanal()
     Dim dataPLCConfig As New cPLCconfig         'Config from File
     Dim dataConfigPerPLCTyp As New cPLCconfig
     Dim dataPLCConfigResult As New cPLCconfig
+  
     
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
@@ -84,12 +85,16 @@ Public Sub SPSZuweisenKanal()
             'todo Behandlung Festo CPX-8DE-D wegen Doppelstecker
             OffsetSlot = dataResult.returnLastSlotNumber
             
-            Set dataPLCConfigResult = ConfigPLCToDataset(dataResult)
+            ' adressieren
+            dataResult.AdressPerSlottyp 0, 0, pStation, pKartentyp
+             dataPLCConfigResult.ConfigPLCToDataset dataResult    'Datensätze der Stationskonfiguration anhängen
+            'Set dataPLCConfigResult = ConfigPLCToDataset(dataResult)
             ' ermitteln der Startadressen der einzelnen Steckplätze
                 dataPLCConfigResult.sumAdressesPerSlot pStation, dataResult
             ' den Kanälen Adressen zuweisen
             'dataPLCConfigResult.sumAdresses
-            dataPLCConfigResult.Addobj (ConfigPLCToDataset(dataResult)) 'Datensätze der Stationskonfiguration anhängen
+           ' (ConfigPLCToDataset(dataResult))
+            'dataPLCConfigResult.ConfigPLCToDataset (dataResult)    'Datensätze der Stationskonfiguration anhängen
             
             OffsetSlot = OffsetSlot + 1
             '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######

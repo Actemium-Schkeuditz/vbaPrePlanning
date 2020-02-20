@@ -8,9 +8,9 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 ' Coolection / class zum speichern der Einbauorte
-' V0.2
-' 19.02.2020
-' new property "Geraetetyp"
+' V0.3
+' 20.02.2020
+' new property "BMK"
 ' Christian Langrock
 ' christian.langrock@actemium.de
 
@@ -28,15 +28,32 @@ Private Sub Class_Terminate()
     Set objEinbauorte = Nothing
 End Sub
 
-Public Sub Add(ByRef Stationsnummer As Integer, Optional ByRef Einbauort As String, Optional ByRef Geraetetyp As String)
+Public Sub Add(ByRef Stationsnummer As Integer, Optional ByRef Einbauort As String, Optional ByRef Geraetetyp As String, Optional ByRef BMK As String)
     'create a new Dataset Einbauorte and add to collection
 
     Dim p As New cEinbauort
     p.Stationsnummer = Stationsnummer
     p.Einbauort = Einbauort
     p.Geraetetyp = Geraetetyp
+    p.BMK = BMK
     
     objEinbauorte.Add p
+End Sub
+
+Public Sub AddDataSet(ByRef dataSet As cEinbauort)
+    'create a Dataset and add to collection
+
+    Dim p As New cEinbauort
+    p.Stationsnummer = dataSet.Stationsnummer
+    p.Einbauort = dataSet.Einbauort
+    p.Geraetetyp = dataSet.Geraetetyp
+    p.BMK = dataSet.BMK
+   
+    objEinbauorte.Add p
+End Sub
+
+Public Sub Addobj(ByRef obj As cEinbauorte)
+    objEinbauorte.Add obj
 End Sub
 
 Public Property Get Count() As Long
@@ -110,8 +127,8 @@ Public Sub ReadExcelDataToCollection(ByRef tablename As String, ByRef dataColect
             'Else
             '    sEinbauort = .Value
             'End If
-            ' die gelesenen Daten an hängen
-            Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, rCell.Offset(0, 2).Value
+            ' die gelesenen Daten anhängen
+            Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, rCell.Offset(0, 2).Value, rCell.Offset(0, 3).Value
   
         End With
     Next
@@ -136,5 +153,19 @@ Public Function searchEinbauort(ByVal pStationsnumer As Integer, ByVal data As c
             Exit For                             ' nur einmal suchen dann beenden
         End If
     Next
+End Function
+
+Public Function searchEinbauortDataset(ByVal pStationsnumer As Integer) As cEinbauorte
+    ' Suchen nach dem Einbauort passend zur Stationsnummer
+     Dim sdata As cEinbauort
+    Dim rData As New cEinbauorte
+    For Each sdata In Me
+        If sdata.Stationsnummer = pStationsnumer Then
+            '        Debug.Print Data.Einbauort; vbTab; Data.Stationsnummer
+            rData.AddDataSet sdata
+            Exit For                             ' nur einmal suchen dann beenden
+        End If
+    Next
+    Set searchEinbauortDataset = rData
 End Function
 

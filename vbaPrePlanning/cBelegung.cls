@@ -26,10 +26,13 @@ Public Kartentyp As cPLCdata
 Private pStationsnummer As Integer
 Private pSteckplatz As Integer
 Private pKanal As Integer
-Private pAdress As String
+Private pAdress As String ' Adresse für Stromlaufplan
 Private pSegmentvorlage As String
 Private pInputAdressSize As Long
 Private pOutputAdressSize As Long
+Private pInputAdressPerSlot As Long
+Private pOutputAdressPerSlot As Long
+
 
 
 Private Sub Class_Initialize()
@@ -146,6 +149,27 @@ End Property
 Public Property Let OutputAdressSize(ByRef Value As Long)
     pOutputAdressSize = Value
 End Property
+''''''''''''''''''''''
+' InputAdressPerSlot
+''''''''''''''''''''''
+Public Property Get InputAdressPerSlot() As Long
+    InputAdressPerSlot = pInputAdressPerSlot
+End Property
+
+Public Property Let InputAdressPerSlot(ByRef Value As Long)
+    pInputAdressPerSlot = Value
+End Property
+
+''''''''''''''''''''''
+' OutputAdressPerSlot
+''''''''''''''''''''''
+Public Property Get OutputAdressPerSlot() As Long
+    OutputAdressPerSlot = pOutputAdressPerSlot
+End Property
+
+Public Property Let OutputAdressPerSlot(ByRef Value As Long)
+    pOutputAdressPerSlot = Value
+End Property
 
 
 Public Function CompareTo(ByRef per As cBelegung) As Long
@@ -235,3 +259,10 @@ Public Function CompareToChannel(ByRef per As cBelegung) As Long
 
     CompareToChannel = i
 End Function
+
+
+
+
+
+
+

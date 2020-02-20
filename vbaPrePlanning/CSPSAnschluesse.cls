@@ -92,6 +92,8 @@ Public Sub ReadExcelDataConnectionToCollection(ByRef dataColection As CSPSAnschl
     'First we check if the table is intact. The
     'check is NOT complete.
     ThisWorkbook.Worksheets(tablename).Activate
+    'Filter aus, aber nicht löschen
+            If ActiveSheet.FilterMode Then ActiveSheet.ShowAllData
     If Len(Range("A1")) = 0 Then
         MsgBox "The table must start in cell A1. Adding products has been aborted.", vbCritical, "Error"
         'Set EinbauorteData = Nothing

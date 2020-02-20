@@ -104,56 +104,7 @@ Public Sub ConfigPLC()
           '  xCopyWorksheets "config"
 End Sub
 
-Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfig
-    'extract data from a Class cKanalbelegungen to cPLCconfig
-    'writes PLC Config to Dataset
-    'todo Adressen für die Steckplätze ermitteln fehlt hier
-    Dim i As Long
-    Dim OffsetSlot As Integer
 
-    ' Class einbinden
-    Dim sdata As New cBelegung
-    Dim dataConfig As New cPLCconfig
-    Dim dataConfigSort As cPLCconfig
-    Dim dataKanaele As New cKanalBelegungen
-    Dim dataSearchStation As New cKanalBelegungen
-    Dim dataSearchConfig As New cKanalBelegungen
-    
-    
-   
-    '##### Suche nach allen Stationsnummern
-    Dim iStation As Collection
-    Set iStation = dataKanaele.returnStation
-    
-    '##### Suche nach allen verwendeten Kartentypen
-    Dim iKartentyp As Collection
-   
-    
-    '####### bearbeiten der Daten #######
-    ' Durchlauf für jede Station einzeln
-    Dim pStation As Variant
-    Dim pKartentyp As Variant
-    Set dataConfig = Nothing
-    'Dim iAdressOutput As Long
-    'Dim iAdressInput As Long
-    
-    For Each pStation In iStation
-        ' suchen der Datensätze pro Station
-        Set dataSearchStation = Stationdata.searchDatasetPerStation(pStation)
-        Set dataSearchConfig = dataSearchStation.returnAllSlotsPerRack
-        ' Übertragen der Daten
-        For Each sdata In dataSearchConfig
-            dataConfig.Add sdata.Stationsnummer, sdata.Steckplatz, sdata.Kartentyp.Kartentyp, sdata.Key
-        Next
-    
-        ' Sortieren der Steckplätze
-        Set dataConfigSort = dataConfig.Sort
-          
-    Next
-    ' Rückgabe des Ergebnises
-    Set ConfigPLCToDataset = dataConfigSort
-    
-End Function
 
 Sub readConfigFromSavedFile()
     'works fine
