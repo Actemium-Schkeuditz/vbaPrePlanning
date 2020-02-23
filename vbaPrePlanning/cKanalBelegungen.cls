@@ -394,7 +394,7 @@ Public Function searchKanalBelegungenSteckplatz(ByVal pStationsnummer As Long, B
     
     'For Each Station In pStationsnummer
         For Each sdata In Me
-            If sdata.Stationsnummer = Station Then
+            If sdata.Stationsnummer = pStationsnummer Then
                 If sdata.Steckplatz = pSteckplatz Then
                     rData.AddDataSet sdata
                     'Debug.Print searchAnschluss.Item(1).Kartentyp;
@@ -403,8 +403,10 @@ Public Function searchKanalBelegungenSteckplatz(ByVal pStationsnummer As Long, B
             End If
         Next
     'Next
-    If Me.Count = 0 Then
+    If rData Is Nothing Then
+    If rData.Count = 0 Then
         rData.Add vbNullString, vbNullString, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
+    End If
     End If
     
     Set searchKanalBelegungenSteckplatz = rData
@@ -450,7 +452,7 @@ Public Function searchDatasetPlcTyp(ByVal pKartentyp As String) As cKanalBelegun
    
 End Function
 
-Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String, ByVal dataPLCConfig As cPLCconfig, iInputStartAdress As Long, iOutputStartAdress As Long) As cKanalBelegungen
+Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String, ByVal dataPLCConfig As cPLCconfig) As cKanalBelegungen
 
     ' hochzählen der Kanäle und zurückgeben als Class
     Dim iKanal As Integer
@@ -914,6 +916,14 @@ Public Function sumAdresses(ByVal Station As Integer, ByVal dataPLCConfig As cPL
             ElseIf sdata.Kartentyp.Datatyp = "Byte" Then
                 'Ausgabe Byte
                 If sdata.Kartentyp.InputAdressLength > 0 Then
+                    sdata.Adress = "EB" & InputAdress + (sdata.Kanal * sdata.Kartentyp.InputAdressLength)
+                End If
+                If sdata.Kartentyp.OutputAdressLength > 0 Then
+                    sdata.Adress = "AB" & OutputAdress + (sdata.Kanal * sdata.Kartentyp.OutputAdressLength)
+                End If
+                 ElseIf sdata.Kartentyp.Datatyp = "Word" Then
+                'Ausgabe Word
+                If sdata.Kartentyp.InputAdressLength > 0 Then
                     sdata.Adress = "EW" & InputAdress + (sdata.Kanal * sdata.Kartentyp.InputAdressLength)
                 End If
                 If sdata.Kartentyp.OutputAdressLength > 0 Then
@@ -953,7 +963,7 @@ End Function
 
 
 
-Public Function AdressPerSlottyp(iInputStartAdress As Long, iOutputStartAdress As Long, iStationsnummer As Integer, pKartentyp As String) As cKanalBelegungen
+Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputStartAdress As Long, ByVal iStationsnummer As Integer, ByVal pKartentyp As String) As cKanalBelegungen
     'Berechnen der Adressen, wegen der Variabilität der IO-Link Geräte nur möglich wenn die gesamte Station bzw. der Kartentyp belegt ist
     
     Dim iTmpAdressInput As Long
@@ -968,6 +978,7 @@ Public Function AdressPerSlottyp(iInputStartAdress As Long, iOutputStartAdress A
     Dim rData As New cKanalBelegungen
     Dim i As Long
     Dim y As Long
+    Dim x As Long
     
     ' sortieren nach Station, Slot and Channel
     Me.SortChannel
@@ -982,28 +993,30 @@ Public Function AdressPerSlottyp(iInputStartAdress As Long, iOutputStartAdress A
         ' ermiteln für jede Karte die Belegung
         For i = ifirstSlot To ilastSlot
             'fixed adress range for input and output
-            ' prüfen was größer ist, diesen Wert nehmen
+            ' prüfe was größer ist, diesen Wert nehmen
             If Me.Item(1).Kartentyp.SameAdressRangeForOutput = True Then
                 If iInputStartAdress > iOutputStartAdress Then
                     iOutputStartAdress = iInputStartAdress
                 Else
-                    iInputStartAdress = iOutputStartAdresst
+                    iInputStartAdress = iOutputStartAdress
                 End If
             End If
             Set SlotData = Nothing
             ' Durchlauf für jeden Steckplatz einzeln
-            SlotData.Addobj Me.searchKanalBelegungenSteckplatz(iStationsnummer, i)
+            Set SlotData = Me.searchKanalBelegungenSteckplatz(iStationsnummer, i)
             iAdressVariInput = 0
             iAdressVariOutput = 0
             
             If pKartentyp = "ET200SP 4IO-LINK" Then ' bei ET200SP IO-Link alle Kanäle zusammen zählen
                 For Each sdataVari In SlotData
+                    'hier Adresse ermitteln
+                    sdataVari.Adress = "EB" & iInputStartAdress + iAdressVariInput ' + sdataVari.InputAdressSize
+                    ' Adressen hochzählen
                     iAdressVariInput = iAdressVariInput + sdataVari.InputAdressSize
                     iAdressVariOutput = iAdressVariOutput + sdataVari.OutputAdressSize
                     sdataVari.InputAdressPerSlot = iInputStartAdress
                     sdataVari.OutputAdressPerSlot = iOutputStartAdress
-                    'hier Adresse ermitteln
-                    sdataVari.Adress = "EB" & iInputStartAdress + iAdressVariInput + sdataVari.InputAdressSize
+                   
                     ' Ergebnis einsammeln
                     rData.Addobj sdataVari
                 Next
@@ -1027,20 +1040,21 @@ Public Function AdressPerSlottyp(iInputStartAdress As Long, iOutputStartAdress A
                     iInputStartAdress = iInputStartAdress + 32
                     iOutputStartAdress = iOutputStartAdress + 32
                 ElseIf iAdressVariInput <= 64 And iAdressVariOutput <= 64 Then
-                    iInputStartAdress = iInputStartAdress + 32
-                    iOutputStartAdress = iOutputStartAdress + 32
+                    iInputStartAdress = iInputStartAdress + 64
+                    iOutputStartAdress = iOutputStartAdress + 64
                 ElseIf iAdressVariInput <= 128 And iAdressVariOutput <= 128 Then
                     iInputStartAdress = iInputStartAdress + 144
                     iOutputStartAdress = iOutputStartAdress + 128
                 Else
                     MsgBox "Fehler in der Adresslänge von: " & sdata.KWSBMK
                 End If
-                iAdressVariInput = 0
-                iAdressVariOutput = 0
-            ElseIf pKartentyp = "AL1400" Or sdataVari.Kartentyp.Kartentyp = "AL1402" Then 'Berechnung pro Kanal und dann Zusammen zählen
-                For Each sdataVari In SlotData
-                    iAdressVariInput = iInputStartAdress
+                'iAdressVariInput = 0
+                'iAdressVariOutput = 0
+                iAdressVariInput = iInputStartAdress
                     iAdressVariOutput = iOutputStartAdress
+            ElseIf pKartentyp = "AL1400" Or pKartentyp = "AL1402" Then 'Berechnung pro Kanal und dann zusammen zählen
+                For Each sdataVari In SlotData
+                    
                     If sdataVari.Kanal = 0 Then
                         iAdressVariInput = iAdressVariInput + sdataVari.Kartentyp.InputAdressDiagnosticLength 'Wenn Kanal 0 dann Diagnosebereich belegen
                         iAdressVariOutput = iAdressVariOutput + sdataVari.Kartentyp.OutputAdressDiagnosticLength
@@ -1093,12 +1107,20 @@ Public Function AdressPerSlottyp(iInputStartAdress As Long, iOutputStartAdress A
         Next i
     Else
         ' hier die anderen Karten
-        
+        'fixed adress range for input and output
+        ' prüfe was größer ist, diesen Wert nehmen
+            If Me.Item(1).Kartentyp.SameAdressRangeForOutput = True Then
+                If iInputStartAdress > iOutputStartAdress Then
+                    iOutputStartAdress = iInputStartAdress
+                Else
+                    iInputStartAdress = iOutputStartAdress
+                End If
+            End If
         ' ermiteln für jede Karte einzeln die Belegung
         For y = ifirstSlot To ilastSlot
             Set SlotData = Nothing
             ' Durchlauf für jeden Steckplatz einzeln
-            SlotData.Addobj Me.searchKanalBelegungenSteckplatz(iStationsnummer, i)
+            Set SlotData = Me.searchKanalBelegungenSteckplatz(iStationsnummer, i)
             iAdressVariInput = 0
             iAdressVariOutput = 0
         
@@ -1120,69 +1142,117 @@ Public Function AdressPerSlottyp(iInputStartAdress As Long, iOutputStartAdress A
                     sdata.OutputAdressPerSlot = iOutputStartAdress
                 End If
                 If sdata.Kartentyp.Datatyp = "Byte" Then
-                    If sdata.Kartentyp.SignalDirection = "Input" Then
-                        sdata.Adress = "EB" & iInputStartAdress + ((sdata.Kanal - 1) * sdata.Kartentyp.InputAdressLength)
+                    If sdata.Kartentyp.SignalDirection = "Input" Or sdata.Kartentyp.SignalDirection = "InOut" Then
+                        sdata.Adress = "EB" & iInputStartAdress + (sdata.Kanal * sdata.Kartentyp.InputAdressLength)
                     ElseIf sdata.Kartentyp.SignalDirection = "Output" Then
-                        sdata.Adress = "EB" & iOutputStartAdress + ((sdata.Kanal - 1) * sdata.Kartentyp.OutputAdressLength)
+                        sdata.Adress = "AB" & iOutputStartAdress + (sdata.Kanal * sdata.Kartentyp.OutputAdressLength)
                     Else
-                        MsgBox "Datentyp der Karte pastt nicht: " & sdata.Kartentyp.Kartentyp
+                        MsgBox "Datentyp der Karte passt nicht: " & sdata.Kartentyp.Kartentyp
+                    End If
+                ElseIf sdata.Kartentyp.Datatyp = "Word" Then
+                    If sdata.Kartentyp.SignalDirection = "Input" Or sdata.Kartentyp.SignalDirection = "InOut" Then
+                        sdata.Adress = "EW" & iInputStartAdress + (sdata.Kanal * sdata.Kartentyp.InputAdressLength)
+                    ElseIf sdata.Kartentyp.SignalDirection = "Output" Then
+                        sdata.Adress = "AW" & iOutputStartAdress + (sdata.Kanal * sdata.Kartentyp.OutputAdressLength)
+                    Else
+                        MsgBox "Datentyp der Karte passt nicht: " & sdata.Kartentyp.Kartentyp
                     End If
                 ElseIf sdata.Kartentyp.Datatyp = "Bit" Then
-                        'todo hier fehlt noch die Bit Berechnung
+                    'todo hier fehlt noch die Bit Berechnung
+                    If sdata.Kartentyp.SignalDirection = "Input" Then
+                        If sdata.Kanal <= 7 Then
+                            sdata.Adress = "E" & iInputStartAdress & "." & sdata.Kanal
+                        ElseIf sdata.Kanal >= 8 And sdata.Kanal <= 15 Then
+                            sdata.Adress = "E" & iInputStartAdress + 1 & "." & sdata.Kanal - 8
+                        ElseIf sdata.Kanal >= 16 And sdata.Kanal <= 23 Then
+                            sdata.Adress = "E" & iInputStartAdress + 2 & "." & sdata.Kanal - 16
+                        ElseIf sdata.Kanal >= 24 And sdata.Kanal <= 31 Then
+                            sdata.Adress = "E" & iInputStartAdress + 3 & "." & sdata.Kanal - 24
+                        End If
+                    ElseIf sdata.Kartentyp.SignalDirection = "Output" Then
+                        If sdata.Kanal <= 7 Then
+                            sdata.Adress = "A" & iOutputStartAdress & "." & sdata.Kanal
+                        ElseIf sdata.Kanal >= 8 And sdata.Kanal <= 15 Then
+                            sdata.Adress = "A" & iOutputStartAdress + 1 & "." & sdata.Kanal - 8
+                        ElseIf sdata.Kanal >= 16 And sdata.Kanal <= 23 Then
+                            sdata.Adress = "A" & iOutputStartAdress + 2 & "." & sdata.Kanal - 16
+                        ElseIf sdata.Kanal >= 24 And sdata.Kanal <= 31 Then
+                            sdata.Adress = "A" & iOutputStartAdress + 3 & "." & sdata.Kanal - 24
+                        End If
+                    Else
+                        MsgBox "Datentyp der Karte passt nicht: " & sdata.Kartentyp.Kartentyp
+                    End If
                 Else
                     MsgBox "Adressen für Kartentyp: " & sdata.Kartentyp.Kartentyp & " kann nicht berechnet werden"
                 End If
                 ' Ergebnis einsammeln
-                rData.Addobj sdataVari
+                rData.Addobj sdata
             Next
             ' Berechnung der Adressen für nächste Karte
             iTmpAdressInput = 0
             iTmpAdressOutput = 0
-            If sdata.Kartentyp.Datatyp = "Byte" Then
-                iTmpAdressInput = sdata.Kartentyp.InputAdressLength * (sdata.Kartentyp.MaxChannelPerSlot + 1)
-                iTmpAdressOutput = sdata.Kartentyp.OutputAdressLength * (sdata.Kartentyp.MaxChannelPerSlot + 1)
-            ElseIf sdata.Kartentyp.Datatyp = "Bit" Then
-                If sdata.Kartentyp.MaxChannelPerSlot <= 7 Then
-                    iTmpAdressInput = 1          'Byte
-                    iTmpAdressOutput = 1
-                ElseIf sdata.Kartentyp.MaxChannelPerSlot > 8 And sdata.Kartentyp.MaxChannelPerSlot <= 15 Then
-                    iTmpAdressInput = 2          'Byte
-                    iTmpAdressOutput = 2
+            x = rData.Count
+            If rData.Item(x).Kartentyp.Datatyp = "Byte" Then
+                If rData.Item(x).Kartentyp.SignalDirection = "Input" Then
+                    iTmpAdressInput = rData.Item(x).Kartentyp.InputAdressLength * (rData.Item(x).Kartentyp.MaxChannelPerSlot + 1)
+                ElseIf rData.Item(x).Kartentyp.SignalDirection = "Output" Then
+                    iTmpAdressOutput = rData.Item(x).Kartentyp.OutputAdressLength * (rData.Item(x).Kartentyp.MaxChannelPerSlot + 1)
+                ElseIf rData.Item(x).Kartentyp.SignalDirection = "InOut" Then
+                    iTmpAdressInput = rData.Item(x).Kartentyp.InputAdressLength * (rData.Item(x).Kartentyp.MaxChannelPerSlot + 1)
+                    iTmpAdressOutput = rData.Item(x).Kartentyp.OutputAdressLength * (rData.Item(x).Kartentyp.MaxChannelPerSlot + 1)
+                Else
+                    MsgBox "Adressen für Kartentyp: " & rData.Item(x).Kartentyp.Kartentyp & " kann nicht berechnet werden"
+                End If
+            ElseIf rData.Item(x).Kartentyp.Datatyp = "Word" Then
+                If rData.Item(x).Kartentyp.SignalDirection = "Input" Then
+                    iTmpAdressInput = rData.Item(x).Kartentyp.InputAdressLength * (rData.Item(x).Kartentyp.MaxChannelPerSlot + 1)
+                ElseIf rData.Item(x).Kartentyp.SignalDirection = "Output" Then
+                    iTmpAdressOutput = rData.Item(x).Kartentyp.OutputAdressLength * (rData.Item(x).Kartentyp.MaxChannelPerSlot + 1)
+               ElseIf rData.Item(x).Kartentyp.SignalDirection = "InOut" Then
+                    iTmpAdressInput = rData.Item(x).Kartentyp.InputAdressLength * (rData.Item(x).Kartentyp.MaxChannelPerSlot + 1)
+                    iTmpAdressOutput = rData.Item(x).Kartentyp.OutputAdressLength * (rData.Item(x).Kartentyp.MaxChannelPerSlot + 1)
+                Else
+                    MsgBox "Adressen für Kartentyp: " & rData.Item(x).Kartentyp.Kartentyp & " kann nicht berechnet werden"
+                End If
+            ElseIf rData.Item(x).Kartentyp.Datatyp = "Bit" Then
+       
+                If rData.Item(x).Kartentyp.MaxChannelPerSlot <= 7 Then
+                    If rData.Item(x).Kartentyp.SignalDirection = "Input" Then
+                        iTmpAdressInput = 1      'Byte
+                    ElseIf rData.Item(x).Kartentyp.SignalDirection = "Output" Then
+                        iTmpAdressOutput = 1
+                    Else
+                        MsgBox "Adressen für Kartentyp: " & rData.Item(x).Kartentyp.Kartentyp & " kann nicht berechnet werden"
+                    End If
+                ElseIf rData.Item(x).Kartentyp.MaxChannelPerSlot > 8 And rData.Item(x).Kartentyp.MaxChannelPerSlot <= 15 Then
+                    If rData.Item(x).Kartentyp.SignalDirection = "Input" Then
+                        iTmpAdressInput = 2      'Byte
+                    ElseIf rData.Item(x).Kartentyp.SignalDirection = "Output" Then
+                        iTmpAdressOutput = 2
+                    Else
+                        MsgBox "Adressen für Kartentyp: " & rData.Item(x).Kartentyp.Kartentyp & " kann nicht berechnet werden"
+                    End If
+                ElseIf rData.Item(x).Kartentyp.MaxChannelPerSlot > 16 And rData.Item(x).Kartentyp.MaxChannelPerSlot <= 32 Then
+                    If rData.Item(x).Kartentyp.SignalDirection = "Input" Then
+                        iTmpAdressInput = 4      'Byte
+                    ElseIf rData.Item(x).Kartentyp.SignalDirection = "Output" Then
+                        iTmpAdressOutput = 4
+                    Else
+                        MsgBox "Adressen für Kartentyp: " & rData.Item(x).Kartentyp.Kartentyp & " kann nicht berechnet werden"
+                    End If
                 Else
                     MsgBox "Fehler in Datentyp, Berechnung nicht möglich"
                 End If
-                iInputStartAdress = iInputStartAdress + iTmpAdressInput + sdata.Kartentyp.InputAdressDiagnosticLength
-                iOutputStartAdress = iOutputStartAdress + iTmpAdressOutput + sdata.Kartentyp.OutputAdressDiagnosticLength
-            Else
+                            Else
                 MsgBox "Fehler in Datentyp, Berechnung nicht möglich"
             End If
-        
+            iInputStartAdress = iInputStartAdress + iTmpAdressInput + rData.Item(x).Kartentyp.InputAdressDiagnosticLength
+               iOutputStartAdress = iOutputStartAdress + iTmpAdressOutput + rData.Item(x).Kartentyp.OutputAdressDiagnosticLength
         Next y
     End If
     Set AdressPerSlottyp = rData
         
 End Function
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

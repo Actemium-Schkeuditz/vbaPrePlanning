@@ -60,7 +60,7 @@ Public Sub SPS_KartenAnschluss()
         ' lesen der Anschlussdaten aus Excel Tabelle
         dataAnschluesse.ReadExcelDataConnectionToCollection dataAnschluesse
     
-        ' ******* ab hier suchen und schreben der Daten
+        ' ******* ab hier suchen und schreiben der Daten
         ' suchen nach Anschlüssen passend zum Kartentyp und zum Kanal
         'iSearchKanal = 10
         'iSearchKartentyp = "ET200SP 4FDO"

@@ -1,8 +1,8 @@
 Attribute VB_Name = "mSPSZuweisenKanal"
 ' Skript zur Ermittlung der SPS Kanäle
-' V0.2
+' V0.3
 ' nicht fertig
-' 13.02.2020
+' 23.02.2020
 'diverse Fehler müssen abgefangen werden, Offset der Kartenn fehlt noch
 '
 ' Christian Langrock
@@ -20,13 +20,16 @@ Public Sub SPSZuweisenKanal()
     Dim spalteKartentyp As String
     Dim OffsetSlot As Integer
  
+    Dim iInputAdress As Long
+    Dim iOutputAdress As Long
     
     ' Class einbinden
     Dim dataKanaele As New cKanalBelegungen
     Dim dataSearchStation As New cKanalBelegungen
     Dim dataSearchPlcTyp As New cKanalBelegungen
     Dim dataResult As New cKanalBelegungen
-    Dim dataPLCConfig As New cPLCconfig         'Config from File
+    Dim dataResultAdress As New cKanalBelegungen
+    Dim dataPLCConfig As New cPLCconfig          'Config from File
     Dim dataConfigPerPLCTyp As New cPLCconfig
     Dim dataPLCConfigResult As New cPLCconfig
   
@@ -36,6 +39,8 @@ Public Sub SPSZuweisenKanal()
     spalteStationsnummer = "BU"                  'erste Spalte der Anschlüsse
     spalteKartentyp = "BY"
     
+    iInputAdress = 0
+    iOutputAdress = 0
     
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
     dataKanaele.ReadExcelDataChanelToCollection tabelleDaten, dataKanaele, spalteStationsnummer, spalteKartentyp
@@ -51,7 +56,7 @@ Public Sub SPSZuweisenKanal()
     
     '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
     Dim sortierung As cBelegung
-    Dim dataSort As New cKanalBelegungen             'Ergebnis der Sortierung
+    Dim dataSort As New cKanalBelegungen         'Ergebnis der Sortierung
     'Set dataSort = dataKanaele.Sort
         
   
@@ -74,7 +79,7 @@ Public Sub SPSZuweisenKanal()
         Set dataSort = dataSearchStation.Sort
         '##### Suche nach allen verwendeten Kartentypen
         Set iKartentyp = dataSort.returnKartentyp
-        OffsetSlot = 0  'starten mit Slot 0
+        OffsetSlot = 0                           'starten mit Slot 0
         For Each pKartentyp In iKartentyp
             Set dataConfigPerPLCTyp = Nothing
             Set dataConfigPerPLCTyp = dataPLCConfig.returnDatasetPerSlottyp(pStation, pKartentyp)
@@ -86,19 +91,19 @@ Public Sub SPSZuweisenKanal()
             OffsetSlot = dataResult.returnLastSlotNumber
             
             ' adressieren
-            dataResult.AdressPerSlottyp 0, 0, pStation, pKartentyp
-             dataPLCConfigResult.ConfigPLCToDataset dataResult    'Datensätze der Stationskonfiguration anhängen
+            Set dataResultAdress = dataResult.AdressPerSlottyp(iInputAdress, iOutputAdress, pStation, pKartentyp)
+            dataPLCConfigResult.ConfigPLCToDataset dataResultAdress 'Datensätze der Stationskonfiguration anhängen
             'Set dataPLCConfigResult = ConfigPLCToDataset(dataResult)
             ' ermitteln der Startadressen der einzelnen Steckplätze
-                dataPLCConfigResult.sumAdressesPerSlot pStation, dataResult
+            '   dataPLCConfigResult.sumAdressesPerSlot pStation, dataResult
             ' den Kanälen Adressen zuweisen
             'dataPLCConfigResult.sumAdresses
-           ' (ConfigPLCToDataset(dataResult))
-            'dataPLCConfigResult.ConfigPLCToDataset (dataResult)    'Datensätze der Stationskonfiguration anhängen
+            ' (ConfigPLCToDataset(dataResult))
+            dataPLCConfigResult.ConfigPLCToDataset dataResultAdress    'Datensätze der Stationskonfiguration anhängen
             
             OffsetSlot = OffsetSlot + 1
             '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
-            dataResult.writeDatsetsToExcel tabelleDaten
+            dataResultAdress.writeDatsetsToExcel tabelleDaten
         Next
     Next
     
@@ -106,12 +111,13 @@ Public Sub SPSZuweisenKanal()
     
     
     '##### Anschlüsse zuordnen ####
-      SPS_KartenAnschluss
+    SPS_KartenAnschluss
     '##### SPS Karten BMK erzeugen ####
     SPS_BMK
     
-MsgBox "Zuweisen fertig"
+    MsgBox "Zuweisen fertig"
 
 End Sub
+
 
 
