@@ -332,7 +332,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 0
         ' Adress
         pDatatyp = "Byte"
-        pSignalDirection = ""
+        pSignalDirection = "InOut"
         pInputAdressLength = 0
         pOutputAdressLength = 0
         pInputMinLength = 0

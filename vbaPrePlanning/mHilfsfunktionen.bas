@@ -68,10 +68,10 @@ If newExcelFile = True Then
 End If
 End Function
 
-Public Function fileExist(ByVal sFilename As String, ByVal sfolder As String) As Boolean
+Public Function fileExist(ByVal sfilename As String, ByVal sfolder As String) As Boolean
 
 Dim sTestFile As String
-sTestFile = ThisWorkbook.path & "\" & sfolder & "\" & sFilename
+sTestFile = ThisWorkbook.path & "\" & sfolder & "\" & sfilename
     fileExist = Dir(sTestFile) <> vbNullString
 End Function
 
@@ -177,4 +177,113 @@ Public Function WorksheetExist(ByVal sWorksheetName As String, ByVal ws1 As Work
 End Function
 
 
+Function ReadXmlPLCconfig(sfolder As String, sfilename As String) As cPLCconfig
+    Dim sFile As String
+    
+    sFile = ThisWorkbook.path & "\" & sfolder & "\" & sfilename
+  
+    Dim xmlObj As Object
+    Set xmlObj = CreateObject("MSXML2.DOMDocument")
+ 
+    xmlObj.async = False
+    xmlObj.validateOnParse = False
+    xmlObj.Load (sFile)
+ 
+    Dim nodesThatMatter As Object
+    Dim node            As Object
+    
+    Dim rdata As New cPLCconfig
+    Dim sdata As New cPLCconfigData
+    
+    Set nodesThatMatter = xmlObj.SelectNodes("//PLCconfig")
+   ' For Each node In nodesThatMatter
+   '     'Task 1 -> print the XML file within the FootballInfo node:
+   '     'Debug.Print node.XML
+   '     Dim child   As Variant
+   '     For Each child In node.ChildNodes
+   '         'Task 2 -> print only the information of the clubs.  E.g. NorthClub, EastClub etc.
+   '         'Debug.Print child.ChildNodes.Item(3).XML
+   '     Next child
+   ' Next node
+    
+    'Dim singleNode As Object
+    'Set singleNode = xmlObj.SelectSingleNode("//PLCconfig/Station[@Number='1']")
+    'Task 3 -> print only the node with number "1"
+    'Debug.Print singleNode.XML
+    Set sdata = Nothing
+    Set rdata = Nothing
+    
+    Dim level1 As Object
+    Dim level2 As Object
+    Dim level3 As Object
+    
+    For Each level1 In nodesThatMatter
+        For Each level2 In level1.ChildNodes
+            Debug.Print level2.Attributes.getNamedItem("Number").NodeValue 'stationnumber
+            sdata.Stationsnummer = level2.Attributes.getNamedItem("Number").NodeValue
+            sdata.FirstInputAdress = level2.ChildNodes.Item(1).Text
+            sdata.FirstOutputAdress = level2.ChildNodes.Item(2).Text
+            
+            
+            For Each level3 In level2.ChildNodes.Item(3).ChildNodes
+                Debug.Print level3.Attributes.Item(0).Text 'Kartentyp
+                sdata.Kartentyp.Kartentyp = level3.Attributes.Item(0).Text 'Kartentyp
+                Debug.Print level3.ChildNodes.Item(0).nodename
+                Debug.Print level3.ChildNodes.Item(0).Text & vbCrLf 'ChannelsBeforSlot
+                sdata.ReserveChannelsBefor = level3.ChildNodes.Item(0).Text
+                Debug.Print level3.ChildNodes.Item(1).nodename
+                Debug.Print level3.ChildNodes.Item(1).Text & vbCrLf 'ChannelsAfterSlot Value
+                sdata.ReserveChannelsAfter = level3.ChildNodes.Item(1).Text
+                Debug.Print level3.ChildNodes.Item(2).nodename
+                Debug.Print level3.ChildNodes.Item(2).Text & vbCrLf 'ReserveChannelsPerSlot Value
+                sdata.ReserveChannelPerSlot = level3.ChildNodes.Item(2).Text
+                Debug.Print level3.ChildNodes.Item(3).nodename
+                Debug.Print level3.ChildNodes.Item(3).Text & vbCrLf 'ReserveSlots Value
+                sdata.ReserveSlot = level3.ChildNodes.Item(3).Text
+            rdata.Addobj sdata
+            Next
+        Next
+        
+    Next
+    
+   Set ReadXmlPLCconfig = rdata
+End Function
 
+Public Function readXMLFile() As cPLCconfig
+    ' read XML config File
+    Dim sfolder As String
+    Dim sFileNameConfig As String
+    Dim bConfigFileIsNew As Boolean
+    Dim bConfigFileExist As Boolean
+
+    Dim rdata As New cPLCconfig
+    
+    sfolder = "config"
+    sFileNameConfig = "PLC_Config.xml"
+    
+    
+    ' Lege Datei an wenn nicht da
+    bConfigFileIsNew = newExcelFile(sFileNameConfig, sfolder)
+
+    ' wenn die Datei nicht angelegt wurde prüfe ob es diese schon gibt
+    If bConfigFileIsNew = False Then
+        'prüfe ob Datei vorhanden
+
+        bConfigFileExist = fileExist(sFileNameConfig, sfolder)
+
+        If bConfigFileExist Then
+            'todo hier dann weiter wenn die Datei schon da ist
+            'MsgBox "Datei gibt es schon"
+            Set rdata = ReadXmlPLCconfig(sfolder, sFileNameConfig)
+            'MsgBox Result
+    
+    
+        ElseIf bConfigFileIsNew = True Then
+            'todo hier weiter wenn Datei neu
+        Else
+            MsgBox "Fehler mit der SPSConfig.xlsx"
+            rdata.Add 0, 0, "RESERVE"
+        End If
+    End If
+    Set readXMLFile = rdata
+End Function

@@ -93,7 +93,7 @@ Public Sub ConfigPLC()
         Set dataConfigSort = dataConfig.Sort
      
         ' Tabelle für jede Station schreiben
-      dataConfigSort.writePLCConfigToExcel "Station_" & pStation
+      'dataConfigSort.writePLCConfigToExcel "Station_" & pStation
             'todo copy Data works not
            ' newExcelFile "SPS_CONFIG_3.xlsx", "config"
             
@@ -161,4 +161,6 @@ tablename = "Station_16"
     dataConfig.ReadPLCConfigData tablename
    MsgBox "daten gelesen"
 End Sub
+
+
 

@@ -32,6 +32,7 @@ Public Sub SPSZuweisenKanal()
     Dim dataPLCConfig As New cPLCconfig          'Config from File
     Dim dataConfigPerPLCTyp As New cPLCconfig
     Dim dataPLCConfigResult As New cPLCconfig
+    Dim dataPLCConfigResultOutput As New cPLCconfig
   
     
     ' Tabellen definieren
@@ -66,15 +67,23 @@ Public Sub SPSZuweisenKanal()
     Dim pKartentyp As Variant
     Dim iInputStartAdress As Long
     Dim iOutputStartAdress As Long
+      '##### Auslesen der Startadresse für die erste Station ######
+        dataPLCConfig.ReadPLCConfigData "Station_1"
+    Set dataPLCConfig = readXMLFile
+      
+      
+        iInputStartAdress = dataPLCConfig.returnFirstInputAdressePLCStation(1)
+        iOutputStartAdress = dataPLCConfig.returnFirstOutputAdressePLCStation(1)
     
     For Each pStation In iStation
         Set dataSearchStation = dataKanaele.searchDatasetPerStation(pStation)
         '### lesen der PLC Konfiguartionsdaten ######
         Set dataPLCConfig = Nothing
+        Set dataPLCConfigResultOutput = Nothing
         dataPLCConfig.ReadPLCConfigData "Station_" & pStation
         ' Auslesen der Startadresse für eine Station
-        iInputStartAdress = dataPLCConfig.returnFirstInputAdressePLCStation(pStation)
-        iOutputStartAdress = dataPLCConfig.returnFirstOutputAdressePLCStation(pStation)
+        'iInputStartAdress = dataPLCConfig.returnFirstInputAdressePLCStation(pStation)
+        'iOutputStartAdress = dataPLCConfig.returnFirstOutputAdressePLCStation(pStation)
         '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
         Set dataSort = dataSearchStation.Sort
         '##### Suche nach allen verwendeten Kartentypen
@@ -91,20 +100,17 @@ Public Sub SPSZuweisenKanal()
             OffsetSlot = dataResult.returnLastSlotNumber
             
             ' adressieren
-            Set dataResultAdress = dataResult.AdressPerSlottyp(iInputAdress, iOutputAdress, pStation, pKartentyp)
-            dataPLCConfigResult.ConfigPLCToDataset dataResultAdress 'Datensätze der Stationskonfiguration anhängen
-            'Set dataPLCConfigResult = ConfigPLCToDataset(dataResult)
-            ' ermitteln der Startadressen der einzelnen Steckplätze
-            '   dataPLCConfigResult.sumAdressesPerSlot pStation, dataResult
-            ' den Kanälen Adressen zuweisen
-            'dataPLCConfigResult.sumAdresses
-            ' (ConfigPLCToDataset(dataResult))
-            dataPLCConfigResult.ConfigPLCToDataset dataResultAdress    'Datensätze der Stationskonfiguration anhängen
+            Set dataResultAdress = dataResult.AdressPerSlottyp(iInputStartAdress, iOutputStartAdress, pStation, pKartentyp)
+            'Datensätze der Stationskonfiguration anhängen
+            Set dataPLCConfigResult = dataPLCConfigResult.ConfigPLCToDataset(dataResultAdress)
+            dataPLCConfigResultOutput.Append dataPLCConfigResult
+           'Set dataPLCConfigResultOutput = dataPLCConfigResult.ConfigPLCToDataset(dataResultAdress)     'Datensätze der Stationskonfiguration anhängen
             
             OffsetSlot = OffsetSlot + 1
             '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
             dataResultAdress.writeDatsetsToExcel tabelleDaten
         Next
+        dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation
     Next
     
    

@@ -158,14 +158,14 @@ End Function
 Public Function searchEinbauortDataset(ByVal pStationsnumer As Integer) As cEinbauorte
     ' Suchen nach dem Einbauort passend zur Stationsnummer
      Dim sdata As cEinbauort
-    Dim rData As New cEinbauorte
+    Dim rdata As New cEinbauorte
     For Each sdata In Me
         If sdata.Stationsnummer = pStationsnumer Then
             '        Debug.Print Data.Einbauort; vbTab; Data.Stationsnummer
-            rData.AddDataSet sdata
+            rdata.AddDataSet sdata
             Exit For                             ' nur einmal suchen dann beenden
         End If
     Next
-    Set searchEinbauortDataset = rData
+    Set searchEinbauortDataset = rdata
 End Function
 
