@@ -1,8 +1,8 @@
 Attribute VB_Name = "mHilfsfunktionen"
 ' Hilfsfunktionen die öfters benötigt werden
-' V0.4
-' 10.02.2020
-' neu: SortTable
+' V0.5
+' 25.02.2020
+' neu: import XML
 ' Christian Langrock
 ' christian.langrock@actemium.de
 '@folder Hilfsfunktionen
@@ -128,7 +128,7 @@ End Sub
 
 Sub CopySheetToClosedWB(ByVal sNewFileName As String, sSheetname As String)
 Application.ScreenUpdating = False
-    'todo works not fine
+    'works not fine
     Dim sFolderFile As String
     Dim sfolder As String
     Dim sConfigFolder As String
@@ -192,8 +192,8 @@ Function ReadXmlPLCconfig(sfolder As String, sfilename As String) As cPLCconfig
     Dim nodesThatMatter As Object
     Dim node            As Object
     
-    Dim rdata As New cPLCconfig
-    Dim sdata As New cPLCconfigData
+    Dim rData As New cPLCconfig
+    Dim sData As New cPLCconfigData
     
     Set nodesThatMatter = xmlObj.SelectNodes("//PLCconfig")
    ' For Each node In nodesThatMatter
@@ -210,8 +210,8 @@ Function ReadXmlPLCconfig(sfolder As String, sfilename As String) As cPLCconfig
     'Set singleNode = xmlObj.SelectSingleNode("//PLCconfig/Station[@Number='1']")
     'Task 3 -> print only the node with number "1"
     'Debug.Print singleNode.XML
-    Set sdata = Nothing
-    Set rdata = Nothing
+    Set sData = Nothing
+    Set rData = Nothing
     
     Dim level1 As Object
     Dim level2 As Object
@@ -220,33 +220,34 @@ Function ReadXmlPLCconfig(sfolder As String, sfilename As String) As cPLCconfig
     For Each level1 In nodesThatMatter
         For Each level2 In level1.ChildNodes
             Debug.Print level2.Attributes.getNamedItem("Number").NodeValue 'stationnumber
-            sdata.Stationsnummer = level2.Attributes.getNamedItem("Number").NodeValue
-            sdata.FirstInputAdress = level2.ChildNodes.Item(1).Text
-            sdata.FirstOutputAdress = level2.ChildNodes.Item(2).Text
+            sData.Stationsnummer = level2.Attributes.getNamedItem("Number").NodeValue
+            sData.FirstInputAdress = level2.ChildNodes.Item(1).Text
+            sData.FirstOutputAdress = level2.ChildNodes.Item(2).Text
             
             
             For Each level3 In level2.ChildNodes.Item(3).ChildNodes
+           'Set sdata = Nothing
                 Debug.Print level3.Attributes.Item(0).Text 'Kartentyp
-                sdata.Kartentyp.Kartentyp = level3.Attributes.Item(0).Text 'Kartentyp
+                sData.Kartentyp.Kartentyp = level3.Attributes.Item(0).Text 'Kartentyp
                 Debug.Print level3.ChildNodes.Item(0).nodename
                 Debug.Print level3.ChildNodes.Item(0).Text & vbCrLf 'ChannelsBeforSlot
-                sdata.ReserveChannelsBefor = level3.ChildNodes.Item(0).Text
+                sData.ReserveChannelsBefor = level3.ChildNodes.Item(0).Text
                 Debug.Print level3.ChildNodes.Item(1).nodename
                 Debug.Print level3.ChildNodes.Item(1).Text & vbCrLf 'ChannelsAfterSlot Value
-                sdata.ReserveChannelsAfter = level3.ChildNodes.Item(1).Text
+                sData.ReserveChannelsAfter = level3.ChildNodes.Item(1).Text
                 Debug.Print level3.ChildNodes.Item(2).nodename
                 Debug.Print level3.ChildNodes.Item(2).Text & vbCrLf 'ReserveChannelsPerSlot Value
-                sdata.ReserveChannelPerSlot = level3.ChildNodes.Item(2).Text
+                sData.ReserveChannelPerSlot = level3.ChildNodes.Item(2).Text
                 Debug.Print level3.ChildNodes.Item(3).nodename
                 Debug.Print level3.ChildNodes.Item(3).Text & vbCrLf 'ReserveSlots Value
-                sdata.ReserveSlot = level3.ChildNodes.Item(3).Text
-            rdata.Addobj sdata
+                sData.ReserveSlot = level3.ChildNodes.Item(3).Text
+            rData.Add sData.Stationsnummer, sData.Steckplatz, sData.Kartentyp.Kartentyp, "leer", sData.FirstInputAdress, sData.FirstOutputAdress, sData.ReserveChannelsBefor, sData.ReserveChannelsAfter, sData.ReserveChannelPerSlot, sData.ReserveSlot
             Next
         Next
         
     Next
     
-   Set ReadXmlPLCconfig = rdata
+   Set ReadXmlPLCconfig = rData
 End Function
 
 Public Function readXMLFile() As cPLCconfig
@@ -256,34 +257,105 @@ Public Function readXMLFile() As cPLCconfig
     Dim bConfigFileIsNew As Boolean
     Dim bConfigFileExist As Boolean
 
-    Dim rdata As New cPLCconfig
+    Dim rData As New cPLCconfig
     
+    bConfigFileIsNew = False
     sfolder = "config"
     sFileNameConfig = "PLC_Config.xml"
     
+    createFolder ThisWorkbook.path & "\" & sfolder
+    ' prüfen ob es die Datei gibt
+      bConfigFileExist = fileExist(sFileNameConfig, sfolder)
     
-    ' Lege Datei an wenn nicht da
-    bConfigFileIsNew = newExcelFile(sFileNameConfig, sfolder)
+   If bConfigFileExist = False Then
+    'create xml file
+    XML_Export sfolder, sFileNameConfig
+            MsgBox "Bitte die Config Datei bearbeiten"
+            bConfigFileIsNew = True
+            End If
+   
 
     ' wenn die Datei nicht angelegt wurde prüfe ob es diese schon gibt
     If bConfigFileIsNew = False Then
         'prüfe ob Datei vorhanden
-
         bConfigFileExist = fileExist(sFileNameConfig, sfolder)
 
         If bConfigFileExist Then
-            'todo hier dann weiter wenn die Datei schon da ist
+            'hier dann weiter wenn die Datei schon da ist
             'MsgBox "Datei gibt es schon"
-            Set rdata = ReadXmlPLCconfig(sfolder, sFileNameConfig)
+            Set rData = ReadXmlPLCconfig(sfolder, sFileNameConfig)
             'MsgBox Result
-    
     
         ElseIf bConfigFileIsNew = True Then
             'todo hier weiter wenn Datei neu
+            rData.Add 0, 0, "RESERVE"
         Else
-            MsgBox "Fehler mit der SPSConfig.xlsx"
-            rdata.Add 0, 0, "RESERVE"
+           
+            rData.Add 0, 0, "RESERVE"
         End If
     End If
-    Set readXMLFile = rdata
+    Set readXMLFile = rData
 End Function
+
+Sub XML_Export(sfolder As String, sFileNameConfig As String)
+    '*****************************************
+    '** Excel-Inside Solutions - (C)                                *
+    '*****************************************
+    '** Dimensionierung der Variablen
+    Dim strFile As String
+    Dim Text As String
+    Dim lngRow As Long
+    Dim lngCol As Long
+    Dim i As Long
+    Dim y As Long
+    Dim varShow
+    '** Errorhandling
+    On Error GoTo Fehlermeldung
+    '** XML-Dateipfad und -Name festlegen
+    strFile = ThisWorkbook.path & "\" & sfolder & "\" & sFileNameConfig
+    '** Datei (ASCII) öffnen
+    Open strFile For Output As #1
+    '** XML-Header schreiben
+    Print #1, "<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?> "
+    Print #1, "<PLCconfig xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">"
+       
+    '** Mit Schleife die ersten 3 Spalten der Tabelle schreiben
+
+    '** Schreiben der Sastionsdaten-Beginn
+    For y = 1 To 3
+        Print #1, "<Station Number =""" & y & """>"
+        Print #1, "<Typ>ET200SP</Typ>"           'Tag Anfang
+        '** Schreiben der Felder (Spalten A-C)
+        Print #1, "<InputStartAdress>7000</InputStartAdress>"
+        Print #1, "<OutputStartAdress>7000</OutputStartAdress>"
+        Print #1, "<Modules>"
+        For i = 0 To 1
+            Print #1, "<Typ name="""; "ET200SP"; 4; "IO"; "-"; "LINK"; """>"
+            Print #1, "<ChannelsBeforSlot>0</ChannelsBeforSlot>"
+            Print #1, "<ChannelsAfterSlot>0</ChannelsAfterSlot>"
+            Print #1, "<ReserveChannelsPerSlot>1</ReserveChannelsPerSlot>"
+            Print #1, "<ReserveSlots>0</ReserveSlots>"
+            Print #1, "</Typ>"
+        Next i
+        '** Schreiben Datensatz-Ende
+        Print #1, "</Modules>"
+        Print #1, "</Station>"
+    Next y
+    '** Daten-Tag schließen
+
+
+    '** Daten-Tag schließen
+    Print #1, "</PLCconfig>"
+    '** XML-Datei schließen
+    Close #1
+    '** Aufruf des Editors mit der geschriebenen xml-Datei
+    varShow = Shell(Environ("windir") & "\notepad.exe " & strFile, 1)
+    Exit Sub
+    '** Errorhandling
+Fehlermeldung:
+    Close #1
+    MsgBox "Fehler-Nr.: " & Err.Number & vbNewLine & vbNewLine _
+         & "Beschreibung: " & Err.Description _
+           , vbCritical, "Fehler"
+End Sub
+

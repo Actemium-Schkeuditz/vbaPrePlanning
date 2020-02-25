@@ -30,6 +30,7 @@ Public Sub SPSZuweisenKanal()
     Dim dataResult As New cKanalBelegungen
     Dim dataResultAdress As New cKanalBelegungen
     Dim dataPLCConfig As New cPLCconfig          'Config from File
+     Dim dataPLCConfigStation As New cPLCconfig          'Config for Work
     Dim dataConfigPerPLCTyp As New cPLCconfig
     Dim dataPLCConfigResult As New cPLCconfig
     Dim dataPLCConfigResultOutput As New cPLCconfig
@@ -53,13 +54,10 @@ Public Sub SPSZuweisenKanal()
     
     '##### Suche nach allen verwendeten Kartentypen
     Dim iKartentyp As Collection
-    'Set iKartentyp = dataKanaele.returnKartentyp
     
     '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
     Dim sortierung As cBelegung
     Dim dataSort As New cKanalBelegungen         'Ergebnis der Sortierung
-    'Set dataSort = dataKanaele.Sort
-        
   
     '####### zuweisen der Kanäle #######
     ' Durchlauf für jede Station einzeln
@@ -67,37 +65,38 @@ Public Sub SPSZuweisenKanal()
     Dim pKartentyp As Variant
     Dim iInputStartAdress As Long
     Dim iOutputStartAdress As Long
+    Dim iMPAAnschlussplatte As Long
+    Dim iSteckplatzMPA As Long
+    Dim iKanalMPA As Long
       '##### Auslesen der Startadresse für die erste Station ######
-        dataPLCConfig.ReadPLCConfigData "Station_1"
     Set dataPLCConfig = readXMLFile
       
-      
-        iInputStartAdress = dataPLCConfig.returnFirstInputAdressePLCStation(1)
-        iOutputStartAdress = dataPLCConfig.returnFirstOutputAdressePLCStation(1)
+    iInputStartAdress = dataPLCConfig.returnFirstInputAdressePLCStation(1)
+    iOutputStartAdress = dataPLCConfig.returnFirstOutputAdressePLCStation(1)
     
     For Each pStation In iStation
         Set dataSearchStation = dataKanaele.searchDatasetPerStation(pStation)
         '### lesen der PLC Konfiguartionsdaten ######
-        Set dataPLCConfig = Nothing
+        Set dataPLCConfigStation = Nothing
         Set dataPLCConfigResultOutput = Nothing
-        dataPLCConfig.ReadPLCConfigData "Station_" & pStation
-        ' Auslesen der Startadresse für eine Station
-        'iInputStartAdress = dataPLCConfig.returnFirstInputAdressePLCStation(pStation)
-        'iOutputStartAdress = dataPLCConfig.returnFirstOutputAdressePLCStation(pStation)
+        Set dataResultAdress = Nothing
+        Set dataPLCConfigStation = dataPLCConfig.returnDatasetPerStation(pStation)
+        iSteckplatzMPA = 0
+        iKanalMPA = 0
         '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
         Set dataSort = dataSearchStation.Sort
         '##### Suche nach allen verwendeten Kartentypen
         Set iKartentyp = dataSort.returnKartentyp
         OffsetSlot = 0                           'starten mit Slot 0
+        iMPAAnschlussplatte = 0
         For Each pKartentyp In iKartentyp
             Set dataConfigPerPLCTyp = Nothing
-            Set dataConfigPerPLCTyp = dataPLCConfig.returnDatasetPerSlottyp(pStation, pKartentyp)
+            Set dataConfigPerPLCTyp = dataPLCConfigStation.returnDatasetPerSlottyp(pStation, pKartentyp)
             Set dataSearchPlcTyp = dataSort.searchDatasetPlcTyp(pKartentyp)
             Set dataResult = dataSearchPlcTyp.zuweisenKanal(OffsetSlot, pKartentyp, dataConfigPerPLCTyp)
-            'MsgBox "Zuweisung durchgeführt"
-            'TODO Offset verbessern
-            'todo Behandlung Festo CPX-8DE-D wegen Doppelstecker
             OffsetSlot = dataResult.returnLastSlotNumber
+            ' Korrektur FESTO Ventilinsel
+           Set dataResult = dataResult.correctFestoMPA(iMPAAnschlussplatte, iSteckplatzMPA, iKanalMPA)
             
             ' adressieren
             Set dataResultAdress = dataResult.AdressPerSlottyp(iInputStartAdress, iOutputStartAdress, pStation, pKartentyp)

@@ -6,18 +6,19 @@ Attribute VB_Name = "cAnschluss"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = True
+Attribute VB_Exposed = False
 '@Exposed
 ' Klasse zum speichern der SPS Anschlussdaten
-' V0.2
-' 28.01.2020
+' V0.3
+' 25.02.2020
 ' Christian Langrock
 ' christian.langrock@actemium.de
 '@folder (Daten.SPS-Anschlüsse)
  
  Option Explicit
  
-Private pKartentyp As String
+'Private pKartentyp As String
+Public Kartentyp As cPLCdata
 Private pKanal As Integer
 Private pAnschluss1 As String
 Private pAnschluss2 As String
@@ -29,13 +30,19 @@ Private pAnschlussVS As String
 ''''''''''''''''''''''
 ' Kartentyp property
 ''''''''''''''''''''''
-Public Property Get Kartentyp() As String
-    Kartentyp = pKartentyp
-End Property
+ Private Sub Class_Initialize()
+    Set Me.Kartentyp = New cPLCdata
 
-Public Property Let Kartentyp(ByVal Value As String)
-    pKartentyp = Value
-End Property
+End Sub
+
+
+'Public Property Get Kartentyp() As String
+'    Kartentyp = pKartentyp
+'End Property
+
+'Public Property Let Kartentyp(ByVal Value As String)
+'    pKartentyp = Value
+'End Property
 
 ''''''''''''''''''''''
 ' Kanal property

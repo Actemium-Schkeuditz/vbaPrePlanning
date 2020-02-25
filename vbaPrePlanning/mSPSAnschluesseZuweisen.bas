@@ -34,6 +34,7 @@ Public Sub SPS_KartenAnschluss()
     ' Class einbinden
     Dim dataAnschluesse As New CSPSAnschluesse
     Dim dataSearch As New CSPSAnschluesse
+    Dim dataResult As New CSPSAnschluesse
       
       
     ' Tabellen definieren
@@ -74,18 +75,20 @@ Public Sub SPS_KartenAnschluss()
                 If iSearchKartentyp <> vbNullString And (.Cells.Item(i, spalteIntStart + spalteOffset + 4) <> vbNullString) Then ' wenn Kartentyp nicht leer dann auslesen und schreiben
                     iSearchKanal = .Cells.Item(i, spalteIntStart + spalteOffset + 4).Value
                     'Suchen nach dem passenden Datensatz passend zu Kartentyp und Kanal
-                    dataSearch.searchAnschluss iSearchKartentyp, iSearchKanal, dataAnschluesse
+                    Set dataResult = Nothing
+                    Set dataResult = dataSearch.searchAnschluss(iSearchKartentyp, iSearchKanal, dataAnschluesse)
+                    If Not dataResult.Item(1).Kartentyp.PLCtyp = "FESTO MPA" Then
                
-                    ' schreiben der Daten
-                    .Cells.Item(i, spalteIntStart + spalteOffset + 6) = dataSearch.Item(1).Anschluss1
-                    .Cells.Item(i, spalteIntStart + spalteOffset + 7) = dataSearch.Item(1).Anschluss2
-                    .Cells.Item(i, spalteIntStart + spalteOffset + 8) = dataSearch.Item(1).Anschluss3
-                    .Cells.Item(i, spalteIntStart + spalteOffset + 9) = dataSearch.Item(1).Anschluss4
-                    .Cells.Item(i, spalteIntStart + spalteOffset + 10) = dataSearch.Item(1).AnschlussM
-                    .Cells.Item(i, spalteIntStart + spalteOffset + 11) = dataSearch.Item(1).AnschlussVS
-                    
+                        ' schreiben der Daten
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 6) = dataResult.Item(1).Anschluss1
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 7) = dataResult.Item(1).Anschluss2
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 8) = dataResult.Item(1).Anschluss3
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 9) = dataResult.Item(1).Anschluss4
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 10) = dataResult.Item(1).AnschlussM
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 11) = dataResult.Item(1).AnschlussVS
+                    End If
                     'Debug.Print dataSearch.Item(1).Kartentyp; dataSearch.Item(1).Kanal; vbTab; dataSearch.Item(1).Anschluss_1; vbTab; dataSearch.Item(1).Anschluss_2
-                    dataSearch.Remove (1)
+                    'dataSearch.Remove (1)
                 End If
             Next i
         Next y
@@ -93,4 +96,6 @@ Public Sub SPS_KartenAnschluss()
         ws1.Activate
     End With
 End Sub
+
+
 

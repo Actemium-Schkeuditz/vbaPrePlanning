@@ -10,8 +10,8 @@ Attribute VB_Exposed = False
 Option Explicit
 'this collection could contain anything, but the class
 'controls access to it and ensures it will just contain cPLCconfigData
-' V0.2
-' 17.02.2020
+' V0.3
+' 25.02.2020
 ' new Propertys
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -97,9 +97,9 @@ End Property
 
 Public Sub Append(ByRef data As cPLCconfig)
 
-    Dim sdata As New cPLCconfigData
-    For Each sdata In data
-        Me.Addobj sdata
+    Dim sData As New cPLCconfigData
+    For Each sData In data
+        Me.Addobj sData
     Next
 End Sub
 
@@ -268,25 +268,53 @@ ErrorHandle:
 End Sub
 
 Public Function returnDatasetPerSlottyp(ByVal Station As Integer, ByVal sKartentyp As String) As cPLCconfig
-    ' returns first Dataset for Station
+    ' returns first Dataset for Station and plctyp
     On Error GoTo ErrorHandle
-    Dim sdata As New cPLCconfigData
-    Dim rdata As New cPLCconfig
+    Dim sData As New cPLCconfigData
+    Dim rData As New cPLCconfig
     
-    For Each sdata In Me
-        If sdata.Stationsnummer = Station And sdata.Kartentyp.Kartentyp = sKartentyp Then
-            rdata.Addobj sdata
+    For Each sData In Me
+        If sData.Stationsnummer = Station And sData.Kartentyp.Kartentyp = sKartentyp Then
+            rData.Addobj sData
             Exit For
         End If
     
     Next
     
     
-    If rdata.Count = 0 Then
-        rdata.Add Station, 0, sKartentyp
+    If rData.Count = 0 Then
+        rData.Add Station, 0, sKartentyp
     End If
     
-    Set returnDatasetPerSlottyp = rdata
+    Set returnDatasetPerSlottyp = rData
+    Exit Function
+ErrorHandle:
+    If Err.Number > 0 Then
+        MsgBox "Fehler in den PLS Konfigurationen für Stationsnummer: " & Station
+        Err.Clear
+        Resume Next
+    End If
+
+End Function
+Public Function returnDatasetPerStation(ByVal Station As Integer) As cPLCconfig
+    ' returns all datasets for Station
+    On Error GoTo ErrorHandle
+    Dim sData As New cPLCconfigData
+    Dim rData As New cPLCconfig
+    
+    For Each sData In Me
+        If sData.Stationsnummer = Station Then
+            rData.Addobj sData
+        End If
+    
+    Next
+    
+    
+    If rData.Count = 0 Then
+        rData.Add Station, 0, ""
+    End If
+    
+    Set returnDatasetPerStation = rData
     Exit Function
 ErrorHandle:
     If Err.Number > 0 Then
@@ -299,36 +327,36 @@ End Function
 
 Public Function returnFirstInputAdressePLCStation(ByVal Station As Integer) As Long
     ' Rückgabe der ersten Eingangsadressen für eine gesamte Station
-    Dim sdata As New cPLCconfigData
-    Dim rdata As Long
-    For Each sdata In Me
-        If sdata.Stationsnummer = Station Then
-            If sdata.FirstInputAdress > 0 Then
-                rdata = sdata.FirstInputAdress
+    Dim sData As New cPLCconfigData
+    Dim rData As Long
+    For Each sData In Me
+        If sData.Stationsnummer = Station Then
+            If sData.FirstInputAdress > 0 Then
+                rData = sData.FirstInputAdress
                 Exit For
             End If
         End If
     Next
     
-    returnFirstInputAdressePLCStation = rdata
+    returnFirstInputAdressePLCStation = rData
  
 End Function
 
 Public Function returnFirstOutputAdressePLCStation(ByVal Stationsnummer As Integer) As Long
     ' Rückgabe der ersten Ausgangsadressen für eine gesamte Station
-    Dim sdata As New cPLCconfigData
-    Dim rdata As Long
+    Dim sData As New cPLCconfigData
+    Dim rData As Long
     
-    For Each sdata In Me
-        If sdata.Stationsnummer = Stationsnummer Then
-            If sdata.FirstOutputAdress > 0 Then
-                rdata = sdata.FirstOutputAdress
+    For Each sData In Me
+        If sData.Stationsnummer = Stationsnummer Then
+            If sData.FirstOutputAdress > 0 Then
+                rData = sData.FirstOutputAdress
                 Exit For
             End If
         End If
     Next
     
-    returnFirstOutputAdressePLCStation = rdata
+    returnFirstOutputAdressePLCStation = rData
  
 End Function
 
@@ -342,8 +370,8 @@ Public Function sumAdressesPerSlot(ByVal Station As Integer, ByVal Kanaldaten As
     Dim iTmpOutputAdress As Long
     Dim iStartSteckplatz As Long
     Dim iSteckplatzdifferenz As Long
-    Dim sdata As New cBelegung
-    Dim rdata As New cPLCconfig
+    Dim sData As New cBelegung
+    Dim rData As New cPLCconfig
     Dim sPLCData As New cPLCconfigData
     Dim sPLCDataAdress As New cPLCconfig
     Dim sPLCDataAdressPerSlot As New cPLCconfigData
@@ -361,8 +389,8 @@ Public Function sumAdressesPerSlot(ByVal Station As Integer, ByVal Kanaldaten As
         If sPLCData.Kartentyp.VariableAdressRange = False Then
             If sPLCData.Steckplatz > iStartSteckplatz Then
                 ' Berechnung wenn sich Steckplatz ändert
-                iSteckplatzdifferenz = sdata.Steckplatz - iStartSteckplatz
-                iStartSteckplatz = sdata.Steckplatz
+                iSteckplatzdifferenz = sData.Steckplatz - iStartSteckplatz
+                iStartSteckplatz = sData.Steckplatz
                 InputAdress = iStartInputAdress + InputAdress + (iSteckplatzdifferenz * (sPLCData.Kartentyp.InputAdressLength + sPLCData.Kartentyp.InputAdressDiagnosticLength))
                 OutputAdress = iStartOutputAdress + OutputAdress + (iSteckplatzdifferenz * (sPLCData.Kartentyp.OutputAdressLength + sPLCData.Kartentyp.OutputAdressDiagnosticLength))
             End If
@@ -422,7 +450,7 @@ Public Function sumAdressesPerSlot(ByVal Station As Integer, ByVal Kanaldaten As
     Next
 
 
-    Set sumAdressesPerSlot = rdata
+    Set sumAdressesPerSlot = rData
 
 End Function
 
@@ -433,7 +461,7 @@ Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfi
     Dim OffsetSlot As Integer
 
     ' Class einbinden
-    Dim sdata As New cBelegung
+    Dim sData As New cBelegung
     Dim dataConfig As New cPLCconfig
     Dim dataConfigSort As cPLCconfig
     Dim dataKanaele As New cKanalBelegungen
@@ -463,8 +491,8 @@ Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfi
         Set dataSearchStation = Stationdata.searchDatasetPerStation(pStation)
         Set dataSearchConfig = dataSearchStation.returnAllSlotsPerRack
         ' Übertragen der Daten
-        For Each sdata In dataSearchConfig
-            dataConfig.Add sdata.Stationsnummer, sdata.Steckplatz, sdata.Kartentyp.Kartentyp, sdata.Key, sdata.InputAdressPerSlot, sdata.OutputAdressPerSlot
+        For Each sData In dataSearchConfig
+            dataConfig.Add sData.Stationsnummer, sData.Steckplatz, sData.Kartentyp.Kartentyp, sData.Key, sData.InputAdressPerSlot, sData.OutputAdressPerSlot
         Next
     
         ' Sortieren der Steckplätze

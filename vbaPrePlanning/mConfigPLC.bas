@@ -16,7 +16,7 @@ Public Sub ConfigPLC()
     Dim OffsetSlot As Integer
 
     ' Class einbinden
-    Dim sdata As New cBelegung
+    Dim sData As New cBelegung
     Dim dataConfig As New cPLCconfig
     Dim dataConfigSort As cPLCconfig
     Dim dataKanaele As New cKanalBelegungen
@@ -75,18 +75,18 @@ Public Sub ConfigPLC()
         Dim iAdressOutput As Long
         Dim iAdressInput As Long
         Set dataConfig = Nothing                 ' Rücksetzen der Datensammlung
-        For Each sdata In dataSearchConfig
+        For Each sData In dataSearchConfig
             'sdata.Stationsnummer
             'sdata.Steckplatz
             'sdata.Kartentyp
             'sdata.Adress
-            If sdata.Kartentyp.InputAdressLength > 0 Or sdata.Kartentyp.InputAdressDiagnosticLength > 0 Then
-                iAdressInput = ExtractNumber(sdata.Adress)
+            If sData.Kartentyp.InputAdressLength > 0 Or sData.Kartentyp.InputAdressDiagnosticLength > 0 Then
+                iAdressInput = ExtractNumber(sData.Adress)
             End If
-            If sdata.Kartentyp.OutputAdressLength > 0 Or sdata.Kartentyp.OutputAdressDiagnosticLength > 0 Then
-                iAdressOutput = ExtractNumber(sdata.Adress)
+            If sData.Kartentyp.OutputAdressLength > 0 Or sData.Kartentyp.OutputAdressDiagnosticLength > 0 Then
+                iAdressOutput = ExtractNumber(sData.Adress)
             End If
-            dataConfig.Add sdata.Stationsnummer, sdata.Steckplatz, sdata.Kartentyp.Kartentyp, sdata.Key, iAdressInput, iAdressOutput
+            dataConfig.Add sData.Stationsnummer, sData.Steckplatz, sData.Kartentyp.Kartentyp, sData.Key, iAdressInput, iAdressOutput
         Next
     
         ' Sortieren der Steckplätze
@@ -128,7 +128,7 @@ Sub readConfigFromSavedFile()
         bConfigFileExist = fileExist(sFileNameConfig, sfolder)
 
         If bConfigFileExist Then
-            'todo hier dann weiter wenn die Datei schon da ist
+            'hier dann weiter wenn die Datei schon da ist
             'MsgBox "Datei gibt es schon"
             Dim Result As String
             Result = ReadSecondExcelFile(sFileNameConfig, sfolder)

@@ -32,6 +32,8 @@ Private pInputAdressSize As Long
 Private pOutputAdressSize As Long
 Private pInputAdressPerSlot As Long
 Private pOutputAdressPerSlot As Long
+Private pAnschluss1 As String
+Private pAnschluss2 As String
 
 
 
@@ -169,6 +171,28 @@ End Property
 
 Public Property Let OutputAdressPerSlot(ByRef Value As Long)
     pOutputAdressPerSlot = Value
+End Property
+
+''''''''''''''''''''''
+' Anschluss_1 property
+''''''''''''''''''''''
+Public Property Get Anschluss1() As String
+    Anschluss1 = pAnschluss1
+End Property
+
+Public Property Let Anschluss1(ByVal Value As String)
+    pAnschluss1 = Value
+End Property
+
+''''''''''''''''''''''
+' Anschluss_2 property
+''''''''''''''''''''''
+Public Property Get Anschluss2() As String
+    Anschluss2 = pAnschluss2
+End Property
+
+Public Property Let Anschluss2(ByVal Value As String)
+    pAnschluss2 = Value
 End Property
 
 

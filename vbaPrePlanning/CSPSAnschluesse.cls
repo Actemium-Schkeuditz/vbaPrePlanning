@@ -29,7 +29,7 @@ Public Sub Add(ByVal Kartentyp As String, ByVal Kanal As Integer, Optional ByVal
     'create a new Dataset and add to collection
 
     Dim p As New cAnschluss
-    p.Kartentyp = Kartentyp
+    p.Kartentyp.Kartentyp = Kartentyp
     p.Kanal = Kanal
     p.Anschluss1 = Anschluss1
     p.Anschluss2 = Anschluss2
@@ -45,7 +45,7 @@ Public Sub AddDataSet(ByRef dataSet As cAnschluss)
     'create a Dataset and add to collection
 
     Dim p As New cAnschluss
-    p.Kartentyp = dataSet.Kartentyp
+    p.Kartentyp.Kartentyp = dataSet.Kartentyp.Kartentyp
     p.Kanal = dataSet.Kanal
     p.Anschluss1 = dataSet.Anschluss1
     p.Anschluss2 = dataSet.Anschluss2
@@ -138,23 +138,29 @@ End Sub
 
 Public Function searchAnschluss(ByVal pKartentyp As String, ByVal pKanal As Integer, ByVal data As CSPSAnschluesse) As CSPSAnschluesse ' only ByVal works
     ' Suchen nach den Anschlüssen passend zum Kartentyp und zum Kanal
-    Dim sdata As New cAnschluss
+    Dim sData As New cAnschluss
+    Dim sKartentyp As String
+    Dim rData As New CSPSAnschluesse
     'searchAnschluss = Nothing
-    For Each sdata In data
-        If sdata.Kartentyp = pKartentyp Then
-            If sdata.Kanal = pKanal Then
-                Me.AddDataSet sdata
+    For Each sData In data
+         
+        If sData.Kartentyp.Kartentyp = pKartentyp Then
+            sKartentyp = sData.Kartentyp.Kartentyp
+            If sData.Kanal = pKanal Then
+                rData.AddDataSet sData
                 'Debug.Print searchAnschluss.Item(1).Kartentyp;
                 Exit For                         ' nur einmal suchen dann beenden
             End If
         End If
     Next
-    If Me.Count = 0 Then
-        Me.Add vbNullString, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
+    If rData.Count = 0 Then
+        rData.Add sKartentyp, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
     End If
     
-    Set searchAnschluss = Me
+    Set searchAnschluss = rData
     'Test der Suche
     '  Debug.Print searchAnschluss.Item(1).Kartentyp; vbTab; searchAnschluss.Item(1).Kanal; vbTab; searchAnschluss.Item(1).Anschluss_1; vbTab; searchAnschluss.Item(1).Anschluss_2; vbTab; searchAnschluss.Item(1).Anschluss_3; vbTab; searchAnschluss.Item(1).Anschluss_4; vbTab; searchAnschluss.Item(1).Anschluss_M; vbTab; searchAnschluss.Item(1).Anschluss_VS
 End Function
+
+
 

@@ -18,6 +18,7 @@ Attribute VB_Exposed = False
   
   Option Explicit
 Private pKartentyp As String
+Private pPLCtyp As String
 Private pSortingIdentifier As Long
 Private pMaxChannelPerSlot As Long
 Private pDatatyp As String
@@ -41,7 +42,7 @@ Public Property Let Kartentyp(ByVal Value As String)
     pKartentyp = Value
     Select Case pKartentyp
     Case "ET200SP 4IO-LINK"
-        
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 1
         pMaxChannelPerSlot = 3
         ' Adress
@@ -58,6 +59,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = True
         pSameAdressRangeForOutput = True
     Case "ET200SP 8DI"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 2
         pMaxChannelPerSlot = 7
         ' Adress
@@ -74,6 +76,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP 8DI HS"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 3
         pMaxChannelPerSlot = 7
         ' Adress
@@ -90,6 +93,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP 8DI CNT"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 4
         pMaxChannelPerSlot = 3
         ' Adress
@@ -106,6 +110,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP 8DO"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 5
         pMaxChannelPerSlot = 7
         ' Adress
@@ -122,6 +127,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP 4DO"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 6
         pMaxChannelPerSlot = 3
         ' Adress
@@ -138,6 +144,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP 4RQ"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 7
         pMaxChannelPerSlot = 3
         ' Adress
@@ -154,6 +161,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP 2AI I"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 8
         pMaxChannelPerSlot = 1
         ' Adress
@@ -170,6 +178,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP 2AI U"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 9
         pMaxChannelPerSlot = 1
         ' Adress
@@ -186,6 +195,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP 4AI PT100"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 10
         pMaxChannelPerSlot = 3
         ' Adress
@@ -202,6 +212,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP 2AO I"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 11
         pMaxChannelPerSlot = 1
         ' Adress
@@ -217,6 +228,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
     Case "ET200SP 2AO U"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 12
         pMaxChannelPerSlot = 1
         ' Adress
@@ -232,6 +244,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
     Case "ET200SP PTP"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 13
         pMaxChannelPerSlot = 0
         ' Adress
@@ -248,6 +261,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP SIWAREX"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 14
         pMaxChannelPerSlot = 0
         ' Adress
@@ -264,6 +278,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = True
     Case "ET200SP 8FDI"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 15
         pMaxChannelPerSlot = 7
         ' Adress
@@ -280,6 +295,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP 4FDO"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 16
         pMaxChannelPerSlot = 3
         ' Adress
@@ -296,6 +312,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP STARTER"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 17
         pMaxChannelPerSlot = 0
         ' Adress
@@ -312,6 +329,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP WENDESTARTER"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 18
         pMaxChannelPerSlot = 0
         ' Adress
@@ -328,6 +346,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200SP RESERVE"
+        pPLCtyp = "ET200SP"
         pSortingIdentifier = 19
         pMaxChannelPerSlot = 0
         ' Adress
@@ -345,6 +364,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pSameAdressRangeForOutput = False
         ' FESTO
     Case "FB43"
+        pPLCtyp = "FESTO CPX"
         pSortingIdentifier = 29
         pMaxChannelPerSlot = 0
         ' Adress
@@ -361,6 +381,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "CPX-8DE-D"
+        pPLCtyp = "FESTO CPX"
         pSortingIdentifier = 30
         pMaxChannelPerSlot = 7
         ' Adress
@@ -377,6 +398,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "CPX-4DA"
+        pPLCtyp = "FESTO CPX"
         pSortingIdentifier = 31
         pMaxChannelPerSlot = 3
         ' Adress
@@ -393,6 +415,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "CPX-4AE-T"
+        pPLCtyp = "FESTO CPX"
         pSortingIdentifier = 32
         pMaxChannelPerSlot = 3
         ' Adress
@@ -409,6 +432,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "CPX 2x3/2 mono"
+        pPLCtyp = "FESTO MPA"
         pSortingIdentifier = 43
         pMaxChannelPerSlot = 1
         ' Adress
@@ -424,6 +448,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
     Case "CPX 5/2 mono"
+        pPLCtyp = "FESTO MPA"
         pSortingIdentifier = 41
         pMaxChannelPerSlot = 0
         ' Adress
@@ -439,6 +464,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
     Case "CPX 5/2 bistabil"
+        pPLCtyp = "FESTO MPA"
         pSortingIdentifier = 40
         pMaxChannelPerSlot = 0
         ' Adress
@@ -456,6 +482,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pSameAdressRangeForOutput = False
         'IFM IO-Link Master
     Case "IFM IO-LINK"
+        pPLCtyp = "IFM IO-LINK MASTER"
         pSortingIdentifier = 50
         pMaxChannelPerSlot = 7
         ' Adress
@@ -472,6 +499,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = True
         pSameAdressRangeForOutput = True
     Case "AL1400"
+        pPLCtyp = "IFM IO-LINK MASTER"
         pSortingIdentifier = 51
         pMaxChannelPerSlot = 4
         ' Adress
@@ -488,6 +516,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = True
         pSameAdressRangeForOutput = True
     Case "AL1402"
+        pPLCtyp = "IFM IO-LINK MASTER"
         pSortingIdentifier = 52
         pMaxChannelPerSlot = 7
         ' Adress
@@ -504,6 +533,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = True
         pSameAdressRangeForOutput = True
     Case "ET200AL 16DI"
+        pPLCtyp = "ET200AL"
         pSortingIdentifier = 60
         pMaxChannelPerSlot = 15
         ' Adress
@@ -520,6 +550,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "ET200AL 8DO"
+        pPLCtyp = "ET200AL"
         pSortingIdentifier = 61
         pMaxChannelPerSlot = 7
         ' Adress
@@ -536,6 +567,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
     Case "FU"
+        pPLCtyp = "FU"
         pSortingIdentifier = 100
         pMaxChannelPerSlot = 0
         ' Adress
@@ -552,6 +584,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pVariableAdressRange = False
         pSameAdressRangeForOutput = True
     Case "COM800"
+        pPLCtyp = "SIRIUS"
         pSortingIdentifier = 80
         pMaxChannelPerSlot = 0
         ' Adress
@@ -567,7 +600,42 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = True
+    Case "FESTO MPA1S"
+        pPLCtyp = "FESTO MPA"
+        pSortingIdentifier = 150
+        pMaxChannelPerSlot = 8
+        ' Adress
+        pDatatyp = "Byte"
+        pSignalDirection = "Output"
+        pInputAdressLength = 0
+        pOutputAdressLength = 1
+        pInputMinLength = 0
+        pInputMaxLength = 0
+        pOutputMinLength = 0
+        pOutputMaxLength = 0
+        pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
+        pVariableAdressRange = False
+        pSameAdressRangeForOutput = False
+    Case "VMPA1-FB-SPU"
+        pPLCtyp = "FESTO MPA"
+        pSortingIdentifier = 151
+        pMaxChannelPerSlot = 0
+        ' Adress
+        pDatatyp = "Byte"
+        pSignalDirection = "Output"
+        pInputAdressLength = 0
+        pOutputAdressLength = 0
+        pInputMinLength = 0
+        pInputMaxLength = 0
+        pOutputMinLength = 0
+        pOutputMaxLength = 0
+        pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
+        pVariableAdressRange = False
+        pSameAdressRangeForOutput = False
     Case Else
+        pPLCtyp = "unbestimmt"
         pSortingIdentifier = 200
         pMaxChannelPerSlot = 100
         ' Adress
@@ -594,8 +662,17 @@ End Property
 ' Kartentyp
 ''''''''''''''''''''''
 Public Property Get Kartentyp() As String
-Kartentyp = pKartentyp
+    Kartentyp = pKartentyp
 End Property
+
+
+''''''''''''''''''''''
+' SPS-Typ
+''''''''''''''''''''''
+Public Property Get PLCtyp() As String
+PLCtyp = pPLCtyp
+End Property
+
 
 ''''''''''''''''''''''
 ' SortingIdentifier property

@@ -118,7 +118,7 @@ Public Sub SPS_BMK()
                     'MsgBox "CPX " + Str(i) + "nicht fertig programmiert"
                     If .Cells.Item(i, spalteSPSSteckplatz) <> vbNullString Then
                         ' MsgBox "CPX " + Str(i) + "nicht fertig programmiert, BMK prüfen"
-                        .Cells.Item(i, spalteSPSBMK) = "KH" + Trim(str(.Cells.Item(i, spalteSPSSteckplatz)))
+                        .Cells.Item(i, spalteSPSBMK) = "KH" + Trim(str(.Cells.Item(i, spalteSPSKanal)))
                     Else
                         ' makiere fehlende Steckplatz Daten
                         .Cells.Item(i, spalteSPSSteckplatz).Interior.ColorIndex = 3

@@ -1,8 +1,8 @@
 Attribute VB_Name = "mEinbauorte"
 ' Skript zur Ermittlung der Anlagen und Ortskennzeichen der IO-Racks
-' V0.4
+' V0.5
 ' abgetrennt aus SPSRackBMK
-' 11.02.2020
+' 25.02.2020
 ' angepasst für MH04
 '
 ' Christian Langrock
@@ -35,7 +35,6 @@ Public Sub EinbauorteSchreiben()
     Dim tmpSpalteStationstyp As Long
 
     'Tabellenamen ermitteln
-    'ToDo Einbauorte übertragen AL1400 und AL1402
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
     spalteKWS_BMK = "B"
@@ -52,8 +51,10 @@ Public Sub EinbauorteSchreiben()
     ' Tabelle mit Planungsdaten auslesen
     With ws1
     'Filter aus, aber nicht löschen
-    If ws1.AutoFilterMode Then ws1.ShowAllData
-    
+    'If ws1.AutoFilterMode Then ws1.ShowAllData
+        'Filter aus, aber nicht löschen
+        If ActiveSheet.FilterMode Then ActiveSheet.ShowAllData
+            
         dataKWSBMK = LTrim$(.Cells.Item(3, spalteKWS_BMK))
     
         If dataKWSBMK <> vbNullString Then
