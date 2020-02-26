@@ -67,8 +67,8 @@ Public Sub SPS_KartenAnschluss()
         'iSearchKartentyp = "ET200SP 4FDO"
         spalteOffset = 0
     
-        ' Alle fünf Kanäle abarbeiten
-        For y = 0 To 4
+        ' Alle sechs Kanäle abarbeiten
+        For y = 0 To 5
             spalteOffset = y * 12
             For i = 3 To zeilenanzahl
                 iSearchKartentyp = .Cells.Item(i, spalteIntStart + 1).Value

@@ -42,7 +42,7 @@ Public Sub SPS_BMK()
         zeilenanzahl = .Cells.Item(Rows.Count, 2).End(xlUp).Row ' zweite Spalte wird gezählt
         'MsgBox zeilenanzahl
 
-        For y = 1 To 5
+        For y = 1 To 6
             '*********** SPS-BMK erzeugen ******************
 
             ' Auswahl der Spalten pro SPS Kanal
@@ -76,6 +76,13 @@ Public Sub SPS_BMK()
                 spalteSPSBMK = "DV"
                 spalteSPSSteckplatz = "DW"
                 spalteSPSKanal = "DX"
+                'MsgBox "kein Fehler"
+             ElseIf y = 6 Then
+                '**************** SPS-BMK für Signal 6 ****************
+                spalteSPSKartentyp = "EF"
+                spalteSPSBMK = "EG"
+                spalteSPSSteckplatz = "EH"
+                spalteSPSKanal = "EI"
                 'MsgBox "kein Fehler"
             Else
                 MsgBox "Fehler SPS-BMK erzeugen"

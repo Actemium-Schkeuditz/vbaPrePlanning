@@ -22,6 +22,7 @@ Public Sub SPSZuweisenKanal()
  
     Dim iInputAdress As Long
     Dim iOutputAdress As Long
+    Dim PLCcardTyp As String
     
     ' Class einbinden
     Dim dataKanaele As New cKanalBelegungen
@@ -83,6 +84,7 @@ Public Sub SPSZuweisenKanal()
         Set dataPLCConfigStation = dataPLCConfig.returnDatasetPerStation(pStation)
         iSteckplatzMPA = 0
         iKanalMPA = 0
+        PLCcardTyp = dataPLCConfigStation.Item(1).Kartentyp.PLCtyp
         '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
         Set dataSort = dataSearchStation.Sort
         '##### Suche nach allen verwendeten Kartentypen
@@ -109,6 +111,9 @@ Public Sub SPSZuweisenKanal()
             '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
             dataResultAdress.writeDatsetsToExcel tabelleDaten
         Next
+        'round up
+        RoundUpPLCaddresses PLCcardTyp, iInputStartAdress, iOutputStartAdress
+        
         dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation
     Next
     

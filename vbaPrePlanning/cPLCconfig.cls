@@ -56,7 +56,7 @@ Public Sub AddDataSet(ByRef dataSet As cPLCconfigData)
     p.Key = dataSet.Key
     p.Stationsnummer = dataSet.Stationsnummer
     p.Steckplatz = dataSet.Steckplatz
-    p.Kartentyp = dataSet.Kartentyp
+    p.Kartentyp.Kartentyp = dataSet.Kartentyp.Kartentyp
     p.FirstInputAdress = dataSet.FirstInputAdress
     p.FirstOutputAdress = dataSet.FirstOutputAdress
     p.ReserveChannelsBefor = dataSet.ReserveChannelsBefor
@@ -215,7 +215,11 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String)
     Dim iSpalteKanal As Long
     Dim i As Long
     Dim zeilenanzahl As Long
-        
+    
+     On Error GoTo ErrorHandle
+    
+        iSpalteKanal = 0
+        zeilenanzahl = 0
     With ThisWorkbook
         ' alte Daten löschen
         Application.ScreenUpdating = False

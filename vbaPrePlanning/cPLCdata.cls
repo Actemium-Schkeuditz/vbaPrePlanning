@@ -71,7 +71,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 8
         pOutputMinLength = 0
         pOutputMaxLength = 0
-        pInputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
@@ -88,7 +88,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 8
         pOutputMinLength = 0
         pOutputMaxLength = 0
-        pInputAdressDiagnosticLength = 1         'Byte
+        pInputAdressDiagnosticLength = 0         'Byte
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
@@ -122,7 +122,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 0
         pOutputMinLength = 8
         pOutputMaxLength = 8
-        pInputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
@@ -139,7 +139,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 0
         pOutputMinLength = 8
         pOutputMaxLength = 8
-        pInputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
@@ -156,7 +156,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 0
         pOutputMinLength = 8
         pOutputMaxLength = 8
-        pInputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
@@ -173,7 +173,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 4
         pOutputMinLength = 0
         pOutputMaxLength = 0
-        pInputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
@@ -190,7 +190,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 4
         pOutputMinLength = 0
         pOutputMaxLength = 0
-        pInputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
@@ -207,7 +207,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 8
         pOutputMinLength = 0
         pOutputMaxLength = 0
-        pInputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
@@ -224,7 +224,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 0
         pOutputMinLength = 4
         pOutputMaxLength = 4
-        pInputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
     Case "ET200SP 2AO U"
@@ -240,7 +240,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 0
         pOutputMinLength = 4
         pOutputMaxLength = 4
-        pInputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
     Case "ET200SP PTP"
@@ -545,7 +545,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 0
         pOutputMinLength = 0
         pOutputMaxLength = 0
-        pInputAdressDiagnosticLength = 2
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
@@ -562,19 +562,19 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 0
         pOutputMinLength = 8
         pOutputMaxLength = 0
-        pInputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
-    Case "FU"
+    Case "FC302"
         pPLCtyp = "FU"
         pSortingIdentifier = 100
         pMaxChannelPerSlot = 0
         ' Adress
         pDatatyp = "Byte"
         pSignalDirection = "InOut"
-        pInputAdressLength = 6
-        pOutputAdressLength = 4
+        pInputAdressLength = 30
+        pOutputAdressLength = 30
         pInputMinLength = 0
         pInputMaxLength = 0
         pOutputMinLength = 0

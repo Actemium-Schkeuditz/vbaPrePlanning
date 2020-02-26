@@ -359,3 +359,47 @@ Fehlermeldung:
            , vbCritical, "Fehler"
 End Sub
 
+
+Public Sub RoundUpPLCaddresses(ByVal pPLCcardTyp As String, ByRef iInputAdress As Long, ByRef iOutputAdress As Long)
+    'round up PLC adresses
+    'todo Last IFM Master
+    Dim iInputAdressTmp As Long
+    Dim iOutputAdressTmp As Long
+    iInputAdressTmp = 0
+    iOutputAdressTmp = 0
+    
+    If pPLCcardTyp = "ET200SP" Then
+        
+        Do Until iInputAdressTmp > iInputAdress + 10
+            iInputAdressTmp = iInputAdressTmp + 50
+        Loop
+        Do Until iOutputAdressTmp > iOutputAdress + 10
+            iOutputAdressTmp = iOutputAdressTmp + 50
+        Loop
+     
+        If iInputAdressTmp >= iOutputAdressTmp Then
+            iInputAdress = iInputAdressTmp
+            iOutputAdress = iInputAdressTmp
+        ElseIf iOutputAdressTmp > iInputAdressTmp Then
+            iInputAdress = iOutputAdressTmp
+            iOutputAdress = iOutputAdressTmp
+        End If
+    ElseIf pPLCcardTyp = "FESTO CPX" Or pPLCcardTyp = "FESTO MPA" Then
+        Do Until iInputAdressTmp > iInputAdress + 10
+            iInputAdressTmp = iInputAdressTmp + 50
+        Loop
+        Do Until iOutputAdressTmp > iOutputAdress + 10
+            iOutputAdressTmp = iOutputAdressTmp + 50
+        Loop
+        If iInputAdressTmp >= iOutputAdressTmp Then
+            iInputAdress = iInputAdressTmp
+            iOutputAdress = iInputAdressTmp
+        ElseIf iOutputAdressTmp > iInputAdressTmp Then
+            iInputAdress = iOutputAdressTmp
+            iOutputAdress = iOutputAdressTmp
+        End If
+    End If
+    
+End Sub
+
+

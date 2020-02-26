@@ -147,20 +147,4 @@ Sub readConfigFromSavedFile()
 
 End Sub
 
-Sub testenLesenConfig()
-' Class einbinden
-Dim dataConfig As New cPLCconfig
-Dim tablename As String
-
-    tablename = "Station_1"
-    dataConfig.ReadPLCConfigData tablename
-
-   MsgBox "daten gelesen"
-
-tablename = "Station_16"
-    dataConfig.ReadPLCConfigData tablename
-   MsgBox "daten gelesen"
-End Sub
-
-
 

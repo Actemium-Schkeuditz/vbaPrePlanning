@@ -289,6 +289,10 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
                 If rCell.Offset(0, ispalteKartentyp + 48).Value <> vbNullString Then
                     Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 5, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 48).Value, rCell.Offset(0, ispalteKartentyp + 2 + 48).Value, rCell.Offset(0, ispalteKartentyp + 3 + 48).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 48).Value
                 End If
+                 'Signal 6
+                If rCell.Offset(0, ispalteKartentyp + 60).Value <> vbNullString Then
+                    Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 6, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 48).Value, rCell.Offset(0, ispalteKartentyp + 2 + 48).Value, rCell.Offset(0, ispalteKartentyp + 3 + 48).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 48).Value
+                End If
             End If
         End With
     Next
@@ -314,6 +318,8 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
     Dim i As Long
     Dim zeilenanzahl As Long
         
+     On Error GoTo ErrorHandle
+     
     ' Spalten definieren
     sSpalteSteckplatz = "CA"
     sSpalteKanal = "CB"
@@ -588,7 +594,7 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
                     ikanal = ikanal + 1
                 Else
                     ikanal = 0
-                    rData.Add "LEER", "LEER", 0, sData.Stationsnummer, sData.Kartentyp, iSteckplatz, ikanal
+                    rData.Add "LEER", "LEER", 0, sData.Stationsnummer, sData.Kartentyp.Kartentyp, iSteckplatz, ikanal
                     iSteckplatz = iSteckplatz + 1
                 End If
             End If
@@ -830,7 +836,7 @@ End Function
 Public Function returnAllSlotsPerRack() As cKanalBelegungen
     ' Rückgabe der Steckplätze mit dem ersten Datensatz, bzw Kanal 0
     ' todo not testet
-    ' On Error GoTo ErrorHandler
+     On Error GoTo ErrorHandler
     Set returnAllSlotsPerRack = Nothing
     Dim icount As Long
    
@@ -1035,6 +1041,12 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
     Dim y As Long
     Dim x As Long
     Dim iSubSlot As Long
+    Dim iAdressLegthInput As Long
+    Dim iAdressLegthOutput As Long
+    
+    
+    iAdressLegthInput = 0
+    iAdressLegthOutput = 0
     
     ' sortieren nach Station, Slot and Channel
     Me.SortChannel
@@ -1115,32 +1127,34 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                     End If
                     sdataVari.InputAdressPerSlot = iInputStartAdress
                     sdataVari.OutputAdressPerSlot = iOutputStartAdress
-                    
-                    If sdataVari.InputAdressSize = 1 And sdataVari.OutputAdressSize <= 1 Then
+                    iAdressLegthInput = sdataVari.InputAdressSize - 1
+                    iAdressLegthOutput = sdataVari.OutputAdressSize - 1
+                    'KWS gibt alle Adresslängen mit Diagnose (+1 Byte) an, Hier bei IFM muss di eDiagnose abgezogen werden, nicht bei ET200SP IO-LINK
+                    If iAdressLegthInput = 1 And iAdressLegthOutput <= 1 Then
                         iAdressVariInput = iAdressVariInput + 1
                         iAdressVariOutput = iAdressVariOutput + 1
                         sdataVari.Adress = "EB" & iAdressVariInput
-                    ElseIf sdataVari.InputAdressSize <= 1 And sdataVari.OutputAdressSize = 1 Then 'beide null ist Fehler
+                    ElseIf iAdressLegthInput <= 1 And iAdressLegthOutput = 1 Then 'beide null ist Fehler
                         iAdressVariInput = iAdressVariInput + 1
                         iAdressVariOutput = iAdressVariOutput + 1
                         sdataVari.Adress = "EB" & iAdressVariInput
-                    ElseIf sdataVari.InputAdressSize <= 2 And sdataVari.OutputAdressSize <= 2 Then
+                    ElseIf iAdressLegthInput <= 2 And iAdressLegthOutput <= 2 Then
                         iAdressVariInput = iAdressVariInput + 2
                         iAdressVariOutput = iAdressVariOutput + 2
                         sdataVari.Adress = "EB" & iAdressVariInput
-                    ElseIf sdataVari.InputAdressSize <= 4 And sdataVari.OutputAdressSize <= 4 Then
+                    ElseIf iAdressLegthInput <= 4 And iAdressLegthOutput <= 4 Then
                         iAdressVariInput = iAdressVariInput + 4
                         iAdressVariOutput = iAdressVariOutput + 4
                         sdataVari.Adress = "EB" & iAdressVariInput
-                    ElseIf sdataVari.InputAdressSize <= 8 And sdataVari.OutputAdressSize <= 8 Then
+                    ElseIf iAdressLegthInput <= 8 And iAdressLegthOutput <= 8 Then
                         iAdressVariInput = iAdressVariInput + 8
                         iAdressVariOutput = iAdressVariOutput + 8
                         sdataVari.Adress = "EB" & iAdressVariInput
-                    ElseIf sdataVari.InputAdressSize <= 16 And sdataVari.OutputAdressSize <= 16 Then
+                    ElseIf iAdressLegthInput <= 16 And iAdressLegthOutput <= 16 Then
                         iAdressVariInput = iAdressVariInput + 16
                         iAdressVariOutput = iAdressVariOutput + 16
                         sdataVari.Adress = "EB" & iAdressVariInput
-                    ElseIf sdataVari.InputAdressSize <= 32 And sdataVari.OutputAdressSize <= 32 Then
+                    ElseIf iAdressLegthInput <= 32 And iAdressLegthOutput <= 32 Then
                         iAdressVariInput = iAdressVariInput + 32
                         iAdressVariOutput = iAdressVariOutput + 32
                         sdataVari.Adress = "EB" & iAdressVariInput
@@ -1173,6 +1187,9 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                     ElseIf sDataFesto.Kartentyp.SignalDirection = "Output" Then
                         iOutputStartAdress = iOutputStartAdress + sDataFesto.Kartentyp.OutputAdressLength + sDataFesto.Kartentyp.OutputAdressDiagnosticLength
                         sDataFesto.Adress = "AB" & iOutputStartAdress
+                        sDataFesto.OutputAdressPerSlot = iOutputStartAdress
+                    ElseIf sDataFesto.Kartentyp.SignalDirection = "InOut" Then
+                        iOutputStartAdress = iOutputStartAdress + sDataFesto.Kartentyp.OutputAdressLength + sDataFesto.Kartentyp.OutputAdressDiagnosticLength
                         sDataFesto.OutputAdressPerSlot = iOutputStartAdress
                     Else
                         MsgBox "Datentyp der Karte passt nicht: " & sDataFesto.Kartentyp.Kartentyp
@@ -1283,7 +1300,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                         MsgBox "Datentyp der Karte passt nicht: " & sData.Kartentyp.Kartentyp
                     End If
                 ElseIf sData.Kartentyp.Datatyp = "Bit" Then
-                    'todo hier fehlt noch die Bit Berechnung
+                    'die Bit Berechnung
                     If sData.Kartentyp.SignalDirection = "Input" Then
                         If sData.Kanal <= 7 Then
                             sData.Adress = "E" & iInputStartAdress & "." & sData.Kanal
@@ -1434,9 +1451,6 @@ Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long
             Else
                 MsgBox "Fehler in den Daten, Kartentyp: " & sData.Kartentyp.Kartentyp
             End If
-            
-           
-            
         End If
         rData.AddDataSet sData
     Next
