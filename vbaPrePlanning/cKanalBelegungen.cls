@@ -10,6 +10,7 @@ Attribute VB_Exposed = False
 Option Explicit
 'this collection could contain anything, but the class
 'controls access to it and ensures it will just contain Chanels for PLC
+'20200302
 
 '@folder (Daten.Kanalbelegung)
 
@@ -23,7 +24,7 @@ Private Sub Class_Terminate()
     Set objKanalBelegungen = Nothing
 End Sub
 
-Public Sub Add(ByRef Key As String, ByRef KWSBMK As String, ByRef Signal As Integer, ByRef Stationsnummer As Integer, ByRef Kartentyp As String, Optional ByVal Steckplatz As Integer, Optional ByRef Kanal As Integer, Optional ByRef Segmentvorlage As String, Optional ByRef Adresse As String, Optional ByRef InputAdressSize As Long, Optional ByRef OutputAdressSize As Long)
+Public Sub Add(ByRef Key As String, ByRef KWSBMK As String, ByRef Signal As Integer, ByRef Stationsnummer As Integer, Optional ByRef Kartentyp As String, Optional ByVal Steckplatz As Integer, Optional ByRef Kanal As Integer, Optional ByRef Segmentvorlage As String, Optional ByRef Adresse As String, Optional ByRef InputAdressSize As Long, Optional ByRef OutputAdressSize As Long)
     'create a dataset for Chanel and add to collection
 
     Dim p As New cBelegung
