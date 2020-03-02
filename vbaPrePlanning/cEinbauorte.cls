@@ -86,7 +86,6 @@ Public Sub ReadExcelDataToCollection(ByRef tablename As String, ByRef dataColect
     'to the product's properties.
     Dim rCell As Range
     Dim rTable As Range
-    'Dim sEinbauort As String
 
     On Error GoTo ErrorHandle
 
@@ -122,11 +121,6 @@ Public Sub ReadExcelDataToCollection(ByRef tablename As String, ByRef dataColect
 
     For Each rCell In rTable
         With rCell
-            'If IsNumeric(.Value) Then
-             '   sEinbauort = str$(.Value)
-            'Else
-            '    sEinbauort = .Value
-            'End If
             ' die gelesenen Daten anhängen
             Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, rCell.Offset(0, 2).Value, rCell.Offset(0, 3).Value
   

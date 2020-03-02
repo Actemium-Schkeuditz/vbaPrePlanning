@@ -1,9 +1,9 @@
 Attribute VB_Name = "mSPSBMK"
 ' Skript zur Ermittlung der SPS BMK´s
 ' Die Daten werden Kanalweise zugeordnet
-' V0.2
+' V0.3
 ' getestet
-' 11.02.2020
+' 02.03.2020
 ' überflüssige Leerzeichen entfernt
 '
 ' Christian Langrock
@@ -48,41 +48,41 @@ Public Sub SPS_BMK()
             ' Auswahl der Spalten pro SPS Kanal
             If y = 1 Then
                 '**************** SPS-BMK für Signal 1 ****************
-                spalteSPSKartentyp = "BY"
-                spalteSPSBMK = "BZ"
-                spalteSPSSteckplatz = "CA"
-                spalteSPSKanal = "CB"
+                spalteSPSKartentyp = "CA"
+                spalteSPSBMK = "CB"
+                spalteSPSSteckplatz = "CC"
+                spalteSPSKanal = "CD"
             ElseIf y = 2 Then
                 '**************** SPS-BMK für Signal 2 ****************
-                spalteSPSKartentyp = "CK"
-                spalteSPSBMK = "CL"
-                spalteSPSSteckplatz = "CM"
-                spalteSPSKanal = "CN"
+                spalteSPSKartentyp = "CO"
+                spalteSPSBMK = "CP"
+                spalteSPSSteckplatz = "CQ"
+                spalteSPSKanal = "CR"
             ElseIf y = 3 Then
                 '**************** SPS-BMK für Signal 3 ****************
-                spalteSPSKartentyp = "CW"
-                spalteSPSBMK = "CX"
-                spalteSPSSteckplatz = "CY"
-                spalteSPSKanal = "CZ"
+                spalteSPSKartentyp = "DC"
+                spalteSPSBMK = "DD"
+                spalteSPSSteckplatz = "DE"
+                spalteSPSKanal = "DF"
             ElseIf y = 4 Then
                 '**************** SPS-BMK für Signal 4 ****************
-                spalteSPSKartentyp = "DI"
-                spalteSPSBMK = "DJ"
-                spalteSPSSteckplatz = "DK"
-                spalteSPSKanal = "DL"
+                spalteSPSKartentyp = "DQ"
+                spalteSPSBMK = "DR"
+                spalteSPSSteckplatz = "DS"
+                spalteSPSKanal = "DT"
             ElseIf y = 5 Then
                 '**************** SPS-BMK für Signal 5 ****************
-                spalteSPSKartentyp = "DU"
-                spalteSPSBMK = "DV"
-                spalteSPSSteckplatz = "DW"
-                spalteSPSKanal = "DX"
+                spalteSPSKartentyp = "EE"
+                spalteSPSBMK = "EF"
+                spalteSPSSteckplatz = "EG"
+                spalteSPSKanal = "EH"
                 'MsgBox "kein Fehler"
              ElseIf y = 6 Then
                 '**************** SPS-BMK für Signal 6 ****************
-                spalteSPSKartentyp = "EF"
-                spalteSPSBMK = "EG"
-                spalteSPSSteckplatz = "EH"
-                spalteSPSKanal = "EI"
+                spalteSPSKartentyp = "ES"
+                spalteSPSBMK = "ET"
+                spalteSPSSteckplatz = "EU"
+                spalteSPSKanal = "EV"
                 'MsgBox "kein Fehler"
             Else
                 MsgBox "Fehler SPS-BMK erzeugen"

@@ -1,7 +1,7 @@
 Attribute VB_Name = "mConfigPLC"
 ' Skript zum Übertragen der SPS Konifguration nach Excel
-' V0.2
-' 17.02.2020
+' V0.3
+' 02.03.2020
 ' update
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -12,8 +12,7 @@ Option Explicit
 
 Public Sub ConfigPLC()
     'writes PLC Config to Excel sheets
-    Dim i As Long
-    Dim OffsetSlot As Integer
+    'todo not used
 
     ' Class einbinden
     Dim sData As New cBelegung
@@ -28,14 +27,13 @@ Public Sub ConfigPLC()
     Dim ws1 As Worksheet
     Dim tablename As String
     Dim zeilenanzahl As Long
-    Dim spalteStationsnummer As String
-    Dim spalteKartentyp As String
+    'Dim spalteStationsnummer As String
+    'Dim spalteKartentyp As String
     
  
     ' Tabellen definieren
     tablename = "EplSheet"
-    spalteStationsnummer = "BU"                  'erste Spalte der Anschlüsse
-    spalteKartentyp = "BY"
+    
     
     Set wkb = ActiveWorkbook
     Set ws1 = Worksheets.[_Default](tablename)
@@ -43,7 +41,7 @@ Public Sub ConfigPLC()
     Application.ScreenUpdating = False
 
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
-    dataKanaele.ReadExcelDataChanelToCollection tablename, dataKanaele, spalteStationsnummer, spalteKartentyp
+    dataKanaele.ReadExcelDataChanelToCollection tablename, dataKanaele
     'todo Belegungsdaten ermitteln pro Station für jeden Steckplatz den ersten Kanal mit Adresse und Typ ermitteln
    
     '##### Suche nach allen Stationsnummern

@@ -1,8 +1,8 @@
 Attribute VB_Name = "mSPSZuweisenKanal"
 ' Skript zur Ermittlung der SPS Kanäle
-' V0.3
+' V0.4
 ' nicht fertig
-' 23.02.2020
+' 02.03.2020
 'diverse Fehler müssen abgefangen werden, Offset der Kartenn fehlt noch
 '
 ' Christian Langrock
@@ -16,8 +16,8 @@ Public Sub SPSZuweisenKanal()
 
     Dim tabelleDaten As String
     Dim i As Long
-    Dim spalteStationsnummer As String
-    Dim spalteKartentyp As String
+    'Dim spalteStationsnummer As String
+   ' Dim spalteKartentyp As String
     Dim OffsetSlot As Integer
  
     Dim iInputAdress As Long
@@ -39,14 +39,14 @@ Public Sub SPSZuweisenKanal()
     
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
-    spalteStationsnummer = "BU"                  'erste Spalte der Anschlüsse
-    spalteKartentyp = "BY"
+    'spalteStationsnummer = "BU"                  'erste Spalte der Anschlüsse
+    'spalteKartentyp = "BY"
     
     iInputAdress = 0
     iOutputAdress = 0
     
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
-    dataKanaele.ReadExcelDataChanelToCollection tabelleDaten, dataKanaele, spalteStationsnummer, spalteKartentyp
+    dataKanaele.ReadExcelDataChanelToCollection tabelleDaten, dataKanaele ', spalteStationsnummer, spalteKartentyp
     
     
     '##### Suche nach allen Stationsnummern
@@ -57,7 +57,7 @@ Public Sub SPSZuweisenKanal()
     Dim iKartentyp As Collection
     
     '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
-    Dim sortierung As cBelegung
+    'Dim sortierung As cBelegung
     Dim dataSort As New cKanalBelegungen         'Ergebnis der Sortierung
   
     '####### zuweisen der Kanäle #######

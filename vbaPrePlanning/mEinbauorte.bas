@@ -1,8 +1,8 @@
 Attribute VB_Name = "mEinbauorte"
 ' Skript zur Ermittlung der Anlagen und Ortskennzeichen der IO-Racks
-' V0.5
+' V0.6
 ' abgetrennt aus SPSRackBMK
-' 25.02.2020
+' 02.03.2020
 ' angepasst für MH04
 '
 ' Christian Langrock
@@ -22,7 +22,6 @@ Public Sub EinbauorteSchreiben()
     Dim j As Long
     Dim wkb As Workbook
     Dim ws1 As Worksheet
-    'Dim ws2 As Worksheet
     Dim tabelleDaten As String
     Dim dataKWSBMK As String
     Dim spalteStationsnummer As String
@@ -54,41 +53,10 @@ Public Sub EinbauorteSchreiben()
     'If ws1.AutoFilterMode Then ws1.ShowAllData
         'Filter aus, aber nicht löschen
         If ActiveSheet.FilterMode Then ActiveSheet.ShowAllData
-            
-        dataKWSBMK = LTrim$(.Cells.Item(3, spalteKWS_BMK))
-    
-        If dataKWSBMK <> vbNullString Then
-            If Left$(dataKWSBMK, 3) = "BAP" Then
-                tablennameEinbauorte = "Einbauorte_BAP"
-            ElseIf Left$(dataKWSBMK, 4) = "SG01" Then
-                tablennameEinbauorte = "Einbauorte_H02.SG01"
-            ElseIf Left$(dataKWSBMK, 4) = "HDMA" Then
-                tablennameEinbauorte = "Einbauorte_H03.HDMA"
-            ElseIf Left$(dataKWSBMK, 3) = "PPP" Then
-                tablennameEinbauorte = "Einbauorte_MH04.PPP"
-            ElseIf Left$(dataKWSBMK, 5) = "SRN01" Then
-                tablennameEinbauorte = "Einbauorte_MH04.SRN"
-            ElseIf Left$(dataKWSBMK, 5) = "TRP01" Then
-                tablennameEinbauorte = "Einbauorte_MH03.TRP01"
-            ElseIf Left$(dataKWSBMK, 5) = "TRP03" Then
-                tablennameEinbauorte = "Einbauorte_MH03.TRP03"
-            Else
-                MsgBox "Keine passenden Daten mit Einbauorten gefunden, für KWS-BMK: " & dataKWSBMK
-                tablennameEinbauorte = vbNullString
-                Exit Sub                         ' hier dann Abbruch der ganzen Funktion
-            End If
-        Else
-            MsgBox "Fehler in Daten, KWS-BMK erwartet"
-        End If
-    
-    
-        ' hier einlesen der Daten aus der Exceltabelle Einbauorte für die einzelnen Anlagen
-        EinbauorteData.ReadExcelDataToCollection tablennameEinbauorte, EinbauorteData
-
-        ' suchen nach Einbauort passend zur Stationsnummer
-        'iSearchNumber = 10
-        ' sResult = "leer"
-
+                
+        'hier einlesen der Daten aus der Exceltabelle Einbauorte für die einzelnen Anlagen
+        Set EinbauorteData = readEinbauorte(tabelleDaten)
+        
         ' Spaltenbreiten anpassen
         ThisWorkbook.Worksheets.[_Default](tabelleDaten).Activate
         ActiveSheet.Columns.Item(spalteEinbauort).Select
@@ -133,8 +101,8 @@ Public Sub EinbauorteSchreiben()
                         .Cells.Item(i, spalteEinbauortRack).Interior.ColorIndex = 3
                     End If
                     ' Stationstyp schreiben wenn IFM Master
-                    For j = 0 To 4
-                        tmpSpalteStationstyp = iSpalteStationstyp + (j * 12)
+                    For j = 0 To 5
+                        tmpSpalteStationstyp = iSpalteStationstyp + (j * 14)
                         If .Cells.Item(i, tmpSpalteStationstyp) = "IFM IO-LINK" Or .Cells.Item(i, tmpSpalteStationstyp) = "AL1400" Or .Cells.Item(i, tmpSpalteStationstyp) = "AL1402" Then
                             .Cells.Item(i, tmpSpalteStationstyp) = sResult.Item(1).Geraetetyp
                             .Cells.Item(i, tmpSpalteStationstyp - 1) = "IFM IO-LINK"
@@ -153,6 +121,62 @@ Public Sub EinbauorteSchreiben()
     MsgBox "Daten gelesen und geschrieben. Spalte Einbauort kontollieren"
 
 End Sub
+
+Public Function readEinbauorte(ByVal tabelleDaten As String) As cEinbauorte
+    'return dataset with all installation locations per project
+    Dim tablennameEinbauorte As String
+    Dim wkb As Workbook
+    Dim ws1 As Worksheet
+    Dim dataKWSBMK As String
+    Dim spalteKWS_BMK As String
+    Dim EinbauorteData As New cEinbauorte        'Klasse anlegen für Datenaustausch
+
+    spalteKWS_BMK = "B"
+     tablennameEinbauorte = vbNullString
+     
+    Set wkb = ActiveWorkbook
+    Set ws1 = Worksheets.[_Default](tabelleDaten)
+     
+    ' Tabelle mit Planungsdaten auslesen
+    With ws1
+        Application.ScreenUpdating = False
+        'Filter aus, aber nicht löschen
+        If ActiveSheet.FilterMode Then ActiveSheet.ShowAllData
+        
+        dataKWSBMK = LTrim$(.Cells.Item(3, spalteKWS_BMK))
+    
+        If dataKWSBMK <> vbNullString Then
+            If Left$(dataKWSBMK, 3) = "BAP" Then
+                tablennameEinbauorte = "Einbauorte_BAP"
+            ElseIf Left$(dataKWSBMK, 4) = "SG01" Then
+                tablennameEinbauorte = "Einbauorte_H02.SG01"
+            ElseIf Left$(dataKWSBMK, 4) = "HDMA" Then
+                tablennameEinbauorte = "Einbauorte_H03.HDMA"
+            ElseIf Left$(dataKWSBMK, 3) = "PPP" Then
+                tablennameEinbauorte = "Einbauorte_MH04.PPP"
+            ElseIf Left$(dataKWSBMK, 5) = "SRN01" Then
+                tablennameEinbauorte = "Einbauorte_MH04.SRN"
+            ElseIf Left$(dataKWSBMK, 5) = "TRP01" Then
+                tablennameEinbauorte = "Einbauorte_MH03.TRP01"
+            ElseIf Left$(dataKWSBMK, 5) = "TRP03" Then
+                tablennameEinbauorte = "Einbauorte_MH03.TRP03"
+            Else
+                MsgBox "Keine passenden Daten mit Einbauorten gefunden, für KWS-BMK: " & dataKWSBMK
+                tablennameEinbauorte = vbNullString
+                Exit Function                    ' hier dann Abbruch der ganzen Funktion
+            End If
+        Else
+            MsgBox "Fehler in Daten, KWS-BMK erwartet"
+        End If
+    
+    
+        ' hier einlesen der Daten aus der Exceltabelle Einbauorte für die einzelnen Anlagen
+        EinbauorteData.ReadExcelDataToCollection tablennameEinbauorte, EinbauorteData
+              
+    End With
+    Set readEinbauorte = EinbauorteData
+End Function
+
 
 
 

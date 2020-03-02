@@ -2,7 +2,6 @@ Attribute VB_Name = "mArtikelSchreiben"
 ' Skript zum Übertragen der Artikeldaten
 ' V1.1
 ' 22.01.2020
-' V1.1
 ' Änderung Zielzellen
 ' Christian Langrock
 ' christian.langrock@actemium.de

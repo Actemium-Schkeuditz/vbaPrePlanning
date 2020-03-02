@@ -1,8 +1,8 @@
 Attribute VB_Name = "mStationsnummern"
 ' Skript zur Ermittlung der Stationsnummern der IO-Racks
-' V0.1
+' V0.2
 ' nicht fertig
-' 24.01.2020
+' 02.03.2020
 ' angepasst für MH04
 '
 ' Christian Langrock
@@ -20,15 +20,15 @@ Public Sub RACK_STATIONSNUMMERN()
     Dim tabelleDaten As String
     Dim zeilenanzahl As Long
     Dim i As Long
-    'Dim y As Long
+    Dim iKanal As Long
     Dim spalteStationsnummer As String
     Dim spalteKWS_StationsNummer As String
-    'Dim spalteEinbauortRack As String
-    
+    Dim sSpalteStationsnummerSignal As String
+    Dim iSpalteStationsnummerSignal As Long
       
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
-
+   
     Set wkb = ActiveWorkbook
     Set ws1 = Worksheets.[_Default](tabelleDaten)
    
@@ -40,12 +40,12 @@ Public Sub RACK_STATIONSNUMMERN()
         ' Herausfinden der Anzahl der Zeilen
         zeilenanzahl = .Cells.Item(Rows.Count, 2).End(xlUp).Row ' zweite Spalte wird gezählt
         'MsgBox zeilenanzahl
-
-   
+ 
         spalteKWS_StationsNummer = "BC"
         spalteStationsnummer = "BU"
-        'spalteEinbauortRack = "BV"
-   
+        sSpalteStationsnummerSignal = "BX"
+        
+        iSpalteStationsnummerSignal = SpaltenBuchstaben2Int(sSpalteStationsnummerSignal)
     
         'Umkopieren
         ' Daten schreiben
@@ -60,6 +60,18 @@ Public Sub RACK_STATIONSNUMMERN()
                     .Cells.Item(i, spalteStationsnummer).Interior.ColorIndex = 3
                     MsgBox "Stationsnummer Prüfen!  Zeile: " + str(i)
                 End If
+                 For iKanal = 1 To 6
+                    If .Cells.Item(i, iSpalteStationsnummerSignal + 2 + (14 * (iKanal - 1))) <> vbNullString Then ' prüfen ob Typ-Station nicht leer
+                        If IsNumeric(.Cells.Item(i, spalteKWS_StationsNummer)) Then
+                            ' Mache
+                            .Cells.Item(i, iSpalteStationsnummerSignal + (14 * (iKanal - 1))) = .Cells.Item(i, spalteKWS_StationsNummer)
+                        Else
+                            .Cells.Item(i, iSpalteStationsnummerSignal + (14 * (iKanal - 1))) = .Cells.Item(i, spalteKWS_StationsNummer)
+                            .Cells.Item(i, iSpalteStationsnummerSignal + (14 * (iKanal - 1))).Interior.ColorIndex = 3
+                            MsgBox "Stationsnummer Prüfen!  Zeile: " + str(i)
+                        End If
+                    End If
+                Next iKanal
             End If
     
         Next i

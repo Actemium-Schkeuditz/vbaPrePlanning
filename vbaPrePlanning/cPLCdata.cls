@@ -640,7 +640,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pMaxChannelPerSlot = 100
         ' Adress
         pDatatyp = "Byte"
-        pSignalDirection = ""
+        pSignalDirection = vbNullString
         pInputAdressLength = 100
         pOutputAdressLength = 100
         pInputMinLength = 244
