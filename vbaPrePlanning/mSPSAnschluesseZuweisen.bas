@@ -1,8 +1,8 @@
 Attribute VB_Name = "mSPSAnschluesseZuweisen"
 ' Skript zur Ermittlung der SPS Anschlüsse
-' V0.10
-' teilweise getestet fertig
-' 11.02.2020
+' V0.11
+' Verschiebung wegen neuer Stationsnummer
+' 02.03.2020
 ' angepasst für Rubberduck
 ' Variablen umbenannt
 
@@ -41,7 +41,7 @@ Public Sub SPS_KartenAnschluss()
     tabelleDaten = "EplSheet"
     Set wkb = ActiveWorkbook
     Set ws1 = Worksheets.[_Default](tabelleDaten)
-    spalteSignal_1_Typ = "BX"                    'erste Spalte der Anschlüsse
+    spalteSignal_1_Typ = "CA"                    'erste Spalte der Anschlüsse
    
     ' Tabelle mit Daten bearbeiten
     With ws1
@@ -69,23 +69,23 @@ Public Sub SPS_KartenAnschluss()
     
         ' Alle sechs Kanäle abarbeiten
         For y = 0 To 5
-            spalteOffset = y * 12
+            spalteOffset = y * 14
             For i = 3 To zeilenanzahl
-                iSearchKartentyp = .Cells.Item(i, spalteIntStart + 1).Value
-                If iSearchKartentyp <> vbNullString And (.Cells.Item(i, spalteIntStart + spalteOffset + 4) <> vbNullString) Then ' wenn Kartentyp nicht leer dann auslesen und schreiben
-                    iSearchKanal = .Cells.Item(i, spalteIntStart + spalteOffset + 4).Value
+                iSearchKartentyp = .Cells.Item(i, spalteIntStart).Value
+                If iSearchKartentyp <> vbNullString And (.Cells.Item(i, spalteIntStart + spalteOffset + 3) <> vbNullString) Then ' wenn Kartentyp nicht leer dann auslesen und schreiben
+                    iSearchKanal = .Cells.Item(i, spalteIntStart + spalteOffset + 3).Value
                     'Suchen nach dem passenden Datensatz passend zu Kartentyp und Kanal
                     Set dataResult = Nothing
                     Set dataResult = dataSearch.searchAnschluss(iSearchKartentyp, iSearchKanal, dataAnschluesse)
                     If Not dataResult.Item(1).Kartentyp.PLCtyp = "FESTO MPA" Then
                
                         ' schreiben der Daten
-                        .Cells.Item(i, spalteIntStart + spalteOffset + 6) = dataResult.Item(1).Anschluss1
-                        .Cells.Item(i, spalteIntStart + spalteOffset + 7) = dataResult.Item(1).Anschluss2
-                        .Cells.Item(i, spalteIntStart + spalteOffset + 8) = dataResult.Item(1).Anschluss3
-                        .Cells.Item(i, spalteIntStart + spalteOffset + 9) = dataResult.Item(1).Anschluss4
-                        .Cells.Item(i, spalteIntStart + spalteOffset + 10) = dataResult.Item(1).AnschlussM
-                        .Cells.Item(i, spalteIntStart + spalteOffset + 11) = dataResult.Item(1).AnschlussVS
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 5) = dataResult.Item(1).Anschluss1
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 6) = dataResult.Item(1).Anschluss2
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 7) = dataResult.Item(1).Anschluss3
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 8) = dataResult.Item(1).Anschluss4
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 9) = dataResult.Item(1).AnschlussM
+                        .Cells.Item(i, spalteIntStart + spalteOffset + 10) = dataResult.Item(1).AnschlussVS
                     End If
                     'Debug.Print dataSearch.Item(1).Kartentyp; dataSearch.Item(1).Kanal; vbTab; dataSearch.Item(1).Anschluss_1; vbTab; dataSearch.Item(1).Anschluss_2
                     'dataSearch.Remove (1)

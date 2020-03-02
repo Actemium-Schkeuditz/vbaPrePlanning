@@ -308,7 +308,7 @@ Sub XML_Export(sfolder As String, sFileNameConfig As String)
     Dim lngCol As Long
     Dim i As Long
     Dim y As Long
-    Dim varShow
+    Dim varShow As Variant
     '** Errorhandling
     On Error GoTo Fehlermeldung
     '** XML-Dateipfad und -Name festlegen

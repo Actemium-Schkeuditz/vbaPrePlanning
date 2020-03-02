@@ -212,14 +212,11 @@ End Sub
 Public Sub writePLCConfigToExcel(ByVal tablename As String)
     Dim wdata As New cPLCconfigData
     Dim ws1 As Worksheet
-    Dim iSpalteKanal As Long
+
     Dim i As Long
-    Dim zeilenanzahl As Long
     
      On Error GoTo ErrorHandle
-    
-        iSpalteKanal = 0
-        zeilenanzahl = 0
+
     With ThisWorkbook
         ' alte Daten löschen
         Application.ScreenUpdating = False
@@ -315,7 +312,7 @@ Public Function returnDatasetPerStation(ByVal Station As Integer) As cPLCconfig
     
     
     If rData.Count = 0 Then
-        rData.Add Station, 0, ""
+        rData.Add Station, 0, vbNullString
     End If
     
     Set returnDatasetPerStation = rData
@@ -364,7 +361,7 @@ Public Function returnFirstOutputAdressePLCStation(ByVal Stationsnummer As Integ
  
 End Function
 
-Public Function sumAdressesPerSlot(ByVal Station As Integer, ByVal Kanaldaten As cKanalBelegungen) As cPLCconfig
+Public Function sumAdressesPerSlot(ByVal Kanaldaten As cKanalBelegungen) As cPLCconfig
 
     Dim InputAdress As Long
     Dim OutputAdress As Long
@@ -378,7 +375,6 @@ Public Function sumAdressesPerSlot(ByVal Station As Integer, ByVal Kanaldaten As
     Dim rData As New cPLCconfig
     Dim sPLCData As New cPLCconfigData
     Dim sPLCDataAdress As New cPLCconfig
-    Dim sPLCDataAdressPerSlot As New cPLCconfigData
     Dim sPLCassignmentsPerSlot As New cKanalBelegungen
     Dim sDataPLCSlot As New cBelegung
       
@@ -461,9 +457,6 @@ End Function
 Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfig
     'extract data from a Class cKanalbelegungen to cPLCconfig
     'writes PLC Config to Dataset
-    Dim i As Long
-    Dim OffsetSlot As Integer
-
     ' Class einbinden
     Dim sData As New cBelegung
     Dim dataConfig As New cPLCconfig
@@ -479,13 +472,13 @@ Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfi
     'Set iStation = dataKanaele.returnStation
     Set iStation = Stationdata.returnStation
     '##### Suche nach allen verwendeten Kartentypen
-    Dim iKartentyp As Collection
+    'Dim iKartentyp As Collection
    
     
     '####### bearbeiten der Daten #######
     ' Durchlauf für jede Station einzeln
     Dim pStation As Variant
-    Dim pKartentyp As Variant
+    'Dim pKartentyp As Variant
     Set dataConfig = Nothing
     'Dim iAdressOutput As Long
     'Dim iAdressInput As Long
