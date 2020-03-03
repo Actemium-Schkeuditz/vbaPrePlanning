@@ -128,7 +128,7 @@ Public Sub SPSZuweisenKanal()
     
     MsgBox "Zuweisen fertig"
 
-End Function
 
+End Sub
 
 
