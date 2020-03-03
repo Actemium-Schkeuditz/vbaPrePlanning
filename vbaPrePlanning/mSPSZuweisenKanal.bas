@@ -117,7 +117,8 @@ Public Sub SPSZuweisenKanal()
         dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation
     Next
     
-   
+    
+
     
     
     '##### Anschlüsse zuordnen ####
@@ -127,7 +128,7 @@ Public Sub SPSZuweisenKanal()
     
     MsgBox "Zuweisen fertig"
 
-End Sub
+End Function
 
 
 

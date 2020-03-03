@@ -41,7 +41,7 @@ Public Sub SPS_KartenAnschluss()
     tabelleDaten = "EplSheet"
     Set wkb = ActiveWorkbook
     Set ws1 = Worksheets.[_Default](tabelleDaten)
-    spalteSignal_1_Typ = "CA"                    'erste Spalte der Anschlüsse
+    spalteSignal_1_Typ = "CA"                    'erste Spalte der Anschlüsse "ACT.PLS.SIGNAL_1.KARTENTYP de_DE"
    
     ' Tabelle mit Daten bearbeiten
     With ws1
