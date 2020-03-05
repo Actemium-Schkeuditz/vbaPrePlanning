@@ -34,6 +34,7 @@ Private pInputAdressPerSlot As Long
 Private pOutputAdressPerSlot As Long
 Private pAnschluss1 As String
 Private pAnschluss2 As String
+Private pSPSBMK As String
 
 
 
@@ -193,6 +194,17 @@ End Property
 
 Public Property Let Anschluss2(ByVal Value As String)
     pAnschluss2 = Value
+End Property
+
+''''''''''''''''''''''
+' SPSBMK
+''''''''''''''''''''''
+Public Property Get SPSBMK() As String
+    SPSBMK = pSPSBMK
+End Property
+
+Public Property Let SPSBMK(ByVal Value As String)
+    pSPSBMK = Value
 End Property
 
 

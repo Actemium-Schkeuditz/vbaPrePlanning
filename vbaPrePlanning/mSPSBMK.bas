@@ -20,6 +20,7 @@ Public Sub SPS_BMK()
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim y As Long
+    Dim slotNumber As Long
     Dim spalteSPSKartentyp As String
     Dim spalteSPSBMK As String
     Dim spalteSPSSteckplatz As String
@@ -116,16 +117,6 @@ Public Sub SPS_BMK()
                     If .Cells.Item(i, spalteSPSSteckplatz) <> vbNullString Then
                         ' MsgBox "CPX" + Str(i) + "nicht fertig programmiert, BMK prüfen"
                         .Cells.Item(i, spalteSPSBMK) = Trim(str(.Cells.Item(i, spalteSPSSteckplatz) + 3)) + "KF2"
-                    Else
-                        ' makiere fehlende Steckplatz Daten
-                        .Cells.Item(i, spalteSPSSteckplatz).Interior.ColorIndex = 3
-                    End If
-                    ' "CPX "  pneumatisch
-                ElseIf Left$(.Cells.Item(i, spalteSPSKartentyp), 4) = "CPX " Then 'Z.B. "spalteSPSKartentyp" ist "ACT.PLS.SIGNAL_1.KARTENTYP de_DE"
-                    'MsgBox "CPX " + Str(i) + "nicht fertig programmiert"
-                    If .Cells.Item(i, spalteSPSSteckplatz) <> vbNullString Then ' z.B. "spalteSPSSteckplatz" ist "ACT.PLS.SIGNAL_1.STECKPLATZ de_DE"
-                        ' MsgBox "CPX " + Str(i) + "nicht fertig programmiert, BMK prüfen"
-                        .Cells.Item(i, spalteSPSBMK) = "KH" + Trim(str(.Cells.Item(i, spalteSPSKanal))) 'Z.B. "spalteSPSBMK" ist "ACT.PLS.SIGNAL_1.BMK_SPS de_DE" und "spalteSPSKanal" ist "ACT.PLS.SIGNAL_1.KANAL de_DE"
                     Else
                         ' makiere fehlende Steckplatz Daten
                         .Cells.Item(i, spalteSPSSteckplatz).Interior.ColorIndex = 3

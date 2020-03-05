@@ -64,6 +64,7 @@ Public Sub AddDataSet(ByVal dataSet As cBelegung)
     p.OutputAdressPerSlot = dataSet.OutputAdressPerSlot
     p.Anschluss1 = dataSet.Anschluss1
     p.Anschluss2 = dataSet.Anschluss2
+    p.SPSBMK = dataSet.SPSBMK
     
     objKanalBelegungen.Add p
 End Sub
@@ -364,6 +365,7 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
             For i = 3 To zeilenanzahl
                 ' suchen nach dem pasenden key
                 If .Cells.Item(i, "A") = sData.Key Then
+                    .Cells.Item(i, (iSpalteSteckplatz - 1 + (14 * (sData.Signal - 1)))) = sData.SPSBMK
                     .Cells.Item(i, (iSpalteSteckplatz + (14 * (sData.Signal - 1)))) = sData.Steckplatz
                     .Cells.Item(i, (iSpalteKanal + (14 * (sData.Signal - 1)))) = sData.Kanal
                     .Cells.Item(i, (iSpalteKanal + 1 + (14 * (sData.Signal - 1)))) = sData.Adress
@@ -1116,7 +1118,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                 For Each sDataFesto In rDataSearch
                     If sDataFestoSearch.Steckplatz = sDataFesto.Steckplatz Then 'Adresse des Steckplatzes suchen
                         'Testen auf welchem Subslot
-                        iSubSlot = sDataFestoSearch.Kanal Mod 4
+                        iSubSlot = sDataFestoSearch.Kanal Mod 7
                         If iSubSlot = 1 Then
                             If sDataFestoSearch.Anschluss1 = "2" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".1"
@@ -1125,7 +1127,8 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".0"
                             End If
-                        ElseIf iSubSlot = 2 Then
+                            
+                        ElseIf iSubSlot = 3 Then
                             If sDataFestoSearch.Anschluss1 = "2" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".3"
                             ElseIf sDataFestoSearch.Anschluss1 = "4" Then
@@ -1133,7 +1136,8 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".2"
                             End If
-                        ElseIf iSubSlot = 3 Then
+                            
+                        ElseIf iSubSlot = 5 Then
                             If sDataFestoSearch.Anschluss1 = "2" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".5"
                             ElseIf sDataFestoSearch.Anschluss1 = "4" Then
@@ -1141,6 +1145,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".4"
                             End If
+                            
                         ElseIf iSubSlot = 0 Then
                             If sDataFestoSearch.Anschluss1 = "2" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".7"
@@ -1149,6 +1154,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".6"
                             End If
+                            
                         End If
                     End If
                 Next
@@ -1307,12 +1313,12 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
 End Function
 
 Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long, iKanal As Long) As cKanalBelegungen
-'todo Kanalzuweisung für CPX 5/2 bistabil
-'Hier soll hauptsächlich gearbeitet werden, um die Zuordnung der Ansteuerungen richtig zu machen
-'Hauptproblem liegt bei den "CPX 5/2 bistabil". Die zweite Ansteuerung bekommt die gleiche Zuweisung wie die erste Ansteuerung, was nicht sein darf
+    'todo Kanalzuweisung für CPX 5/2 bistabil
+    'Hier soll hauptsächlich gearbeitet werden, um die Zuordnung der Ansteuerungen richtig zu machen
+    'Hauptproblem liegt bei den "CPX 5/2 bistabil". Die zweite Ansteuerung bekommt die gleiche Zuweisung wie die erste Ansteuerung, was nicht sein darf
 
 
-    Dim sData As New cBelegung ' sData als neue Variable unter der Klasse cBelegung (sData = gespeicherte SPS-Belegungsdaten)
+    Dim sData As New cBelegung                   ' sData als neue Variable unter der Klasse cBelegung (sData = gespeicherte SPS-Belegungsdaten)
     Dim rData As New cKanalBelegungen
     Dim cData As New cKanalBelegungen
     Dim iSubSlot As Long
@@ -1325,9 +1331,9 @@ Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long
     'Anschlussbeschreibung ist iMPAAnschlussplatte
     
 
-    If iMPAAnschlussplatte = 0 Then    'Wenn Anschlussbeschreibung = 0 dann
-        iSteckplatz = 1                'Anschlussbezeichnung beginnt bei 1
-        iKanal = 1                     'Kanalbezeichnung beginnt bei 1
+    If iMPAAnschlussplatte = 0 Then              'Wenn Anschlussbeschreibung = 0 dann
+        iSteckplatz = 1                          'Anschlussbezeichnung beginnt bei 1
+        iKanal = 1                               'Kanalbezeichnung beginnt bei 1
     End If
     iSubSlot = 0
     
@@ -1339,7 +1345,7 @@ Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long
                 rData.Add "ADRESS", "FESTO_MPA", 0, sData.Stationsnummer, "FESTO MPA1S", iMPAAnschlussplatte
             End If
             '#### test ####
-             If iSteckplatz > 4 Then
+            If iSteckplatz > 4 Then
                 iMPAAnschlussplatte = iMPAAnschlussplatte + 1
                 If iMPAAnschlussplatte = 4 Or iMPAAnschlussplatte = 8 Or iMPAAnschlussplatte = 12 Or iMPAAnschlussplatte = 16 Or iMPAAnschlussplatte = 20 Then
                     rData.Add "ADRESS", "FESTO_MPA", 0, sData.Stationsnummer, "VMPA1-FB-SPU", iMPAAnschlussplatte 'Versorgungsplatte
@@ -1352,13 +1358,15 @@ Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long
             
             sData.Steckplatz = iMPAAnschlussplatte
             sData.Kanal = iKanal
+            sData.SPSBMK = "KH" & iSteckplatz + (iMPAAnschlussplatte * 4) - 4
             
             If sData.Kartentyp.MaxChannelPerSlot = 0 Then
-                iKanal = iKanal + 1
+                iKanal = iKanal + 2
                 iSteckplatz = iSteckplatz + 1
             ElseIf sData.Kartentyp.MaxChannelPerSlot = 1 Then
                 If iSubSlot = 0 Then             ' Spule 12 ungerade Adressen
                     iSubSlot = iSubSlot + 1
+                    iKanal = iKanal + 1
                     sData.Anschluss1 = 2
                 Else                             ' Spule 14  gerade Adressen
                     iSubSlot = 0
@@ -1366,7 +1374,7 @@ Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long
                     iSteckplatz = iSteckplatz + 1
                     sData.Anschluss1 = 4
                 End If
-                
+            
             Else
                 MsgBox "Fehler in den Daten, Kartentyp: " & sData.Kartentyp.Kartentyp
             End If
@@ -1376,6 +1384,7 @@ Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long
 
     Set correctFestoMPA = rData
 End Function
+
 
 
 
