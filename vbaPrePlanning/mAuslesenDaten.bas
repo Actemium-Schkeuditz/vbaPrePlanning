@@ -13,11 +13,13 @@ Public Sub AuslesenDaten()
     Dim sResult As New cBelegung                 'neu CL
     Dim sKartentyp As New Collection
     Dim karten As Variant
+    Dim bAdressLaenge As Integer                 'benötigte Adresslaenge für Berechnungen
+    Dim bLastAdressPos As Integer                'benötigte Letzte Adress-Stelle für Berechnungen
+    
    
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
-    
-    
+
     ' Kartentypen definieren
     sKartentyp.Add "CPX 5/2 bistabil"
     sKartentyp.Add "CPX 2x3/2 mono"
@@ -39,7 +41,7 @@ Public Sub AuslesenDaten()
             End If
             
             For Each sKanaele In sortKanaele     'neu CL in allen Kanaele nach den passenden Datensätzen suchen
-                If Left(Trim(sPerPLCtypKanaele.KWSBMK), Len(Trim(sPerPLCtypKanaele.KWSBMK)) - 4) = Left(Trim(sKanaele.KWSBMK), Len(Trim(sKanaele.KWSBMK)) - 5) And Right(Trim(sKanaele.KWSBMK), 5) = ".ES01" Then 'suchen nach den Datesätrzen die zusammen gehören Suchen nach .ES01
+                If Left(Trim(sPerPLCtypKanaele.KWSBMK), Len(Trim(sPerPLCtypKanaele.KWSBMK)) - 4) = Left(Trim(sKanaele.KWSBMK), Len(Trim(sKanaele.KWSBMK)) - 5) And Right(Trim(sKanaele.KWSBMK), 5) = ".ES01" Then 'suchen nach den Datesätrzen die zusammengehören, Suchen nach .ES01
                 
                     'Neu Signal 5
                     If sPerPLCtypKanaele.Signal = 1 Then
@@ -56,13 +58,19 @@ Public Sub AuslesenDaten()
                     
                         rData.AddDataSet sResult ' Datensätze von sKanaele in rData schreiben
                     End If
+                    
                     'Neu Signal 6
                     If sPerPLCtypKanaele.Signal = 1 And karten = "CPX 5/2 bistabil" Then
                         sResult.Key = sPerPLCtypKanaele.Key
                         sResult.Signal = 6
                         sResult.Steckplatz = sPerPLCtypKanaele.Steckplatz
                         sResult.Kanal = sPerPLCtypKanaele.Kanal + 1
-                        sResult.Adress = Left(Trim(sPerPLCtypKanaele.Adress), Len(Trim(sPerPLCtypKanaele.Adress)) - 1) & CInt(Right(Trim(sPerPLCtypKanaele.Adress), 1)) + 1
+                        If sPerPLCtypKanaele.Adress <> "" Then
+                            bAdressLaenge = Len(Trim(sPerPLCtypKanaele.Adress)) - 1 'Adresslaenge - 1 Z.B. "A8503." => 6
+                            bLastAdressPos = CInt(Right(Trim(sPerPLCtypKanaele.Adress), 1)) + 1 'Letzte Adress-Stelle + 1 z.B. "A8503.0" => 1
+                        End If
+                        'Debug.Print bLastAdressPos
+                        sResult.Adress = Left(Trim(sPerPLCtypKanaele.Adress), bAdressLaenge) & bLastAdressPos
                         sResult.KWSBMK = sPerPLCtypKanaele.KWSBMK
                         sResult.SPSBMK = sPerPLCtypKanaele.SPSBMK
                         sResult.Anschluss1 = sPerPLCtypKanaele.Anschluss1
@@ -80,6 +88,12 @@ Public Sub AuslesenDaten()
     
     MsgBox "Daten geschrieben"
 End Sub
+
+
+
+
+
+
 
 
 
