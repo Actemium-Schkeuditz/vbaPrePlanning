@@ -1,7 +1,7 @@
 Attribute VB_Name = "mHilfsfunktionen"
 ' Hilfsfunktionen die öfters benötigt werden
 ' V0.5
-' 25.02.2020
+' 09.03.2020
 ' neu: import XML
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -384,6 +384,8 @@ Public Sub RoundUpPLCaddresses(ByVal pPLCcardTyp As String, ByRef iInputAdress A
             iInputAdress = iOutputAdressTmp
             iOutputAdress = iOutputAdressTmp
         End If
+        
+        
     ElseIf pPLCcardTyp = "FESTO CPX" Or pPLCcardTyp = "FESTO MPA" Then
         Do Until iInputAdressTmp > iInputAdress + 10
             iInputAdressTmp = iInputAdressTmp + 50
@@ -399,6 +401,9 @@ Public Sub RoundUpPLCaddresses(ByVal pPLCcardTyp As String, ByRef iInputAdress A
             iOutputAdress = iOutputAdressTmp
         End If
     End If
+    
+' Wie für den ET200SP, soll auch 50 Bytes aufgerundet werden, wenn Wechsel zwischen IOLink Master und FU stattfindet
+' Eine Variable deklarieren, die den Wechsel erkennt und + 50 Bytes addiert
     
 End Sub
 

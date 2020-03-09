@@ -930,11 +930,12 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
     Dim iSubSlot As Long
     Dim iAdressLegthInput As Long
     Dim iAdressLegthOutput As Long
+    Dim lastChannel As Long
     
     
     iAdressLegthInput = 0
     iAdressLegthOutput = 0
-    
+    lastChannel = 0
     ' sortieren nach Station, Slot and Channel
     Me.SortChannel
     'Me.returnAllSlotsPerRack
@@ -1006,6 +1007,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                 iAdressVariInput = iInputStartAdress
                 iAdressVariOutput = iOutputStartAdress
             ElseIf pKartentyp = "AL1400" Or pKartentyp = "AL1402" Then 'Berechnung pro Kanal und dann zusammen zählen
+
                 For Each sdataVari In SlotData
                     
                     If sdataVari.Kanal = 0 Then
@@ -1018,39 +1020,46 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                     iAdressLegthOutput = sdataVari.OutputAdressSize - 1
                     'KWS gibt alle Adresslängen mit Diagnose (+1 Byte) an, Hier bei IFM muss di eDiagnose abgezogen werden, nicht bei ET200SP IO-LINK
                     If iAdressLegthInput = 1 And iAdressLegthOutput <= 1 Then
-                        iAdressVariInput = iAdressVariInput + 1
-                        iAdressVariOutput = iAdressVariOutput + 1
                         sdataVari.Adress = "EB" & iAdressVariInput
-                    ElseIf iAdressLegthInput <= 1 And iAdressLegthOutput = 1 Then 'beide null ist Fehler
-                        iAdressVariInput = iAdressVariInput + 1
-                        iAdressVariOutput = iAdressVariOutput + 1
-                        sdataVari.Adress = "EB" & iAdressVariInput
-                    ElseIf iAdressLegthInput <= 2 And iAdressLegthOutput <= 2 Then
                         iAdressVariInput = iAdressVariInput + 2
+                        iAdressVariOutput = iAdressVariOutput + 1
+                    ElseIf iAdressLegthInput <= 1 And iAdressLegthOutput = 1 Then 'beide null ist Fehler
+                        sdataVari.Adress = "EB" & iAdressVariInput
+                        iAdressVariInput = iAdressVariInput + 2
+                        iAdressVariOutput = iAdressVariOutput + 1
+                    ElseIf iAdressLegthInput <= 2 And iAdressLegthOutput <= 2 Then
+                        sdataVari.Adress = "EB" & iAdressVariInput
+                        iAdressVariInput = iAdressVariInput + 3
                         iAdressVariOutput = iAdressVariOutput + 2
-                        sdataVari.Adress = "EB" & iAdressVariInput
                     ElseIf iAdressLegthInput <= 4 And iAdressLegthOutput <= 4 Then
-                        iAdressVariInput = iAdressVariInput + 4
+                        sdataVari.Adress = "EB" & iAdressVariInput
+                        iAdressVariInput = iAdressVariInput + 5
                         iAdressVariOutput = iAdressVariOutput + 4
-                        sdataVari.Adress = "EB" & iAdressVariInput
                     ElseIf iAdressLegthInput <= 8 And iAdressLegthOutput <= 8 Then
-                        iAdressVariInput = iAdressVariInput + 8
+                        sdataVari.Adress = "EB" & iAdressVariInput
+                        iAdressVariInput = iAdressVariInput + 9
                         iAdressVariOutput = iAdressVariOutput + 8
-                        sdataVari.Adress = "EB" & iAdressVariInput
                     ElseIf iAdressLegthInput <= 16 And iAdressLegthOutput <= 16 Then
-                        iAdressVariInput = iAdressVariInput + 16
+                        sdataVari.Adress = "EB" & iAdressVariInput
+                        iAdressVariInput = iAdressVariInput + 17
                         iAdressVariOutput = iAdressVariOutput + 16
-                        sdataVari.Adress = "EB" & iAdressVariInput
                     ElseIf iAdressLegthInput <= 32 And iAdressLegthOutput <= 32 Then
-                        iAdressVariInput = iAdressVariInput + 32
-                        iAdressVariOutput = iAdressVariOutput + 32
                         sdataVari.Adress = "EB" & iAdressVariInput
+                        iAdressVariInput = iAdressVariInput + 33
+                        iAdressVariOutput = iAdressVariOutput + 32
                     Else
                         MsgBox "Fehler in der Adresslänge von: " & sData.KWSBMK
                     End If
                     
                     rData.Addobj sdataVari
                 Next
+                ' Adressbereich für Reserve festlegen
+                If Not SlotData Is Nothing Then
+                    If SlotData.Count >= 1 Then
+                        iAdressVariInput = iAdressVariInput + (SlotData.Item(1).Kartentyp.MaxChannelPerSlot - SlotData.Count) * 5
+                    End If
+                End If
+                
                 ' Adressen für nächste Karte schreiben
                 iInputStartAdress = iAdressVariInput
                 iOutputStartAdress = iAdressVariOutput
