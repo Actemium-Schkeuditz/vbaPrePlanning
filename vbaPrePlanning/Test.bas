@@ -80,4 +80,3 @@ Public Sub CPX_5_2_bistabil()
     End With
 
 End Sub
-

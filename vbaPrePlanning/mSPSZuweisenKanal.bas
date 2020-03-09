@@ -125,8 +125,12 @@ Public Sub SPSZuweisenKanal()
     SPS_KartenAnschluss
     '##### SPS Karten BMK erzeugen ####
     SPS_BMK
+    '##### CPX Daten Ergänzen ####
+    CPXDatenErgaenzen
     
     MsgBox "Zuweisen fertig"
+    
+    
 
 
 End Sub

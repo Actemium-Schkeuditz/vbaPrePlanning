@@ -235,7 +235,7 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
     sSpalteEingangsAdress = "BD"
     sSpalteAusgangsAdress = "BE"
     sSpalteSegmentvorlage = "BL"
-    sSpalteStationsnummer = "BX"                  'erste Spalte der Anschlüsse
+    sSpalteStationsnummer = "BX"                 'erste Spalte der Anschlüsse
     sSpalteKartentyp = "CA"
     ' Konvertierung Spaltenbuchstaben in LONG
     iSpalteStationsnummer = SpaltenBuchstaben2Int(sSpalteStationsnummer) - 1
@@ -280,37 +280,11 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
             ' prüfen ob Stationsnummer nicht leer
             If rCell.Offset(0, iSpalteStationsnummer).Value <> vbNullString Then
                 ' die gelesenen Daten anhängen
-                'Signal 1
-                
                 For iSignal = 1 To 6
                     If rCell.Offset(0, iSpalteKartentyp + (14 * (iSignal - 1))).Value <> vbNullString Then
-                  Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, iSignal, CInt(rCell.Offset(0, iSpalteStationsnummer + (14 * (iSignal - 1))).Value), rCell.Offset(0, iSpalteKartentyp + (14 * (iSignal - 1))).Value, CInt(rCell.Offset(0, iSpalteKartentyp + 2 + (14 * (iSignal - 1))).Value), CInt(rCell.Offset(0, iSpalteKartentyp + 3 + (14 * (iSignal - 1))).Value), rCell.Offset(0, iSpalteSegmentvorlage).Value, rCell.Offset(0, iSpalteKartentyp + 4 + (14 * (iSignal - 1))).Value, CLng(rCell.Offset(0, iSpalteEingangsAdress)), CLng(rCell.Offset(0, iSpalteAusgangsAdress)), rCell.Offset(0, iSpalteKartentyp + 1 + (14 * (iSignal - 1))).Value
-                End If
-                
+                        Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, iSignal, CInt(rCell.Offset(0, iSpalteStationsnummer + (14 * (iSignal - 1))).Value), rCell.Offset(0, iSpalteKartentyp + (14 * (iSignal - 1))).Value, CInt(rCell.Offset(0, iSpalteKartentyp + 2 + (14 * (iSignal - 1))).Value), CInt(rCell.Offset(0, iSpalteKartentyp + 3 + (14 * (iSignal - 1))).Value), rCell.Offset(0, iSpalteSegmentvorlage).Value, rCell.Offset(0, iSpalteKartentyp + 4 + (14 * (iSignal - 1))).Value, CLng(rCell.Offset(0, iSpalteEingangsAdress)), CLng(rCell.Offset(0, iSpalteAusgangsAdress)), rCell.Offset(0, iSpalteKartentyp + 1 + (14 * (iSignal - 1))).Value
+                    End If
                 Next iSignal
-'                If rCell.Offset(0, ispalteKartentyp).Value <> vbNullString Then
-'                    Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 1, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp).Value, CInt(rCell.Offset(0, ispalteKartentyp + 2).Value), CInt(rCell.Offset(0, ispalteKartentyp + 3).Value), rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4).Value, CLng(rCell.Offset(0, iSpalteEingangsAdress)), CLng(rCell.Offset(0, iSpalteAusgangsAdress))
-'                End If
-'                'Signal 2
-'                If rCell.Offset(0, ispalteKartentyp + 13).Value <> vbNullString Then
-'                    Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 2, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 12).Value, rCell.Offset(0, ispalteKartentyp + 2 + 12).Value, rCell.Offset(0, ispalteKartentyp + 3 + 12).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 12).Value ', CLng(rCell.Offset(0, iSpalteEingangsAdress)), CLng(rCell.Offset(0, iSpalteAusgangsAdress))
-'                End If
-'                'Signal 3
-'                If rCell.Offset(0, ispalteKartentyp + 26).Value <> vbNullString Then
-'                    Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 3, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 24).Value, rCell.Offset(0, ispalteKartentyp + 2 + 24).Value, rCell.Offset(0, ispalteKartentyp + 3 + 24).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 24).Value
-'                End If
-'                'Signal 4
-'                If rCell.Offset(0, ispalteKartentyp + 39).Value <> vbNullString Then
-'                    Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 4, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 36).Value, rCell.Offset(0, ispalteKartentyp + 2 + 36).Value, rCell.Offset(0, ispalteKartentyp + 3 + 36).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 36).Value
-'                End If
-'                'Signal 5
-'                If rCell.Offset(0, ispalteKartentyp + 52).Value <> vbNullString Then
-'                    Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 5, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 48).Value, rCell.Offset(0, ispalteKartentyp + 2 + 48).Value, rCell.Offset(0, ispalteKartentyp + 3 + 48).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 48).Value
-'                End If
-'                'Signal 6
-'                If rCell.Offset(0, ispalteKartentyp + 65).Value <> vbNullString Then
-'                    Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, 6, CInt(rCell.Offset(0, iSpalteIntStationsnummer).Value), rCell.Offset(0, ispalteKartentyp + 48).Value, rCell.Offset(0, ispalteKartentyp + 2 + 48).Value, rCell.Offset(0, ispalteKartentyp + 3 + 48).Value, rCell.Offset(0, ispalteKartentyp - 13).Value, rCell.Offset(0, ispalteKartentyp + 4 + 48).Value
-'                End If
             End If
         End With
     Next
@@ -1119,12 +1093,10 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                 For Each sDataFesto In rDataSearch
                     If sDataFestoSearch.Steckplatz = sDataFesto.Steckplatz Then 'Adresse des Steckplatzes suchen
                         'Testen auf welchem Subslot
-                        iSubSlot = sDataFestoSearch.Kanal Mod 7
+                        iSubSlot = sDataFestoSearch.Kanal Mod 8
                         If iSubSlot = 1 Then
                             If sDataFestoSearch.Anschluss1 = "2" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".1"
-                            ElseIf sDataFestoSearch.Anschluss1 = "4" Then
-                                sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".0"
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".0"
                             End If
@@ -1132,8 +1104,6 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                         ElseIf iSubSlot = 3 Then
                             If sDataFestoSearch.Anschluss1 = "2" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".3"
-                            ElseIf sDataFestoSearch.Anschluss1 = "4" Then
-                                sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".2"
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".2"
                             End If
@@ -1141,21 +1111,36 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                         ElseIf iSubSlot = 5 Then
                             If sDataFestoSearch.Anschluss1 = "2" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".5"
-                            ElseIf sDataFestoSearch.Anschluss1 = "4" Then
-                                sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".4"
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".4"
                             End If
                             
-                        ElseIf iSubSlot = 0 Then
+                        ElseIf iSubSlot = 7 Then
                             If sDataFestoSearch.Anschluss1 = "2" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".7"
-                            ElseIf sDataFestoSearch.Anschluss1 = "4" Then
-                                sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".6"
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".6"
                             End If
                             
+                        ElseIf iSubSlot = 2 Then ' z.B Kanal 50 CPX 2x3/2 mono
+                            If sDataFestoSearch.Anschluss1 = "4" Then
+                                sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".0"
+                            End If
+                        
+                        ElseIf iSubSlot = 4 Then ' z.B Kanal 52 CPX 2x3/2 mono
+                            If sDataFestoSearch.Anschluss1 = "4" Then
+                                sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".2"
+                            End If
+                            
+                        ElseIf iSubSlot = 6 Then ' z.B Kanal 54 CPX 2x3/2 mono
+                            If sDataFestoSearch.Anschluss1 = "4" Then
+                                sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".4"
+                            End If
+                            
+                        ElseIf iSubSlot = 0 Then ' z.B Kanal 56 CPX 2x3/2 mono
+                            If sDataFestoSearch.Anschluss1 = "4" Then
+                                sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".6"
+                            End If
                         End If
                     End If
                 Next
