@@ -103,7 +103,7 @@ Public Sub SPS_BMK()
                     End If
                     ' ET200AL
                 ElseIf Left$(.Cells.Item(i, spalteSPSKartentyp), 7) = "ET200AL" Then
-                    MsgBox "Treffer" + str(i) + "nicht fertig programmiert"
+                    'MsgBox "Treffer" + str(i) + "nicht fertig programmiert"
                     If .Cells.Item(i, spalteSPSSteckplatz) <> vbNullString Then
                         'MsgBox "ET200AL" + str(i) + "nicht fertig programmiert, BMK prüfen"
                         .Cells.Item(i, spalteSPSBMK) = Trim(str(.Cells.Item(i, spalteSPSSteckplatz) + 3)) + "K5"

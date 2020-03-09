@@ -84,7 +84,7 @@ Public Sub SPSZuweisenKanal()
         Set dataPLCConfigStation = dataPLCConfig.returnDatasetPerStation(pStation)
         iSteckplatzMPA = 0
         iKanalMPA = 0
-        PLCcardTyp = dataPLCConfigStation.Item(1).Kartentyp.PLCtyp
+        'PLCcardTyp = dataPLCConfigStation.Item(1).Kartentyp.PLCtyp
         '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
         Set dataSort = dataSearchStation.Sort
         '##### Suche nach allen verwendeten Kartentypen
@@ -96,6 +96,7 @@ Public Sub SPSZuweisenKanal()
             Set dataConfigPerPLCTyp = dataPLCConfigStation.returnDatasetPerSlottyp(pStation, pKartentyp)
             Set dataSearchPlcTyp = dataSort.searchDatasetPlcTyp(pKartentyp)
             Set dataResult = dataSearchPlcTyp.zuweisenKanal(OffsetSlot, pKartentyp, dataConfigPerPLCTyp)
+            PLCcardTyp = dataResult.Item(1).Kartentyp.PLCtyp
             OffsetSlot = dataResult.returnLastSlotNumber
             ' Korrektur FESTO Ventilinsel
            Set dataResult = dataResult.correctFestoMPA(iMPAAnschlussplatte, iSteckplatzMPA, iKanalMPA)

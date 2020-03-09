@@ -494,15 +494,15 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
     bfirstFestoCPX = False
     bfirstFestoMPX = False
     
-            'Kopfstation dazu
-            ' Wenn z.B. "ACT.PLS.SIGNAL_1.KARTENTYP de_DE" nicht gleich folgende CPX-Typen und (iSteckplatz + OffsetSlot) = 0
-            ' Was ist "iSteckplatz"? Aktueller Steckplatz?
-            ' Was ist "OffsetSlot"?
-            ' Was macht folgende If-Then-Anweisung?
+    'Kopfstation dazu
+    ' Wenn z.B. "ACT.PLS.SIGNAL_1.KARTENTYP de_DE" nicht gleich folgende CPX-Typen und (iSteckplatz + OffsetSlot) = 0
+    ' Was ist "iSteckplatz"? Aktueller Steckplatz?
+    ' Was ist "OffsetSlot"?
+    ' Was macht folgende If-Then-Anweisung?
     If (pKartentyp = "CPX-8DE-D" Or pKartentyp = "CPX-4DA" Or pKartentyp = "CPX-4AE-T" Or pKartentyp = "CPX 2x3/2 mono" Or pKartentyp = "CPX 5/2 mono" Or pKartentyp = "CPX 5/2 bistabil") And (iSteckplatz + OffsetSlot) = 0 Then
         bfirstFestoCPX = True
-         rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "FB43", iSteckplatz + OffsetSlot, iKanal
-        Else
+        rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "FB43", iSteckplatz + OffsetSlot, iKanal
+    Else
         bfirstFestoCPX = False
     End If
         
@@ -519,13 +519,13 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
         'erstmal die Kanäle davor bearbeiten
         Do While iReserveChannelsBefor > 0
             If iKanal < dataPLCConfig.Item(i).Kartentyp.MaxChannelPerSlot - iReserveChannelPerSlot Then
-                If iKanal = 0 Then 'And rdata Is Nothing Then
+                If iKanal = 0 Then               'And rdata Is Nothing Then
                     rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
                 End If
                 iKanal = iKanal + 1
             Else
                 iKanal = 0
-               ' rdata.Add "LEER", "LEER", 0, sdata.Stationsnummer, sdata.Kartentyp, iSteckplatz + OffsetSlot, iKanal
+                ' rdata.Add "LEER", "LEER", 0, sdata.Stationsnummer, sdata.Kartentyp, iSteckplatz + OffsetSlot, iKanal
                 iSteckplatz = iSteckplatz + 1
                 
             End If
@@ -654,7 +654,7 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
             rData.AddDataSet sData
             iKanal = iKanal + 1
         Next
-         'die  nachfolgenden Kanäle bearbeiten
+        'die  nachfolgenden Kanäle bearbeiten
         Do While iReserveChannelsAfter > 0
             If iKanal < dataPLCConfig.Item(i).Kartentyp.MaxChannelPerSlot - iReserveChannelPerSlot Then
                 iKanal = iKanal + 1
@@ -666,13 +666,19 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
             iReserveChannelsAfter = iReserveChannelsAfter - 1
             rData.Add "RESERVE", "RESERVE", "1", dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
         Loop
+              
+    ElseIf pKartentyp = "ET200AL 16DI" Then
         
+        'nicht belegen, sondern nur durchreichen
+        For Each sData In Me
+            rData.AddDataSet sData
+        Next
     Else
         'hier bearbeiten alles was keine extra Behandlung benötigt
         'erstmal die Kanäle davor bearbeiten
         Do While iReserveChannelsBefor > 0
             If iKanal < dataPLCConfig.Item(i).Kartentyp.MaxChannelPerSlot - iReserveChannelPerSlot Then
-                If iKanal = 0 Then 'And rdata Is Nothing Then
+                If iKanal = 0 Then               'And rdata Is Nothing Then
                     rData.Add "LEER1", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
                 End If
                 iKanal = iKanal + 1
@@ -930,12 +936,11 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
     Dim iSubSlot As Long
     Dim iAdressLegthInput As Long
     Dim iAdressLegthOutput As Long
-    Dim lastChannel As Long
     
     
     iAdressLegthInput = 0
     iAdressLegthOutput = 0
-    lastChannel = 0
+    
     ' sortieren nach Station, Slot and Channel
     Me.SortChannel
     'Me.returnAllSlotsPerRack
@@ -1007,9 +1012,8 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                 iAdressVariInput = iInputStartAdress
                 iAdressVariOutput = iOutputStartAdress
             ElseIf pKartentyp = "AL1400" Or pKartentyp = "AL1402" Then 'Berechnung pro Kanal und dann zusammen zählen
-
+               
                 For Each sdataVari In SlotData
-                    
                     If sdataVari.Kanal = 0 Then
                         iAdressVariInput = iAdressVariInput + sdataVari.Kartentyp.InputAdressDiagnosticLength + iInputStartAdress 'Wenn Kanal 0 dann Diagnosebereich belegen
                         iAdressVariOutput = iAdressVariOutput + sdataVari.Kartentyp.OutputAdressDiagnosticLength + iOutputStartAdress
@@ -1059,7 +1063,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                         iAdressVariInput = iAdressVariInput + (SlotData.Item(1).Kartentyp.MaxChannelPerSlot - SlotData.Count) * 5
                     End If
                 End If
-                
+                             
                 ' Adressen für nächste Karte schreiben
                 iInputStartAdress = iAdressVariInput
                 iOutputStartAdress = iAdressVariOutput
@@ -1308,23 +1312,20 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
 End Function
 
 Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long, iKanal As Long) As cKanalBelegungen
-    'todo Kanalzuweisung für CPX 5/2 bistabil
-    'Hier soll hauptsächlich gearbeitet werden, um die Zuordnung der Ansteuerungen richtig zu machen
-    'Hauptproblem liegt bei den "CPX 5/2 bistabil". Die zweite Ansteuerung bekommt die gleiche Zuweisung wie die erste Ansteuerung, was nicht sein darf
-
+    ' Korrektur der Ventilinseldaten
 
     Dim sData As New cBelegung                   ' sData als neue Variable unter der Klasse cBelegung (sData = gespeicherte SPS-Belegungsdaten)
     Dim rData As New cKanalBelegungen
     Dim cData As New cKanalBelegungen
     Dim iSubSlot As Long
-    'Dim bfirstrun As Boolean
-    Set cData = Me.SortChannel
-    'sort by channel
+    Dim iSubAnschluss As Long
     
+    'sort by channel
+    Set cData = Me.SortChannel
+    iSubAnschluss = 0
     'Anschlussbezeichnung ist iSteckplatz
     'Kanalbezeichnung ist iKanal
     'Anschlussbeschreibung ist iMPAAnschlussplatte
-    
 
     If iMPAAnschlussplatte = 0 Then              'Wenn Anschlussbeschreibung = 0 dann
         iSteckplatz = 1                          'Anschlussbezeichnung beginnt bei 1
@@ -1339,7 +1340,7 @@ Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long
                 iMPAAnschlussplatte = 1
                 rData.Add "ADRESS", "FESTO_MPA", 0, sData.Stationsnummer, "FESTO MPA1S", iMPAAnschlussplatte
             End If
-            '#### test ####
+            '#### MPA Anschlussplatten ermitteln ####
             If iSteckplatz > 4 Then
                 iMPAAnschlussplatte = iMPAAnschlussplatte + 1
                 If iMPAAnschlussplatte = 4 Or iMPAAnschlussplatte = 8 Or iMPAAnschlussplatte = 12 Or iMPAAnschlussplatte = 16 Or iMPAAnschlussplatte = 20 Then
@@ -1369,9 +1370,15 @@ Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long
                     iSteckplatz = iSteckplatz + 1
                     sData.Anschluss1 = 4
                 End If
-            
             Else
                 MsgBox "Fehler in den Daten, Kartentyp: " & sData.Kartentyp.Kartentyp
+            End If
+            ' Anschlüsse schreiben
+            iSubAnschluss = iKanal Mod 2
+            If iSubAnschluss = 0 Then
+                sData.Anschluss1 = 2
+            Else
+                sData.Anschluss1 = 4
             End If
         End If
         rData.AddDataSet sData
@@ -1379,8 +1386,4 @@ Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long
 
     Set correctFestoMPA = rData
 End Function
-
-
-
-
 

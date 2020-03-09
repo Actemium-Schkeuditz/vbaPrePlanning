@@ -50,7 +50,6 @@ Public Sub SPS_KartenAnschluss()
         spalteIntStart = SpaltenBuchstaben2Int(spalteSignal_1_Typ)
    
         ' Spaltenbreiten anpassen
-        'ThisWorkbook.Worksheets(tabelleDaten).Activate
         ws1.Activate
 
         Application.ScreenUpdating = False
@@ -63,8 +62,6 @@ Public Sub SPS_KartenAnschluss()
     
         ' ******* ab hier suchen und schreiben der Daten
         ' suchen nach Anschlüssen passend zum Kartentyp und zum Kanal
-        'iSearchKanal = 10
-        'iSearchKartentyp = "ET200SP 4FDO"
         spalteOffset = 0
     
         ' Alle sechs Kanäle abarbeiten
@@ -86,6 +83,8 @@ Public Sub SPS_KartenAnschluss()
                         .Cells.Item(i, spalteIntStart + spalteOffset + 8) = dataResult.Item(1).Anschluss4
                         .Cells.Item(i, spalteIntStart + spalteOffset + 9) = dataResult.Item(1).AnschlussM
                         .Cells.Item(i, spalteIntStart + spalteOffset + 10) = dataResult.Item(1).AnschlussVS
+                        Else
+                        
                     End If
                     'Debug.Print dataSearch.Item(1).Kartentyp; dataSearch.Item(1).Kanal; vbTab; dataSearch.Item(1).Anschluss_1; vbTab; dataSearch.Item(1).Anschluss_2
                     'dataSearch.Remove (1)

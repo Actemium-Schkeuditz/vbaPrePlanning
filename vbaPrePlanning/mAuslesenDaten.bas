@@ -12,7 +12,7 @@ Public Sub AuslesenDaten()
     Dim rData As New cKanalBelegungen
     Dim sResult As New cBelegung                 'neu CL
     Dim sKartentyp As New Collection
-    Dim karten As Variant
+    Dim Karten As Variant
     Dim bAdressLaenge As Integer                 'benötigte Adresslaenge für Berechnungen
     Dim bLastAdressPos As Integer                'benötigte Letzte Adress-Stelle für Berechnungen
     
@@ -30,13 +30,13 @@ Public Sub AuslesenDaten()
     
     Set sortKanaele = dataKanaele.Sort           'Sortieren nach spalteStationsnummer, spalteKartentyp
     '##### Daten bearbeiten #####
-    For Each karten In sKartentyp
+    For Each Karten In sKartentyp
     
-        Set dataSearchPlcTyp = sortKanaele.searchDatasetPlcTyp(karten) 'neu  CL Suchen nach dem einen Kartentyp
+        Set dataSearchPlcTyp = sortKanaele.searchDatasetPlcTyp(Karten) 'neu  CL Suchen nach dem einen Kartentyp
  
         For Each sPerPLCtypKanaele In dataSearchPlcTyp 'neu CL für jeden Datensatz mit dem Kartentyp einmal durchlaufen
             'neu CL schreiben der Daten für das 2.SPS Signal der 5/2 Bistabilen
-            If karten = "CPX 5/2 bistabil" Then
+            If Karten = "CPX 5/2 bistabil" Then
                 rData.Add sPerPLCtypKanaele.Key, sPerPLCtypKanaele.KWSBMK, 2, sPerPLCtypKanaele.Stationsnummer, vbNullString, sPerPLCtypKanaele.Steckplatz, sPerPLCtypKanaele.Kanal + 1, sPerPLCtypKanaele.Segmentvorlage, sPerPLCtypKanaele.Adress, 0, 0, sPerPLCtypKanaele.SPSBMK
             End If
             
@@ -60,7 +60,7 @@ Public Sub AuslesenDaten()
                     End If
                     
                     'Neu Signal 6
-                    If sPerPLCtypKanaele.Signal = 1 And karten = "CPX 5/2 bistabil" Then
+                    If sPerPLCtypKanaele.Signal = 1 And Karten = "CPX 5/2 bistabil" Then
                         sResult.Key = sPerPLCtypKanaele.Key
                         sResult.Signal = 6
                         sResult.Steckplatz = sPerPLCtypKanaele.Steckplatz

@@ -141,7 +141,8 @@ Public Function searchAnschluss(ByVal pKartentyp As String, ByVal pKanal As Inte
     Dim sData As New cAnschluss
     Dim sKartentyp As String
     Dim rData As New CSPSAnschluesse
-    'searchAnschluss = Nothing
+    Set searchAnschluss = Nothing
+    
     For Each sData In data
          
         If sData.Kartentyp.Kartentyp = pKartentyp Then
@@ -161,6 +162,8 @@ Public Function searchAnschluss(ByVal pKartentyp As String, ByVal pKanal As Inte
     'Test der Suche
     '  Debug.Print searchAnschluss.Item(1).Kartentyp; vbTab; searchAnschluss.Item(1).Kanal; vbTab; searchAnschluss.Item(1).Anschluss_1; vbTab; searchAnschluss.Item(1).Anschluss_2; vbTab; searchAnschluss.Item(1).Anschluss_3; vbTab; searchAnschluss.Item(1).Anschluss_4; vbTab; searchAnschluss.Item(1).Anschluss_M; vbTab; searchAnschluss.Item(1).Anschluss_VS
 End Function
+
+
 
 
 
