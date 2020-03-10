@@ -83,8 +83,6 @@ Public Sub SPS_KartenAnschluss()
                         .Cells.Item(i, spalteIntStart + spalteOffset + 8) = dataResult.Item(1).Anschluss4
                         .Cells.Item(i, spalteIntStart + spalteOffset + 9) = dataResult.Item(1).AnschlussM
                         .Cells.Item(i, spalteIntStart + spalteOffset + 10) = dataResult.Item(1).AnschlussVS
-                        Else
-                        
                     End If
                     'Debug.Print dataSearch.Item(1).Kartentyp; dataSearch.Item(1).Kanal; vbTab; dataSearch.Item(1).Anschluss_1; vbTab; dataSearch.Item(1).Anschluss_2
                     'dataSearch.Remove (1)

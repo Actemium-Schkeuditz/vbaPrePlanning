@@ -69,6 +69,10 @@ Public Sub SPSZuweisenKanal()
     Dim iMPAAnschlussplatte As Long
     Dim iSteckplatzMPA As Long
     Dim iKanalMPA As Long
+    Dim bstationswechsel As Boolean
+    Dim PLCcardTypOld As String
+    
+    
       '##### Auslesen der Startadresse für die erste Station ######
     Set dataPLCConfig = readXMLFile
       
@@ -99,8 +103,15 @@ Public Sub SPSZuweisenKanal()
             PLCcardTyp = dataResult.Item(1).Kartentyp.PLCtyp
             OffsetSlot = dataResult.returnLastSlotNumber
             ' Korrektur FESTO Ventilinsel
-           Set dataResult = dataResult.correctFestoMPA(iMPAAnschlussplatte, iSteckplatzMPA, iKanalMPA)
-            
+            Set dataResult = dataResult.correctFestoMPA(iMPAAnschlussplatte, iSteckplatzMPA, iKanalMPA)
+            If PLCcardTyp <> PLCcardTypOld Then ' Erkennen von Stationswechsel
+                bstationswechsel = True
+            Else
+                bstationswechsel = False
+            End If
+            'round up FU bei Stationswechsel
+            RoundUpPLCaddresses "FU", iInputStartAdress, iOutputStartAdress, bstationswechsel
+            PLCcardTypOld = PLCcardTyp
             ' adressieren
             Set dataResultAdress = dataResult.AdressPerSlottyp(iInputStartAdress, iOutputStartAdress, pStation, pKartentyp)
             'Datensätze der Stationskonfiguration anhängen
@@ -112,15 +123,14 @@ Public Sub SPSZuweisenKanal()
             '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
             dataResultAdress.writeDatsetsToExcel tabelleDaten
         Next
-        'round up
-        RoundUpPLCaddresses PLCcardTyp, iInputStartAdress, iOutputStartAdress
+
+            'round up
+            RoundUpPLCaddresses PLCcardTyp, iInputStartAdress, iOutputStartAdress, False
+        
+        
         
         dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation
     Next
-    
-    
-
-    
     
     '##### Anschlüsse zuordnen ####
     SPS_KartenAnschluss
