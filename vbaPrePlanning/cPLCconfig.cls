@@ -21,8 +21,6 @@ Option Explicit
 
 Private objPLCconfig As New Collection
 
-'Public Kartentyp As String                'Key
-
 Private Sub Class_Initialize()
     Set objPLCconfig = New Collection
 End Sub
@@ -140,74 +138,6 @@ Public Function Sort() As cPLCconfig
 
     Set Sort = ppl
 End Function
-
-Public Sub ReadPLCConfigData(ByRef tablename As String) ', ByRef dataColection As cPLCconfig)
-    'Reads the table on the "EplSheet" sheet and adds
-    'Chanels to the collection. It also adds values
-    Dim rCell As Range
-    Dim rTable As Range
-    Dim ws1 As Worksheet
-    
-    On Error GoTo ErrorHandle
-
-    With ThisWorkbook
-        ' alte Daten löschen
-        'first check if table exist
-        If WorksheetExist((tablename), ws1) = True Then
-           
-            'Second we check if the table is intact. The
-            'check is NOT complete.
-            ThisWorkbook.Worksheets(tablename).Activate
-            'Filter aus, aber nicht löschen
-            If ActiveSheet.FilterMode Then ActiveSheet.ShowAllData
-             Application.ScreenUpdating = False
-            If Len(Range("A2")) = 0 Then
-                MsgBox "The table must start in cell A2. Adding products has been aborted.", vbCritical, "Error"
-                'Set dataColection = Nothing
-                Exit Sub
-            End If
-
-            Set rTable = Range("A2")             ' Auslesen ohne Überschrift
-
-            With rTable
-                If Len(.Offset(0, 0).Value) = 0 Or Len(.Offset(0, 1).Value) = 0 Then
-                    MsgBox "The products table has been destoyed and there is no or too few data.", vbCritical, "Error"
-                    'Set dataColection = Nothing
-                    Exit Sub
-                End If
-            End With
-
-            'If the table is okay, we start reading data.
-            'The range is expanded to include the last
-            'cell with content.
-            'If Len(rTable.Offset(2, 0).Formula) = 0 Then
-            '   Set rTable = rTable.Offset(0, 9)
-            'Else
-            Set rTable = Range(rTable.Offset(0, 0), rTable.End(xlDown))
-            'End If
-
-            For Each rCell In rTable
-                With rCell
-                    ' prüfen ob Stationsnummer nicht leer
-                    If rCell.Offset(0, 0).Value <> vbNullString Then
-                        '      sEinbauort = str$(.Value)
-                        ' die gelesenen Daten anhängen
-                        'Datensatz 1
-                        Me.Add CInt(rCell.Offset(0, 0).Value), CInt(rCell.Offset(0, 1).Value), rCell.Offset(0, 2).Value, 0, CInt(rCell.Offset(0, 3).Value), CInt(rCell.Offset(0, 4).Value), CInt(rCell.Offset(0, 5).Value), CInt(rCell.Offset(0, 6).Value), CInt(rCell.Offset(0, 7).Value), CInt(rCell.Offset(0, 8).Value)
-                    End If
-                End With
-            Next
-            'MsgBox "gelesen"
-        End If
-    End With
-BeforeExit:
-    Set rCell = Nothing
-    Set rTable = Nothing
-    Exit Sub
-ErrorHandle:
-    MsgBox Err.Description & " Fehler beim einlesen.", vbCritical, "Error"
-    Resume BeforeExit
-End Sub
 
 Public Sub writePLCConfigToExcel(ByVal tablename As String)
     Dim wdata As New cPLCconfigData

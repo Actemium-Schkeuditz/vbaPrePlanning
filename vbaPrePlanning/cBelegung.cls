@@ -8,8 +8,8 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 ' Klasse zum speichern der SPS Belegungsdaten
-' V0.2
-' 17.02.2020
+' V0.3
+' 11.03.2020
 ' new propertys
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -34,6 +34,10 @@ Private pInputAdressPerSlot As Long
 Private pOutputAdressPerSlot As Long
 Private pAnschluss1 As String
 Private pAnschluss2 As String
+Private pAnschluss3 As String
+Private pAnschluss4 As String
+Private pAnschlussM As String
+Private pAnschlussVS As String
 Private pSPSBMK As String
 
 
@@ -194,6 +198,46 @@ End Property
 
 Public Property Let Anschluss2(ByVal Value As String)
     pAnschluss2 = Value
+End Property
+''''''''''''''''''''''
+' Anschluss_3 property
+''''''''''''''''''''''
+Public Property Get Anschluss3() As String
+    Anschluss3 = pAnschluss3
+End Property
+
+Public Property Let Anschluss3(ByVal Value As String)
+    pAnschluss3 = Value
+End Property
+''''''''''''''''''''''
+' Anschluss_4 property
+''''''''''''''''''''''
+Public Property Get Anschluss4() As String
+    Anschluss4 = pAnschluss4
+End Property
+
+Public Property Let Anschluss4(ByVal Value As String)
+    pAnschluss4 = Value
+End Property
+''''''''''''''''''''''
+' AnschlussVS property
+''''''''''''''''''''''
+Public Property Get AnschlussVS() As String
+    AnschlussVS = pAnschlussVS
+End Property
+
+Public Property Let AnschlussVS(ByVal Value As String)
+    pAnschlussVS = Value
+End Property
+''''''''''''''''''''''
+' AnschlussM property
+''''''''''''''''''''''
+Public Property Get AnschlussM() As String
+    AnschlussM = pAnschlussM
+End Property
+
+Public Property Let AnschlussM(ByVal Value As String)
+    pAnschlussM = Value
 End Property
 
 ''''''''''''''''''''''

@@ -27,7 +27,7 @@
           <Val>XPXfConverterExcelImpl</Val>
          </Setting>
          <Setting name="Template" type="string">
-          <Val>$(MD_TEMPLATES)\KWS\Vorlage_externesBearbeiten_Planungsobjekte_V1.xlsm</Val>
+          <Val>$(MD_TEMPLATES)\KWS\Vorlage_externesBearbeiten_Planungsobjekte_V2.1.xlsm</Val>
          </Setting>
         </LEV6>
         <LEV6 name="Properties">
@@ -111,16 +111,6 @@
           <Val>65535</Val>
           <Val>65535</Val>
           <Val>65535</Val>
-          <Val>44023</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
-          <Val>65535</Val>
           <Val>65535</Val>
           <Val>65535</Val>
           <Val>44023</Val>
@@ -135,6 +125,22 @@
           <Val>65535</Val>
           <Val>65535</Val>
           <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>44023</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
           <Val>44023</Val>
           <Val>65535</Val>
           <Val>65535</Val>
@@ -147,7 +153,25 @@
           <Val>65535</Val>
           <Val>65535</Val>
           <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
           <Val>44023</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
+          <Val>44023</Val>
+          <Val>65535</Val>
+          <Val>65535</Val>
           <Val>65535</Val>
           <Val>65535</Val>
           <Val>65535</Val>
@@ -254,7 +278,11 @@
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
           <Val>1</Val>
+          <Val>0</Val>
+          <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
@@ -278,6 +306,8 @@
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
           <Val>3</Val>
           <Val>0</Val>
           <Val>0</Val>
@@ -290,7 +320,11 @@
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
           <Val>4</Val>
+          <Val>0</Val>
+          <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
@@ -316,8 +350,46 @@
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
+          <Val>6</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
          </Setting>
          <Setting name="IsDataId" type="bool">
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
+          <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
@@ -535,6 +607,8 @@
           <Val>ACT.PLS.IO_STATION</Val>
           <Val>ACT.PLS.RACK_EINBAUORT</Val>
           <Val>ACT.PLS.RACK</Val>
+          <Val>ACT.PLS.SIGNAL_1.IO_STATION</Val>
+          <Val>ACT.PLS.SIGNAL_1.RACK_BMK</Val>
           <Val>ACT.PLS.SIGNAL_1.TYP</Val>
           <Val>ACT.PLS.SIGNAL_1.KARTENTYP</Val>
           <Val>ACT.PLS.SIGNAL_1.BMK_SPS</Val>
@@ -547,6 +621,8 @@
           <Val>ACT.PLS.SIGNAL_1.ANSCHLUSS.4</Val>
           <Val>ACT.PLS.SIGNAL_1.ANSCHLUSS.M</Val>
           <Val>ACT.PLS.SIGNAL_1.ANSCHLUSS.VS</Val>
+          <Val>ACT.PLS.SIGNAL_2.IO_STATION</Val>
+          <Val>ACT.PLS.SIGNAL_2.RACK_BMK</Val>
           <Val>ACT.PLS.SIGNAL_2.TYP</Val>
           <Val>ACT.PLS.SIGNAL_2.KARTENTYP</Val>
           <Val>ACT.PLS.SIGNAL_2.BMK_SPS</Val>
@@ -559,6 +635,8 @@
           <Val>ACT.PLS.SIGNAL_2.ANSCHLUSS.4</Val>
           <Val>ACT.PLS.SIGNAL_2.ANSCHLUSS.M</Val>
           <Val>ACT.PLS.SIGNAL_2.ANSCHLUSS.VS</Val>
+          <Val>ACT.PLS.SIGNAL_3.IO_STATION</Val>
+          <Val>ACT.PLS.SIGNAL_3.RACK_BMK</Val>
           <Val>ACT.PLS.SIGNAL_3.TYP</Val>
           <Val>ACT.PLS.SIGNAL_3.KARTENTYP</Val>
           <Val>ACT.PLS.SIGNAL_3.BMK_SPS</Val>
@@ -571,6 +649,8 @@
           <Val>ACT.PLS.SIGNAL_3.ANSCHLUSS.4</Val>
           <Val>ACT.PLS.SIGNAL_3.ANSCHLUSS.M</Val>
           <Val>ACT.PLS.SIGNAL_3.ANSCHLUSS.VS</Val>
+          <Val>ACT.PLS.SIGNAL_4.IO_STATION</Val>
+          <Val>ACT.PLS.SIGNAL_4.RACK_BMK</Val>
           <Val>ACT.PLS.SIGNAL_4.TYP</Val>
           <Val>ACT.PLS.SIGNAL_4.KARTENTYP</Val>
           <Val>ACT.PLS.SIGNAL_4.BMK_SPS</Val>
@@ -583,6 +663,8 @@
           <Val>ACT.PLS.SIGNAL_4.ANSCHLUSS.4</Val>
           <Val>ACT.PLS.SIGNAL_4.ANSCHLUSS.M</Val>
           <Val>ACT.PLS.SIGNAL_4.ANSCHLUSS.VS</Val>
+          <Val>ACT.PLS.SIGNAL_5.IO_STATION</Val>
+          <Val>ACT.PLS.SIGNAL_5.RACK_BMK</Val>
           <Val>ACT.PLS.SIGNAL_5.TYP</Val>
           <Val>ACT.PLS.SIGNAL_5.KARTENTYP</Val>
           <Val>ACT.PLS.SIGNAL_5.BMK_SPS</Val>
@@ -595,6 +677,20 @@
           <Val>ACT.PLS.SIGNAL_5.ANSCHLUSS.4</Val>
           <Val>ACT.PLS.SIGNAL_5.ANSCHLUSS.M</Val>
           <Val>ACT.PLS.SIGNAL_5.ANSCHLUSS.VS</Val>
+          <Val>ACT.PLS.SIGNAL_6.IO_STATION</Val>
+          <Val>ACT.PLS.SIGNAL_6.RACK_BMK</Val>
+          <Val>ACT.PLS.SIGNAL_6.TYP</Val>
+          <Val>ACT.PLS.SIGNAL_6.KARTENTYP</Val>
+          <Val>ACT.PLS.SIGNAL_6.BMK_SPS</Val>
+          <Val>ACT.PLS.SIGNAL_6.STECKPLATZ</Val>
+          <Val>ACT.PLS.SIGNAL_6.KANAL</Val>
+          <Val/>
+          <Val>ACT.PLS.SIGNAL_6.ANSCHLUSS.1</Val>
+          <Val>ACT.PLS.SIGNAL_6.ANSCHLUSS.2</Val>
+          <Val>ACT.PLS.SIGNAL_6.ANSCHLUSS.3</Val>
+          <Val>ACT.PLS.SIGNAL_6.ANSCHLUSS.4</Val>
+          <Val>ACT.PLS.SIGNAL_6.ANSCHLUSS.M</Val>
+          <Val>ACT.PLS.SIGNAL_6.ANSCHLUSS.VS</Val>
           <Val>ACT.DATA.NOT_HALT</Val>
           <Val>ACT.DATA.FERTIG</Val>
           <Val>ACT.DATA.POTENZIAL.NR_AC</Val>
@@ -606,7 +702,7 @@
         </LEV6>
        </LEV5>
        <Setting name="Description" type="mlstring">
-        <Val>??_??@KWS MH04 Projekte&#10;V1.3&#10;Ausgabe mit SPS-Anschlussdaten&#10;Bearbeitung der Vorplanungsobjekte Stand 13.02.2020&#10;mit CRC Check, SPS-Daten, Artikel, Änderung SPS-Daten;</Val>
+        <Val>??_??@KWS MH04 Projekte&#10;V2.1&#10;Ausgabe mit SPS-Anschlussdaten&#10;Bearbeitung der Vorplanungsobjekte Stand 26.02.2020&#10;mit CRC Check, SPS-Daten, Artikel, Änderung SPS-Daten&#10;Signal 6;</Val>
        </Setting>
        <Setting name="Name" type="mlstring">
         <Val>??_??@KWS_MH04_Vorplanung_Planungsobjekte;</Val>

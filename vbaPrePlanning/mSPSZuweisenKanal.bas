@@ -58,7 +58,7 @@ Public Sub SPSZuweisenKanal()
     dataMPAconfig.reset
     PLCTypOld = vbNullString
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
-    dataKanaele.ReadExcelDataChanelToCollection tabelleDaten, dataKanaele ', spalteStationsnummer, spalteKartentyp
+    dataKanaele.ReadExcelDataChanelToCollection tabelleDaten, dataKanaele
         
     '##### Suche nach allen Stationsnummern
     Dim iStation As Collection

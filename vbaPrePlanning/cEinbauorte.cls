@@ -91,7 +91,7 @@ Public Sub ReadExcelDataToCollection(ByRef tablename As String, ByRef dataColect
 
     'First we check if the table is intact. The
     'check is NOT complete.
-    ThisWorkbook.Worksheets(tablename).Activate
+    ThisWorkbook.Worksheets.[_Default](tablename).Activate
     If Len(Range("A1")) = 0 Then
         MsgBox "The table must start in cell A1. Adding products has been aborted.", vbCritical, "Error"
         'Set EinbauorteData = Nothing

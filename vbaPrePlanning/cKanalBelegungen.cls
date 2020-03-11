@@ -65,6 +65,11 @@ Public Sub AddDataSet(ByVal dataSet As cBelegung)
     p.OutputAdressPerSlot = dataSet.OutputAdressPerSlot
     p.Anschluss1 = dataSet.Anschluss1
     p.Anschluss2 = dataSet.Anschluss2
+    p.Anschluss3 = dataSet.Anschluss3
+    p.Anschluss4 = dataSet.Anschluss4
+    p.AnschlussM = dataSet.AnschlussM
+    p.AnschlussVS = dataSet.AnschlussVS
+    
     p.SPSBMK = dataSet.SPSBMK
     
     objKanalBelegungen.Add p
@@ -211,7 +216,6 @@ Public Function SortChannel() As cKanalBelegungen
 End Function
 
 
-
 Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef dataColection As cKanalBelegungen)
     'Reads the table on the "EplSheet" sheet and adds
     'Chanels to the collection. It also adds values
@@ -322,8 +326,6 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
         
         
     ThisWorkbook.Worksheets(tablename).Activate
-    'Set wkb = ActiveWorkbook
-    'Set ws1 = Worksheets.[_Default](tabelleDaten)
     Set ws1 = ThisWorkbook.ActiveSheet
     ' Tabelle mit Daten bearbeiten
     With ws1
@@ -334,7 +336,6 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
         Application.ScreenUpdating = False
         '##### Herausfinden der Anzahl der Zeilen #####
         zeilenanzahl = .Cells.Item(Rows.Count, 2).End(xlUp).Row ' zweite Spalte wird gezählt
-
         
         For Each sData In Me
             For i = 3 To zeilenanzahl
@@ -346,8 +347,11 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
                     .Cells.Item(i, (iSpalteKanal + 1 + (14 * (sData.Signal - 1)))) = sData.Adress
                     .Cells.Item(i, (iSpalteKanal + 2 + (14 * (sData.Signal - 1)))) = sData.Anschluss1
                     .Cells.Item(i, (iSpalteKanal + 3 + (14 * (sData.Signal - 1)))) = sData.Anschluss2
+                    .Cells.Item(i, (iSpalteKanal + 4 + (14 * (sData.Signal - 1)))) = sData.Anschluss3
+                    .Cells.Item(i, (iSpalteKanal + 5 + (14 * (sData.Signal - 1)))) = sData.Anschluss4
+                    .Cells.Item(i, (iSpalteKanal + 6 + (14 * (sData.Signal - 1)))) = sData.AnschlussM
+                    .Cells.Item(i, (iSpalteKanal + 7 + (14 * (sData.Signal - 1)))) = sData.AnschlussVS
                     .Cells.Item(i, sSpalteSegmentvorlage) = sData.Segmentvorlage
-                    'MsgBox "Kanal geschrieben: " & sData.Kanal
                 End If
             
             Next i

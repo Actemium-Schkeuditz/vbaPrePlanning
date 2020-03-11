@@ -330,7 +330,7 @@ Sub XML_Export(sfolder As String, sFileNameConfig As String)
         Print #1, "<OutputStartAdress>7000</OutputStartAdress>"
         Print #1, "<Modules>"
         For i = 0 To 1
-            Print #1, "<Typ name="""; "ET200SP"; "4IO"; "-"; "LINK"; """>"
+            Print #1, "<Typ name="""; "ET200SP"; " 4IO"; "-"; "LINK"; """>"
             Print #1, "<ChannelsBeforSlot>0</ChannelsBeforSlot>"
             Print #1, "<ChannelsAfterSlot>0</ChannelsAfterSlot>"
             Print #1, "<ReserveChannelsPerSlot>1</ReserveChannelsPerSlot>"

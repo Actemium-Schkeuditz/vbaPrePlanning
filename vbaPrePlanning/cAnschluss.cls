@@ -17,7 +17,7 @@ Attribute VB_Exposed = False
  
  Option Explicit
  
-'Private pKartentyp As String
+
 Public Kartentyp As cPLCdata
 Private pKanal As Integer
 Private pAnschluss1 As String
@@ -34,15 +34,6 @@ Private pAnschlussVS As String
     Set Me.Kartentyp = New cPLCdata
 
 End Sub
-
-
-'Public Property Get Kartentyp() As String
-'    Kartentyp = pKartentyp
-'End Property
-
-'Public Property Let Kartentyp(ByVal Value As String)
-'    pKartentyp = Value
-'End Property
 
 ''''''''''''''''''''''
 ' Kanal property
