@@ -74,7 +74,7 @@ Public Sub SPS_KartenAnschluss()
                     'Suchen nach dem passenden Datensatz passend zu Kartentyp und Kanal
                     Set dataResult = Nothing
                     Set dataResult = dataSearch.searchAnschluss(iSearchKartentyp, iSearchKanal, dataAnschluesse)
-                    If Not dataResult.Item(1).Kartentyp.PLCtyp = "FESTO MPA" Then
+                    If Not dataResult.Item(1).Kartentyp.PLCTyp = "FESTO MPA" Then
                
                         ' schreiben der Daten
                         .Cells.Item(i, spalteIntStart + spalteOffset + 5) = dataResult.Item(1).Anschluss1

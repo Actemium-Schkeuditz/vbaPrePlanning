@@ -476,7 +476,7 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
     Dim iReserveAfterPLCTyp As Long
     Dim bfirstFestoCPX As Boolean
     Dim bfirstFestoMPX As Boolean
-    
+    Dim bFirstReserve As Boolean
     Dim i As Long
 
     
@@ -493,12 +493,9 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
     iOldKanal = 0
     bfirstFestoCPX = False
     bfirstFestoMPX = False
+    bFirstReserve = False
     
     'Kopfstation dazu
-    ' Wenn z.B. "ACT.PLS.SIGNAL_1.KARTENTYP de_DE" nicht gleich folgende CPX-Typen und (iSteckplatz + OffsetSlot) = 0
-    ' Was ist "iSteckplatz"? Aktueller Steckplatz?
-    ' Was ist "OffsetSlot"?
-    ' Was macht folgende If-Then-Anweisung?
     If (pKartentyp = "CPX-8DE-D" Or pKartentyp = "CPX-4DA" Or pKartentyp = "CPX-4AE-T" Or pKartentyp = "CPX 2x3/2 mono" Or pKartentyp = "CPX 5/2 mono" Or pKartentyp = "CPX 5/2 bistabil") And (iSteckplatz + OffsetSlot) = 0 Then
         bfirstFestoCPX = True
         rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "FB43", iSteckplatz + OffsetSlot, iKanal
@@ -716,14 +713,16 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
         
     End If
     
-    If iReserveAfterPLCTyp >= 1 Then
-        iKanal = 0
-        iSteckplatz = iSteckplatz + 1
-        rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "ET200SP RESERVE", iSteckplatz + OffsetSlot, iKanal
+      Do While iReserveAfterPLCTyp >= 1
+        If iKanal > 0 Then  'Or bFirstReserve
+            iSteckplatz = iSteckplatz + 1
+        End If
+        rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "ET200SP RESERVE", iSteckplatz + OffsetSlot, 0
         iReserveAfterPLCTyp = iReserveAfterPLCTyp - 1
-    End If
-    
-    
+        iKanal = 1
+        bFirstReserve = True
+    Loop
+  
     Set zuweisenKanal = rData
 End Function
 
@@ -940,10 +939,9 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
     
     iAdressLegthInput = 0
     iAdressLegthOutput = 0
-    
+
     ' sortieren nach Station, Slot and Channel
     Me.SortChannel
-    'Me.returnAllSlotsPerRack
    
     ' Steckplätze ermitteln
     ifirstSlot = Me.returnFirstSlotNumber
@@ -969,6 +967,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
             iAdressVariOutput = 0
             
             If pKartentyp = "ET200SP 4IO-LINK" Then ' bei ET200SP IO-Link alle Kanäle zusammen zählen
+            
                 For Each sdataVari In SlotData
                     'hier Adresse ermitteln
                     sdataVari.Adress = "EB" & iInputStartAdress + iAdressVariInput ' + sdataVari.InputAdressSize
@@ -982,32 +981,34 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                     rData.Addobj sdataVari
                 Next
                 'Berechnen Adressen für die nächste Karte
-                If iAdressVariInput = 1 And iAdressVariOutput <= 1 Then
-                    iInputStartAdress = iInputStartAdress + 1
-                    iOutputStartAdress = iOutputStartAdress + 1
-                ElseIf iAdressVariInput <= 1 And iAdressVariOutput = 1 Then 'beide null ist Fehler
-                    iInputStartAdress = iInputStartAdress + 1
-                    iOutputStartAdress = iOutputStartAdress + 1
-                ElseIf iAdressVariInput <= 2 And iAdressVariOutput <= 2 Then
-                    iInputStartAdress = iInputStartAdress + 2
-                    iOutputStartAdress = iOutputStartAdress + 2
-                ElseIf iAdressVariInput <= 8 And iAdressVariOutput <= 8 Then
-                    iInputStartAdress = iInputStartAdress + 8
-                    iOutputStartAdress = iOutputStartAdress + 8
-                ElseIf iAdressVariInput <= 16 And iAdressVariOutput <= 16 Then
-                    iInputStartAdress = iInputStartAdress + 16
-                    iOutputStartAdress = iOutputStartAdress + 16
-                ElseIf iAdressVariInput <= 32 And iAdressVariOutput <= 32 Then
-                    iInputStartAdress = iInputStartAdress + 32
-                    iOutputStartAdress = iOutputStartAdress + 32
-                ElseIf iAdressVariInput <= 64 And iAdressVariOutput <= 64 Then
-                    iInputStartAdress = iInputStartAdress + 64
-                    iOutputStartAdress = iOutputStartAdress + 64
-                ElseIf iAdressVariInput <= 128 And iAdressVariOutput <= 128 Then
-                    iInputStartAdress = iInputStartAdress + 144
-                    iOutputStartAdress = iOutputStartAdress + 128
-                Else
-                    MsgBox "Fehler in der Adresslänge von: " & sData.KWSBMK
+                If SlotData.Item(1).Kartentyp.Kartentyp = "ET200SP 4IO-LINK" Then
+                    If iAdressVariInput = 1 And iAdressVariOutput <= 1 Then
+                        iInputStartAdress = iInputStartAdress + 1
+                        iOutputStartAdress = iOutputStartAdress + 1
+                    ElseIf iAdressVariInput <= 1 And iAdressVariOutput = 1 Then 'beide null ist Fehler
+                        iInputStartAdress = iInputStartAdress + 1
+                        iOutputStartAdress = iOutputStartAdress + 1
+                    ElseIf iAdressVariInput <= 2 And iAdressVariOutput <= 2 Then
+                        iInputStartAdress = iInputStartAdress + 2
+                        iOutputStartAdress = iOutputStartAdress + 2
+                    ElseIf iAdressVariInput <= 8 And iAdressVariOutput <= 8 Then
+                        iInputStartAdress = iInputStartAdress + 8
+                        iOutputStartAdress = iOutputStartAdress + 8
+                    ElseIf iAdressVariInput <= 16 And iAdressVariOutput <= 16 Then
+                        iInputStartAdress = iInputStartAdress + 16
+                        iOutputStartAdress = iOutputStartAdress + 16
+                    ElseIf iAdressVariInput <= 32 And iAdressVariOutput <= 32 Then
+                        iInputStartAdress = iInputStartAdress + 32
+                        iOutputStartAdress = iOutputStartAdress + 32
+                    ElseIf iAdressVariInput <= 64 And iAdressVariOutput <= 64 Then
+                        iInputStartAdress = iInputStartAdress + 64
+                        iOutputStartAdress = iOutputStartAdress + 64
+                    ElseIf iAdressVariInput <= 128 And iAdressVariOutput <= 128 Then
+                        iInputStartAdress = iInputStartAdress + 144
+                        iOutputStartAdress = iOutputStartAdress + 128
+                    Else
+                        MsgBox "Fehler in der Adresslänge von: " & sData.KWSBMK
+                    End If
                 End If
                 iAdressVariInput = iInputStartAdress
                 iAdressVariOutput = iOutputStartAdress
@@ -1074,7 +1075,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
             End If
         Next i
         
-    ElseIf Me.Item(1).Kartentyp.PLCtyp = "FESTO MPA" Then
+    ElseIf Me.Item(1).Kartentyp.PLCTyp = "FESTO MPA" Then
         ' hier alles abhandeln was die Festo Ventilinsel betrifft
         'suchen der Datensätze mit den Grundmodulen
         For Each sDataFesto In Me
@@ -1311,7 +1312,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
         
 End Function
 
-Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long, iKanal As Long) As cKanalBelegungen
+Public Function correctFestoMPA(ByRef MPAconfig As cFestoMPA) As cKanalBelegungen
     ' Korrektur der Ventilinseldaten
 
     Dim sData As New cBelegung                   ' sData als neue Variable unter der Klasse cBelegung (sData = gespeicherte SPS-Belegungsdaten)
@@ -1323,58 +1324,58 @@ Public Function correctFestoMPA(iMPAAnschlussplatte As Long, iSteckplatz As Long
     'sort by channel
     Set cData = Me.SortChannel
     iSubAnschluss = 0
-    'Anschlussbezeichnung ist iSteckplatz
-    'Kanalbezeichnung ist iKanal
-    'Anschlussbeschreibung ist iMPAAnschlussplatte
 
-    If iMPAAnschlussplatte = 0 Then              'Wenn Anschlussbeschreibung = 0 dann
-        iSteckplatz = 1                          'Anschlussbezeichnung beginnt bei 1
-        iKanal = 1                               'Kanalbezeichnung beginnt bei 1
+    'Startwerte setzen
+    If MPAconfig.AnschlussplatteMPA = 0 Then
+       MPAconfig.SteckplatzMPA = 1
+       MPAconfig.KanalMPA = 1
     End If
     iSubSlot = 0
     
     For Each sData In cData
-        If sData.Kartentyp.PLCtyp = "FESTO MPA" Then
+        If sData.Kartentyp.PLCTyp = "FESTO MPA" Then
             ' firstrun
-            If rData.Count = 0 And iKanal = 1 And iSubSlot = 0 Then
-                iMPAAnschlussplatte = 1
-                rData.Add "ADRESS", "FESTO_MPA", 0, sData.Stationsnummer, "FESTO MPA1S", iMPAAnschlussplatte
+            If rData.Count = 0 And MPAconfig.KanalMPA = 1 And iSubSlot = 0 Then
+                MPAconfig.AnschlussplatteMPA = 1
+                rData.Add "ADRESS", "FESTO_MPA", 0, sData.Stationsnummer, "FESTO MPA1S", MPAconfig.AnschlussplatteMPA
             End If
             '#### MPA Anschlussplatten ermitteln ####
-            If iSteckplatz > 4 Then
-                iMPAAnschlussplatte = iMPAAnschlussplatte + 1
-                If iMPAAnschlussplatte = 4 Or iMPAAnschlussplatte = 8 Or iMPAAnschlussplatte = 12 Or iMPAAnschlussplatte = 16 Or iMPAAnschlussplatte = 20 Then
-                    rData.Add "ADRESS", "FESTO_MPA", 0, sData.Stationsnummer, "VMPA1-FB-SPU", iMPAAnschlussplatte 'Versorgungsplatte
-                    iMPAAnschlussplatte = iMPAAnschlussplatte + 1
+            If MPAconfig.SteckplatzMPA > 4 Then
+                MPAconfig.AnschlussplatteMPA = MPAconfig.AnschlussplatteMPA + 1
+                If MPAconfig.AnschlussplatteMPA = 4 Or MPAconfig.AnschlussplatteMPA = 8 Or MPAconfig.AnschlussplatteMPA = 12 Or MPAconfig.AnschlussplatteMPA = 16 Or MPAconfig.AnschlussplatteMPA = 20 Then
+                    rData.Add "ADRESS", "FESTO_MPA", 0, sData.Stationsnummer, "VMPA1-FB-SPU", MPAconfig.AnschlussplatteMPA 'Versorgungsplatte
+                    MPAconfig.AnschlussplatteMPA = MPAconfig.AnschlussplatteMPA + 1
+                    MPAconfig.ZwischeneinspeisungMPA = MPAconfig.ZwischeneinspeisungMPA + 1
                 End If
-                rData.Add "ADRESS", "FESTO_MPA", 0, sData.Stationsnummer, "FESTO MPA1S", iMPAAnschlussplatte 'Versorgungsplatte
-                iSteckplatz = 1
+                rData.Add "ADRESS", "FESTO_MPA", 0, sData.Stationsnummer, "FESTO MPA1S", MPAconfig.AnschlussplatteMPA 'Versorgungsplatte
+                MPAconfig.SteckplatzMPA = 1
             End If
             ' diese Anschlussplatten sind nur zur Einspeisung
             
-            sData.Steckplatz = iMPAAnschlussplatte
-            sData.Kanal = iKanal
-            sData.SPSBMK = "KH" & iSteckplatz + (iMPAAnschlussplatte * 4) - 4
+            sData.Steckplatz = MPAconfig.AnschlussplatteMPA
+            sData.Kanal = MPAconfig.KanalMPA
+            'BMK bilden mit Kennbuchstaben KH
+            sData.SPSBMK = "KH" & MPAconfig.SteckplatzMPA + ((MPAconfig.AnschlussplatteMPA - MPAconfig.ZwischeneinspeisungMPA) * 4) - 4
             
             If sData.Kartentyp.MaxChannelPerSlot = 0 Then
-                iKanal = iKanal + 2
-                iSteckplatz = iSteckplatz + 1
+                MPAconfig.KanalMPA = MPAconfig.KanalMPA + 2
+                MPAconfig.SteckplatzMPA = MPAconfig.SteckplatzMPA + 1
             ElseIf sData.Kartentyp.MaxChannelPerSlot = 1 Then
                 If iSubSlot = 0 Then             ' Spule 12 ungerade Adressen
                     iSubSlot = iSubSlot + 1
-                    iKanal = iKanal + 1
+                    MPAconfig.KanalMPA = MPAconfig.KanalMPA + 1
                     sData.Anschluss1 = 2
                 Else                             ' Spule 14  gerade Adressen
                     iSubSlot = 0
-                    iKanal = iKanal + 1
-                    iSteckplatz = iSteckplatz + 1
+                    MPAconfig.KanalMPA = MPAconfig.KanalMPA + 1
+                    MPAconfig.SteckplatzMPA = MPAconfig.SteckplatzMPA + 1
                     sData.Anschluss1 = 4
                 End If
             Else
                 MsgBox "Fehler in den Daten, Kartentyp: " & sData.Kartentyp.Kartentyp
             End If
             ' Anschlüsse schreiben
-            iSubAnschluss = iKanal Mod 2
+            iSubAnschluss = MPAconfig.KanalMPA Mod 2
             If iSubAnschluss = 0 Then
                 sData.Anschluss1 = 2
             Else

@@ -330,7 +330,7 @@ Sub XML_Export(sfolder As String, sFileNameConfig As String)
         Print #1, "<OutputStartAdress>7000</OutputStartAdress>"
         Print #1, "<Modules>"
         For i = 0 To 1
-            Print #1, "<Typ name="""; "ET200SP"; 4; "IO"; "-"; "LINK"; """>"
+            Print #1, "<Typ name="""; "ET200SP"; "4IO"; "-"; "LINK"; """>"
             Print #1, "<ChannelsBeforSlot>0</ChannelsBeforSlot>"
             Print #1, "<ChannelsAfterSlot>0</ChannelsAfterSlot>"
             Print #1, "<ReserveChannelsPerSlot>1</ReserveChannelsPerSlot>"
@@ -360,68 +360,30 @@ Fehlermeldung:
 End Sub
 
 
-Public Sub RoundUpPLCaddresses(ByVal pPLCcardTyp As String, ByRef iInputAdress As Long, ByRef iOutputAdress As Long, ByRef bstationswechsel As Boolean)
+Public Sub RoundUpPLCaddresses(ByRef iInputAdress As Long, ByRef iOutputAdress As Long)
     'round up PLC adresses
-    'todo Last IFM Master
     Dim iInputAdressTmp As Long
     Dim iOutputAdressTmp As Long
     iInputAdressTmp = 0
     iOutputAdressTmp = 0
-    
-    If pPLCcardTyp = "ET200SP" Then
-        Do Until iInputAdressTmp > iInputAdress + 10
-            iInputAdressTmp = iInputAdressTmp + 50
-        Loop
-        
-        Do Until iOutputAdressTmp > iOutputAdress + 10
-            iOutputAdressTmp = iOutputAdressTmp + 50
-        Loop
      
-        If iInputAdressTmp >= iOutputAdressTmp Then
-            iInputAdress = iInputAdressTmp
-            iOutputAdress = iInputAdressTmp
-        ElseIf iOutputAdressTmp > iInputAdressTmp Then
-            iInputAdress = iOutputAdressTmp
-            iOutputAdress = iOutputAdressTmp
-        End If
+    Do Until iInputAdressTmp > iInputAdress + 10
+        iInputAdressTmp = iInputAdressTmp + 50
+    Loop
         
-        
-    ElseIf pPLCcardTyp = "FESTO CPX" Or pPLCcardTyp = "FESTO MPA" Then
-        Do Until iInputAdressTmp > iInputAdress + 10
-            iInputAdressTmp = iInputAdressTmp + 50
-        Loop
-        
-        Do Until iOutputAdressTmp > iOutputAdress + 10
-            iOutputAdressTmp = iOutputAdressTmp + 50
-        Loop
-        
-        If iInputAdressTmp >= iOutputAdressTmp Then
-            iInputAdress = iInputAdressTmp
-            iOutputAdress = iInputAdressTmp
-        ElseIf iOutputAdressTmp > iInputAdressTmp Then
-            iInputAdress = iOutputAdressTmp
-            iOutputAdress = iOutputAdressTmp
-        End If
-        
-        
-    ElseIf pPLCcardTyp = "FU" And bstationswechsel Then ' Aufrunden bei Stationswechsel
-        Do Until iInputAdressTmp > iInputAdress + 10
-            iInputAdressTmp = iInputAdressTmp + 50
-        Loop
-        Do Until iOutputAdressTmp > iOutputAdress + 10
-            iOutputAdressTmp = iOutputAdressTmp + 50
-        Loop
-
-        If iInputAdressTmp >= iOutputAdressTmp Then
-            iInputAdress = iInputAdressTmp
-            iOutputAdress = iInputAdressTmp
-        ElseIf iOutputAdressTmp > iInputAdressTmp Then
-            iInputAdress = iOutputAdressTmp
-            iOutputAdress = iOutputAdressTmp
-        End If
-        
+    Do Until iOutputAdressTmp > iOutputAdress + 10
+        iOutputAdressTmp = iOutputAdressTmp + 50
+    Loop
+     
+    If iInputAdressTmp >= iOutputAdressTmp Then
+        iInputAdress = iInputAdressTmp
+        iOutputAdress = iInputAdressTmp
+    ElseIf iOutputAdressTmp > iInputAdressTmp Then
+        iInputAdress = iOutputAdressTmp
+        iOutputAdress = iOutputAdressTmp
     End If
-    
+           
 End Sub
+
 
 

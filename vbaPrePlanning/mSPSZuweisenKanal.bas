@@ -1,9 +1,9 @@
 Attribute VB_Name = "mSPSZuweisenKanal"
 ' Skript zur Ermittlung der SPS Kanäle
-' V0.4
-' nicht fertig
-' 02.03.2020
-'diverse Fehler müssen abgefangen werden, Offset der Kartenn fehlt noch
+' V0.5
+' Änderung MPA Kartenzählung und Steckplatzbezeichnung
+' 11.03.2020
+'diverse Fehler müssen abgefangen werden,
 '
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -16,13 +16,21 @@ Public Sub SPSZuweisenKanal()
 
     Dim tabelleDaten As String
     Dim i As Long
-    'Dim spalteStationsnummer As String
-   ' Dim spalteKartentyp As String
     Dim OffsetSlot As Integer
  
     Dim iInputAdress As Long
     Dim iOutputAdress As Long
-    Dim PLCcardTyp As String
+    Dim PLCTyp As String
+    Dim PLCTypOld As String
+
+    '####### zuweisen der Kanäle #######
+    Dim pStation As Variant
+    Dim pKartentyp As Variant
+    Dim iInputStartAdress As Long
+    Dim iOutputStartAdress As Long
+
+    '##### Suche nach allen verwendeten Kartentypen
+    Dim iKartentyp As Collection
     
     ' Class einbinden
     Dim dataKanaele As New cKanalBelegungen
@@ -31,104 +39,81 @@ Public Sub SPSZuweisenKanal()
     Dim dataResult As New cKanalBelegungen
     Dim dataResultAdress As New cKanalBelegungen
     Dim dataPLCConfig As New cPLCconfig          'Config from File
-     Dim dataPLCConfigStation As New cPLCconfig          'Config for Work
+    Dim dataPLCConfigStation As New cPLCconfig   'Config for Work
     Dim dataConfigPerPLCTyp As New cPLCconfig
     Dim dataPLCConfigResult As New cPLCconfig
     Dim dataPLCConfigResultOutput As New cPLCconfig
-  
+    Dim dataMPAconfig As New cFestoMPA
+    
+    '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
+    Dim dataSort As New cKanalBelegungen         'Ergebnis der Sortierung
+     
     
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
-    'spalteStationsnummer = "BU"                  'erste Spalte der Anschlüsse
-    'spalteKartentyp = "BY"
-    
+   
+    'Startwerte setzen
     iInputAdress = 0
     iOutputAdress = 0
-    
+    dataMPAconfig.reset
+    PLCTypOld = vbNullString
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
     dataKanaele.ReadExcelDataChanelToCollection tabelleDaten, dataKanaele ', spalteStationsnummer, spalteKartentyp
-    
-    
+        
     '##### Suche nach allen Stationsnummern
     Dim iStation As Collection
     Set iStation = dataKanaele.returnStation
-    
-    '##### Suche nach allen verwendeten Kartentypen
-    Dim iKartentyp As Collection
-    
-    '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
-    'Dim sortierung As cBelegung
-    Dim dataSort As New cKanalBelegungen         'Ergebnis der Sortierung
-  
-    '####### zuweisen der Kanäle #######
-    ' Durchlauf für jede Station einzeln
-    Dim pStation As Variant
-    Dim pKartentyp As Variant
-    Dim iInputStartAdress As Long
-    Dim iOutputStartAdress As Long
-    Dim iMPAAnschlussplatte As Long
-    Dim iSteckplatzMPA As Long
-    Dim iKanalMPA As Long
-    Dim bstationswechsel As Boolean
-    Dim PLCcardTypOld As String
-    
-    
-      '##### Auslesen der Startadresse für die erste Station ######
+ 
+    '##### Auslesen der Startadresse für die erste Station ######
     Set dataPLCConfig = readXMLFile
-      
     iInputStartAdress = dataPLCConfig.returnFirstInputAdressePLCStation(1)
     iOutputStartAdress = dataPLCConfig.returnFirstOutputAdressePLCStation(1)
     
     For Each pStation In iStation
+        '### reset der Festo config Daten
+        dataMPAconfig.reset
+        '### suchen nach den Datensätzen der Station
         Set dataSearchStation = dataKanaele.searchDatasetPerStation(pStation)
         '### lesen der PLC Konfiguartionsdaten ######
         Set dataPLCConfigStation = Nothing
         Set dataPLCConfigResultOutput = Nothing
         Set dataResultAdress = Nothing
         Set dataPLCConfigStation = dataPLCConfig.returnDatasetPerStation(pStation)
-        iSteckplatzMPA = 0
-        iKanalMPA = 0
-        'PLCcardTyp = dataPLCConfigStation.Item(1).Kartentyp.PLCtyp
+        '### PLC Typ ermitteln
+        PLCTyp = dataSearchStation.Item(1).Kartentyp.PLCTyp
+        ' Erkennen von Stationswechseln und dann aufrunden der Adressen
+        If PLCTyp <> PLCTypOld And Not PLCTypOld = vbNullString Then
+            RoundUpPLCaddresses iInputStartAdress, iOutputStartAdress
+        End If
+        PLCTypOld = PLCTyp
+    
         '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
         Set dataSort = dataSearchStation.Sort
         '##### Suche nach allen verwendeten Kartentypen
         Set iKartentyp = dataSort.returnKartentyp
         OffsetSlot = 0                           'starten mit Slot 0
-        iMPAAnschlussplatte = 0
+ 
         For Each pKartentyp In iKartentyp
             Set dataConfigPerPLCTyp = Nothing
             Set dataConfigPerPLCTyp = dataPLCConfigStation.returnDatasetPerSlottyp(pStation, pKartentyp)
             Set dataSearchPlcTyp = dataSort.searchDatasetPlcTyp(pKartentyp)
             Set dataResult = dataSearchPlcTyp.zuweisenKanal(OffsetSlot, pKartentyp, dataConfigPerPLCTyp)
-            PLCcardTyp = dataResult.Item(1).Kartentyp.PLCtyp
+            PLCTyp = dataResult.Item(1).Kartentyp.PLCTyp
             OffsetSlot = dataResult.returnLastSlotNumber
             ' Korrektur FESTO Ventilinsel
-            Set dataResult = dataResult.correctFestoMPA(iMPAAnschlussplatte, iSteckplatzMPA, iKanalMPA)
-            If PLCcardTyp <> PLCcardTypOld Then ' Erkennen von Stationswechsel
-                bstationswechsel = True
-            Else
-                bstationswechsel = False
-            End If
-            'round up FU bei Stationswechsel
-            RoundUpPLCaddresses "FU", iInputStartAdress, iOutputStartAdress, bstationswechsel
-            PLCcardTypOld = PLCcardTyp
+            Set dataResult = dataResult.correctFestoMPA(dataMPAconfig)
             ' adressieren
             Set dataResultAdress = dataResult.AdressPerSlottyp(iInputStartAdress, iOutputStartAdress, pStation, pKartentyp)
             'Datensätze der Stationskonfiguration anhängen
             Set dataPLCConfigResult = dataPLCConfigResult.ConfigPLCToDataset(dataResultAdress)
             dataPLCConfigResultOutput.Append dataPLCConfigResult
-           'Set dataPLCConfigResultOutput = dataPLCConfigResult.ConfigPLCToDataset(dataResultAdress)     'Datensätze der Stationskonfiguration anhängen
+            'Set dataPLCConfigResultOutput = dataPLCConfigResult.ConfigPLCToDataset(dataResultAdress)     'Datensätze der Stationskonfiguration anhängen
             
             OffsetSlot = OffsetSlot + 1
             '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
             dataResultAdress.writeDatsetsToExcel tabelleDaten
         Next
-
-            'round up
-            RoundUpPLCaddresses PLCcardTyp, iInputStartAdress, iOutputStartAdress, False
-        
-        
-        
+        '### schreiben der Config Daten in eigenens Excel Sheet
         dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation
     Next
     
@@ -141,9 +126,4 @@ Public Sub SPSZuweisenKanal()
     
     MsgBox "Zuweisen fertig"
     
-    
-
-
 End Sub
-
-

@@ -215,7 +215,7 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String)
 
     Dim i As Long
     
-     On Error GoTo ErrorHandle
+    On Error GoTo ErrorHandle
 
     With ThisWorkbook
         ' alte Daten löschen
@@ -223,8 +223,11 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String)
         If WorksheetExist((tablename), ws1) = True Then
             Application.DisplayAlerts = False
             ' löschen deaktiviert
-            '.Sheets(tablename).Delete
+            .Sheets(tablename).Delete
             Application.DisplayAlerts = True
+            'Worksheets anlegen
+            .Sheets.Add after:=Sheets(Worksheets.Count)
+            .ActiveSheet.Name = tablename
         Else
             'Worksheets anlegen
             .Sheets.Add after:=Sheets(Worksheets.Count)
@@ -238,12 +241,9 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String)
         .ActiveSheet.Cells(1, 1) = "Stationsnummer"
         .ActiveSheet.Cells(1, 2) = "Steckplatz"
         .ActiveSheet.Cells(1, 3) = "Kartentyp"
-        .ActiveSheet.Cells(1, 4) = "Eingangsadresse"
-        .ActiveSheet.Cells(1, 5) = "Ausgangsadresse"
-        .ActiveSheet.Cells(1, 6) = "Kanäle vor erstem Steckplatz"
-        .ActiveSheet.Cells(1, 7) = "Kanäle nach Belegung"
-        .ActiveSheet.Cells(1, 8) = "Reservekanäle pro Karte"
-        .ActiveSheet.Cells(1, 9) = "Reserve Steckplatz"
+        .ActiveSheet.Cells(1, 4) = "Eingangsadresse Start"
+        .ActiveSheet.Cells(1, 5) = "Ausgangsadresse Start"
+
      
         i = 2
         For Each wdata In Me
