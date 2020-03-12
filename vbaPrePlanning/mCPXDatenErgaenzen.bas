@@ -46,7 +46,7 @@ Public Sub CPXDatenErgaenzen()
     '##### Daten bearbeiten #####
     For Each Karten In sKartentyp
     
-        Set dataSearchPlcTyp = sortKanaele.searchDatasetPlcTyp(Karten) 'neu  CL Suchen nach dem einen Kartentyp
+        Set dataSearchPlcTyp = sortKanaele.searchDatasetPlcModules(Karten) 'neu  CL Suchen nach dem einen Kartentyp
  
         For Each sPerPLCtypKanaele In dataSearchPlcTyp 'neu CL für jeden Datensatz mit dem Kartentyp einmal durchlaufen
             'neu CL schreiben der Daten für das 2.SPS Signal der 5/2 Bistabilen

@@ -96,7 +96,7 @@ Public Sub SPSZuweisenKanal()
         For Each pKartentyp In iKartentyp
             Set dataConfigPerPLCTyp = Nothing
             Set dataConfigPerPLCTyp = dataPLCConfigStation.returnDatasetPerSlottyp(pStation, pKartentyp)
-            Set dataSearchPlcTyp = dataSort.searchDatasetPlcTyp(pKartentyp)
+            Set dataSearchPlcTyp = dataSort.searchDatasetPlcModules(pKartentyp)
             Set dataResult = dataSearchPlcTyp.zuweisenKanal(OffsetSlot, pKartentyp, dataConfigPerPLCTyp)
             PLCTyp = dataResult.Item(1).Kartentyp.PLCTyp
             OffsetSlot = dataResult.returnLastSlotNumber
@@ -117,12 +117,16 @@ Public Sub SPSZuweisenKanal()
         dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation
     Next
     
-    '##### Anschlüsse zuordnen ####
+    '##### Anschlüsse zuordnen #####
     SPS_KartenAnschluss
-    '##### SPS Karten BMK erzeugen ####
+    '##### SPS Karten BMK erzeugen #####
     SPS_BMK
-    '##### CPX Daten Ergänzen ####
+    '##### CPX Daten Ergänzen #####
     CPXDatenErgaenzen
+    '##### Seitenzahl schreiben #####
+    SeitenZahlschreiben
+    '##### symbolische Adresse schreiben #####
+    symbolische_Adresse
     
     MsgBox "Zuweisen fertig"
     

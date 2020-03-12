@@ -589,16 +589,16 @@ Public Property Let Kartentyp(ByVal Value As String)
         ' Adress
         pDatatyp = "Byte"
         pSignalDirection = "InOut"
-        pInputAdressLength = 100
-        pOutputAdressLength = 0
-        pInputMinLength = 100
-        pInputMaxLength = 100
-        pOutputMinLength = 0
-        pOutputMaxLength = 0
+        pInputAdressLength = 60     'pro Schalter 30Byte
+        pOutputAdressLength = 4     'pro Schalter 2 Byte
+        pInputMinLength = 30
+        pInputMaxLength = 240
+        pOutputMinLength = 2
+        pOutputMaxLength = 16
         pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
-        pSameAdressRangeForOutput = True
+        pSameAdressRangeForOutput = False
     Case "FESTO MPA1S"
         pPLCtyp = "FESTO MPA"
         pSortingIdentifier = 150

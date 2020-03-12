@@ -8,8 +8,8 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 ' Klasse zum speichern der SPS Belegungsdaten
-' V0.3
-' 11.03.2020
+' V0.4
+' 12.03.2020
 ' new propertys
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -20,13 +20,16 @@ Option Explicit
  
 Private pKey As String
 Private pKWSBMK As String
+Private pAnlage As String
+Private pEinbauort As String
+Private pSeite As Long
 Private pSignal As Integer
 Public Kartentyp As cPLCdata
 
 Private pStationsnummer As Integer
 Private pSteckplatz As Integer
 Private pKanal As Integer
-Private pAdress As String ' Adresse für Stromlaufplan
+Private pAdress As String                        ' Adresse für Stromlaufplan
 Private pSegmentvorlage As String
 Private pInputAdressSize As Long
 Private pOutputAdressSize As Long
@@ -39,8 +42,6 @@ Private pAnschluss4 As String
 Private pAnschlussM As String
 Private pAnschlussVS As String
 Private pSPSBMK As String
-
-
 
 Private Sub Class_Initialize()
     Set Me.Kartentyp = New cPLCdata
@@ -57,7 +58,6 @@ Public Property Let Key(ByVal Value As String)
     pKey = Value
 End Property
 
-
 ''''''''''''''''''''''
 ' KWSBMK property
 ''''''''''''''''''''''
@@ -69,6 +69,38 @@ Public Property Let KWSBMK(ByVal Value As String)
     pKWSBMK = Value
 End Property
 
+''''''''''''''''''''''
+' Anlage property
+''''''''''''''''''''''
+Public Property Get Anlage() As String
+    Anlage = pAnlage
+End Property
+
+Public Property Let Anlage(ByVal Value As String)
+    pAnlage = Value
+End Property
+
+''''''''''''''''''''''
+' Einbauort property
+''''''''''''''''''''''
+Public Property Get Einbauort() As String
+    Einbauort = pEinbauort
+End Property
+
+Public Property Let Einbauort(ByVal Value As String)
+    pEinbauort = Value
+End Property
+
+''''''''''''''''''''''
+' Seite property
+''''''''''''''''''''''
+Public Property Get Seite() As Long
+    Seite = pSeite
+End Property
+
+Public Property Let Seite(ByRef Value As Long)
+    pSeite = Value
+End Property
 
 ''''''''''''''''''''''
 ' Signal property
@@ -135,6 +167,7 @@ End Property
 Public Property Let Segmentvorlage(ByRef Value As String)
     pSegmentvorlage = Value
 End Property
+
 ''''''''''''''''''''''
 ' InputAdressSize
 ''''''''''''''''''''''
@@ -156,6 +189,7 @@ End Property
 Public Property Let OutputAdressSize(ByRef Value As Long)
     pOutputAdressSize = Value
 End Property
+
 ''''''''''''''''''''''
 ' InputAdressPerSlot
 ''''''''''''''''''''''
@@ -199,6 +233,7 @@ End Property
 Public Property Let Anschluss2(ByVal Value As String)
     pAnschluss2 = Value
 End Property
+
 ''''''''''''''''''''''
 ' Anschluss_3 property
 ''''''''''''''''''''''
@@ -209,6 +244,7 @@ End Property
 Public Property Let Anschluss3(ByVal Value As String)
     pAnschluss3 = Value
 End Property
+
 ''''''''''''''''''''''
 ' Anschluss_4 property
 ''''''''''''''''''''''
@@ -219,6 +255,7 @@ End Property
 Public Property Let Anschluss4(ByVal Value As String)
     pAnschluss4 = Value
 End Property
+
 ''''''''''''''''''''''
 ' AnschlussVS property
 ''''''''''''''''''''''
@@ -229,6 +266,7 @@ End Property
 Public Property Let AnschlussVS(ByVal Value As String)
     pAnschlussVS = Value
 End Property
+
 ''''''''''''''''''''''
 ' AnschlussM property
 ''''''''''''''''''''''
@@ -250,7 +288,6 @@ End Property
 Public Property Let SPSBMK(ByVal Value As String)
     pSPSBMK = Value
 End Property
-
 
 Public Function CompareTo(ByRef per As cBelegung) As Long
     Dim i As Long
@@ -340,9 +377,33 @@ Public Function CompareToChannel(ByRef per As cBelegung) As Long
     CompareToChannel = i
 End Function
 
+Public Function CompareForPagenumbers(ByRef per As cBelegung) As Long
+    Dim i As Long
+  
+    'Sort first:    higher level
+    'Sort second:   monting location
+    'Sort third:    KWSBMK
+    If Me.Anlage = per.Anlage Then
+        If Me.Einbauort = per.Einbauort Then
+            If Me.KWSBMK = per.KWSBMK Then
+                i = 0
+            ElseIf Me.KWSBMK < per.KWSBMK Then
+                i = -1
+            Else
+                i = 1
+            End If
+        ElseIf Me.Einbauort < per.Einbauort Then
+            i = -1
+        Else
+            i = 1
+        End If
+    ElseIf Me.Anlage < per.Anlage Then
+        i = -1
+    Else
+        i = 1
+    End If
 
-
-
-
+    CompareForPagenumbers = i
+End Function
 
 
