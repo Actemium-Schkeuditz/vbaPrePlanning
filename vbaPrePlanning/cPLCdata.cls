@@ -479,6 +479,23 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
+    Case "CPX RESERVE"
+        pPLCtyp = "FESTO MPA"
+        pSortingIdentifier = 41
+        pMaxChannelPerSlot = 0
+        ' Adress
+        pDatatyp = "Bit"
+        pSignalDirection = "Output"
+        pInputAdressLength = 0
+        pOutputAdressLength = 0
+        pInputMinLength = 0
+        pInputMaxLength = 0
+        pOutputMinLength = 0
+        pOutputMaxLength = 0
+        pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
+        pVariableAdressRange = False
+        pSameAdressRangeForOutput = False
         'IFM IO-Link Master
     Case "IFM IO-LINK"
         pPLCtyp = "IFM IO-LINK MASTER"

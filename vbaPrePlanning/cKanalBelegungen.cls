@@ -23,7 +23,7 @@ Private Sub Class_Terminate()
     Set objKanalBelegungen = Nothing
 End Sub
 
-Public Sub Add(ByRef Key As String, ByRef KWSBMK As String, ByVal Signal As Integer, ByRef Stationsnummer As Integer, Optional ByRef Kartentyp As String, Optional ByVal Steckplatz As Integer, Optional ByRef Kanal As Integer, Optional ByRef Segmentvorlage As String, Optional ByRef Adresse As String, Optional ByRef InputAdressSize As Long, Optional ByRef OutputAdressSize As Long, Optional ByRef SPSBMK As String, Optional ByRef Anlage As String, Optional ByRef Einbauort As String)
+Public Sub Add(ByRef Key As String, ByRef KWSBMK As String, ByVal Signal As Integer, ByRef Stationsnummer As Integer, Optional ByRef Kartentyp As String, Optional ByVal Steckplatz As Integer, Optional ByRef Kanal As Integer, Optional ByRef Segmentvorlage As String, Optional ByRef Adresse As String, Optional ByRef InputAdressSize As Long, Optional ByRef OutputAdressSize As Long, Optional ByRef SPSBMK As String, Optional ByRef Anlage As String, Optional ByRef Einbauort As String, Optional ByRef SubSlot As Integer)
     'create a dataset for Chanel and add to collection
 
     Dim p As New cBelegung
@@ -33,6 +33,7 @@ Public Sub Add(ByRef Key As String, ByRef KWSBMK As String, ByVal Signal As Inte
     p.Stationsnummer = Stationsnummer
     p.Kartentyp.Kartentyp = Kartentyp
     p.Steckplatz = Steckplatz
+    p.SubSlot = SubSlot
     p.Kanal = Kanal
     p.Segmentvorlage = Segmentvorlage
     p.Adress = Adresse
@@ -61,6 +62,7 @@ Public Sub AddDataSet(ByVal dataSet As cBelegung)
     p.Stationsnummer = dataSet.Stationsnummer
     p.Kartentyp.Kartentyp = dataSet.Kartentyp.Kartentyp
     p.Steckplatz = dataSet.Steckplatz
+    p.SubSlot = dataSet.SubSlot
     p.Kanal = dataSet.Kanal
     p.Segmentvorlage = dataSet.Segmentvorlage
     p.Adress = dataSet.Adress
@@ -742,7 +744,6 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
                     iKanal = iKanal + 1
                 Else
                     iKanal = 0
-                    rData.Add "LEER", "LEER", 0, sData.Stationsnummer, sData.Kartentyp.Kartentyp, iSteckplatz, iKanal
                     iSteckplatz = iSteckplatz + 1
                 End If
             End If
@@ -815,7 +816,7 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
                 rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
             End If
             iReserveChannelsAfter = iReserveChannelsAfter - 1
-            rData.Add "RESERVE", "RESERVE", "1", dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
+            'rData.Add "RESERVE", "RESERVE", "1", dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
         Loop
               
     ElseIf pKartentyp = "ET200AL 16DI" Then
@@ -868,10 +869,16 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
     End If
     
       Do While iReserveAfterPLCTyp >= 1
-        If iKanal > 0 Then  'Or bFirstReserve
+        If iKanal > 0 Then
             iSteckplatz = iSteckplatz + 1
         End If
+        If dataPLCConfig.Item(i).Kartentyp.PLCTyp = "ET200SP" Then
         rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "ET200SP RESERVE", iSteckplatz + OffsetSlot, 0
+        ElseIf dataPLCConfig.Item(i).Kartentyp.PLCTyp = "FESTO MPA" Then
+        rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "CPX RESERVE", iSteckplatz + OffsetSlot, 0
+        
+        End If
+        
         iReserveAfterPLCTyp = iReserveAfterPLCTyp - 1
         iKanal = 1
         bFirstReserve = True
@@ -1251,8 +1258,9 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                     End If
                 End If
                 rDataSearch.Addobj sDataFesto
+                rData.Addobj sDataFesto
             End If
-            rData.Addobj sDataFesto
+            ' rData.Addobj sDataFesto
            
         Next
         For Each sDataFestoSearch In Me
@@ -1268,43 +1276,36 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".0"
                             End If
-                            
                         ElseIf iSubSlot = 3 Then
                             If sDataFestoSearch.Anschluss1 = "2" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".3"
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".2"
                             End If
-                            
                         ElseIf iSubSlot = 5 Then
                             If sDataFestoSearch.Anschluss1 = "2" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".5"
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".4"
                             End If
-                            
                         ElseIf iSubSlot = 7 Then
                             If sDataFestoSearch.Anschluss1 = "2" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".7"
                             Else
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".6"
                             End If
-                            
                         ElseIf iSubSlot = 2 Then ' z.B Kanal 50 CPX 2x3/2 mono
                             If sDataFestoSearch.Anschluss1 = "4" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".0"
                             End If
-                        
                         ElseIf iSubSlot = 4 Then ' z.B Kanal 52 CPX 2x3/2 mono
                             If sDataFestoSearch.Anschluss1 = "4" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".2"
                             End If
-                            
                         ElseIf iSubSlot = 6 Then ' z.B Kanal 54 CPX 2x3/2 mono
                             If sDataFestoSearch.Anschluss1 = "4" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".4"
                             End If
-                            
                         ElseIf iSubSlot = 0 Then ' z.B Kanal 56 CPX 2x3/2 mono
                             If sDataFestoSearch.Anschluss1 = "4" Then
                                 sDataFestoSearch.Adress = "A" & sDataFesto.OutputAdressPerSlot & ".6"
@@ -1508,6 +1509,7 @@ Public Function correctFestoMPA(ByRef MPAconfig As cFestoMPA) As cKanalBelegunge
             
             sData.Steckplatz = MPAconfig.AnschlussplatteMPA
             sData.Kanal = MPAconfig.KanalMPA
+            sData.SubSlot = MPAconfig.SteckplatzMPA
             'BMK bilden mit Kennbuchstaben KH
             sData.SPSBMK = "KH" & MPAconfig.SteckplatzMPA + ((MPAconfig.AnschlussplatteMPA - MPAconfig.ZwischeneinspeisungMPA) * 4) - 4
             

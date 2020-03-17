@@ -40,7 +40,7 @@ Public Sub EinbauorteSchreiben()
     spalteStationsnummer = "BU"
     spalteEinbauortRack = "BV"
     spalteEinbauort = "BQ"
-    spalteStationstyp = "BY"
+    spalteStationstyp = "CA"
     Set wkb = ActiveWorkbook
     Set ws1 = Worksheets.[_Default](tabelleDaten)
     iSpalteStationstyp = SpaltenBuchstaben2Int(spalteStationstyp)

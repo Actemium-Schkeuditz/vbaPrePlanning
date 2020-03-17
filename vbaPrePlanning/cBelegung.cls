@@ -28,6 +28,7 @@ Public Kartentyp As cPLCdata
 
 Private pStationsnummer As Integer
 Private pSteckplatz As Integer
+Private pSubSlot As Integer
 Private pKanal As Integer
 Private pAdress As String                        ' Adresse für Stromlaufplan
 Private pSegmentvorlage As String
@@ -133,6 +134,17 @@ End Property
 
 Public Property Let Steckplatz(ByRef Value As Integer)
     pSteckplatz = Value
+End Property
+
+''''''''''''''''''''''
+' SubSlot property
+''''''''''''''''''''''
+Public Property Get SubSlot() As Integer
+    SubSlot = pSubSlot
+End Property
+
+Public Property Let SubSlot(ByRef Value As Integer)
+    pSubSlot = Value
 End Property
 
 ''''''''''''''''''''''

@@ -107,7 +107,6 @@ Public Sub SPSZuweisenKanal()
             'Datensätze der Stationskonfiguration anhängen
             Set dataPLCConfigResult = dataPLCConfigResult.ConfigPLCToDataset(dataResultAdress)
             dataPLCConfigResultOutput.Append dataPLCConfigResult
-            'Set dataPLCConfigResultOutput = dataPLCConfigResult.ConfigPLCToDataset(dataResultAdress)     'Datensätze der Stationskonfiguration anhängen
             
             OffsetSlot = OffsetSlot + 1
             '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######

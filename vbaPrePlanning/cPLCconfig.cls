@@ -29,13 +29,14 @@ Private Sub Class_Terminate()
     Set objPLCconfig = Nothing
 End Sub
 
-Public Sub Add(ByVal Stationsnummer As Integer, ByVal Steckplatz As Integer, ByVal Kartentyp As String, Optional ByVal Key As String, Optional ByVal FirstInputAdress As Long, Optional ByVal FirstOutputAdress As Long, Optional ByVal ReserveChannelsBefor As Long, Optional ByVal ReserveChannelsAfter As Long, Optional ByVal ReserveChannel As Long, Optional ByVal ReserveSlot As Long)
+Public Sub Add(ByVal Stationsnummer As Integer, ByVal Steckplatz As Integer, ByVal Kartentyp As String, Optional ByVal Key As String, Optional ByVal FirstInputAdress As Long, Optional ByVal FirstOutputAdress As Long, Optional ByVal ReserveChannelsBefor As Long, Optional ByVal ReserveChannelsAfter As Long, Optional ByVal ReserveChannel As Long, Optional ByVal ReserveSlot As Long, Optional ByVal SubSlot As Integer)
     'create a new Dataset and add to collection
 
     Dim p As New cPLCconfigData
     p.Key = Key
     p.Stationsnummer = Stationsnummer
     p.Steckplatz = Steckplatz
+    p.SubSlot = SubSlot
     p.Kartentyp.Kartentyp = Kartentyp
     p.FirstInputAdress = FirstInputAdress
     p.FirstOutputAdress = FirstOutputAdress
@@ -54,6 +55,7 @@ Public Sub AddDataSet(ByRef dataSet As cPLCconfigData)
     p.Key = dataSet.Key
     p.Stationsnummer = dataSet.Stationsnummer
     p.Steckplatz = dataSet.Steckplatz
+    p.SubSlot = dataSet.SubSlot
     p.Kartentyp.Kartentyp = dataSet.Kartentyp.Kartentyp
     p.FirstInputAdress = dataSet.FirstInputAdress
     p.FirstOutputAdress = dataSet.FirstOutputAdress
@@ -170,18 +172,20 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String)
         ' Tabellenkopf
         .ActiveSheet.Cells(1, 1) = "Stationsnummer"
         .ActiveSheet.Cells(1, 2) = "Steckplatz"
-        .ActiveSheet.Cells(1, 3) = "Kartentyp"
-        .ActiveSheet.Cells(1, 4) = "Eingangsadresse Start"
-        .ActiveSheet.Cells(1, 5) = "Ausgangsadresse Start"
+        .ActiveSheet.Cells(1, 3) = "Unter Steckplatz"
+        .ActiveSheet.Cells(1, 4) = "Kartentyp"
+        .ActiveSheet.Cells(1, 5) = "Eingangsadresse Start"
+        .ActiveSheet.Cells(1, 6) = "Ausgangsadresse Start"
 
      
         i = 2
         For Each wdata In Me
             .ActiveSheet.Cells(i, 1) = wdata.Stationsnummer
             .ActiveSheet.Cells(i, 2) = wdata.Steckplatz
-            .ActiveSheet.Cells(i, 3) = wdata.Kartentyp.Kartentyp
-            .ActiveSheet.Cells(i, 4) = wdata.FirstInputAdress
-            .ActiveSheet.Cells(i, 5) = wdata.FirstOutputAdress
+            .ActiveSheet.Cells(i, 3) = wdata.SubSlot
+            .ActiveSheet.Cells(i, 4) = wdata.Kartentyp.Kartentyp
+            .ActiveSheet.Cells(i, 5) = wdata.FirstInputAdress
+            .ActiveSheet.Cells(i, 6) = wdata.FirstOutputAdress
             i = i + 1
         Next
         i = 0
@@ -190,8 +194,7 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String)
 
 
 BeforeExit:
-    'Set rCell = Nothing
-    'Set rTable = Nothing
+    Set wdata = Nothing
     Exit Sub
 ErrorHandle:
     MsgBox Err.Description & " Fehler beim einlesen.", vbCritical, "Error"
@@ -387,6 +390,7 @@ End Function
 Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfig
     'extract data from a Class cKanalbelegungen to cPLCconfig
     'writes PLC Config to Dataset
+
     ' Class einbinden
     Dim sData As New cBelegung
     Dim dataConfig As New cPLCconfig
@@ -395,31 +399,28 @@ Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfi
     Dim dataSearchStation As New cKanalBelegungen
     Dim dataSearchConfig As New cKanalBelegungen
     
-    
-   
+       
     '##### Suche nach allen Stationsnummern
     Dim iStation As Collection
-    'Set iStation = dataKanaele.returnStation
     Set iStation = Stationdata.returnStation
-    '##### Suche nach allen verwendeten Kartentypen
-    'Dim iKartentyp As Collection
-   
     
     '####### bearbeiten der Daten #######
     ' Durchlauf für jede Station einzeln
     Dim pStation As Variant
-    'Dim pKartentyp As Variant
     Set dataConfig = Nothing
-    'Dim iAdressOutput As Long
-    'Dim iAdressInput As Long
+
     
     For Each pStation In iStation
         ' suchen der Datensätze pro Station
         Set dataSearchStation = Stationdata.searchDatasetPerStation(pStation)
-        Set dataSearchConfig = dataSearchStation.returnAllSlotsPerRack
+        If dataSearchStation.Item(1).Kartentyp.PLCTyp = "FESTO MPA" Then
+            Set dataSearchConfig = dataSearchStation
+        Else
+            Set dataSearchConfig = dataSearchStation.returnAllSlotsPerRack
+        End If
         ' Übertragen der Daten
         For Each sData In dataSearchConfig
-            dataConfig.Add sData.Stationsnummer, sData.Steckplatz, sData.Kartentyp.Kartentyp, sData.Key, sData.InputAdressPerSlot, sData.OutputAdressPerSlot
+                dataConfig.Add sData.Stationsnummer, sData.Steckplatz, sData.Kartentyp.Kartentyp, sData.Key, sData.InputAdressPerSlot, sData.OutputAdressPerSlot, 0, 0, 0, 0, sData.SubSlot
         Next
     
         ' Sortieren der Steckplätze
@@ -430,4 +431,6 @@ Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfi
     Set ConfigPLCToDataset = dataConfigSort
     
 End Function
+
+
 
