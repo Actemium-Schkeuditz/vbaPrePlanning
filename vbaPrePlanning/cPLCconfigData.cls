@@ -29,6 +29,9 @@ Attribute VB_Exposed = False
  Private pReserveChannelsAfter As Long
  Private pReserveChannelperSlot As Long
  Private pReserveSlot As Long
+ Private pUsedChannels As Long
+ Private pInputAdress As String
+ Private pOutputAdress As String
  
  Private Sub Class_Initialize()
     Set Me.Kartentyp = New cPLCdata
@@ -139,6 +142,39 @@ End Property
 
 Public Property Let ReserveSlot(ByRef Value As Long)
     pReserveSlot = Value
+End Property
+
+''''''''''''''''''''''
+'UsedChannels
+''''''''''''''''''''''
+Public Property Get UsedChannels() As Long
+    UsedChannels = pUsedChannels
+End Property
+
+Public Property Let UsedChannels(ByRef Value As Long)
+    pUsedChannels = Value
+End Property
+
+''''''''''''''''''''''
+' InputAdress
+''''''''''''''''''''''
+Public Property Get InputAdress() As String
+    InputAdress = pInputAdress
+End Property
+
+Public Property Let InputAdress(ByRef Value As String)
+    pInputAdress = Value
+End Property
+
+''''''''''''''''''''''
+' OutputAdress
+''''''''''''''''''''''
+Public Property Get OutputAdress() As String
+    OutputAdress = pOutputAdress
+End Property
+
+Public Property Let OutputAdress(ByRef Value As String)
+    pOutputAdress = Value
 End Property
 
 '#########################################################################

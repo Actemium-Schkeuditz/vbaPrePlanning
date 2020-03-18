@@ -31,6 +31,7 @@ Private pSteckplatz As Integer
 Private pSubSlot As Integer
 Private pKanal As Integer
 Private pAdress As String                        ' Adresse für Stromlaufplan
+Private pOutputAdress As String
 Private pSegmentvorlage As String
 Private pInputAdressSize As Long
 Private pOutputAdressSize As Long
@@ -169,6 +170,16 @@ Public Property Let Adress(ByVal Value As String)
     pAdress = Value
 End Property
 
+''''''''''''''''''''''
+' OutputAdress
+''''''''''''''''''''''
+Public Property Get OutputAdress() As String
+    OutputAdress = pOutputAdress
+End Property
+
+Public Property Let OutputAdress(ByVal Value As String)
+    pOutputAdress = Value
+End Property
 ''''''''''''''''''''''
 ' Segmentvorlage property
 ''''''''''''''''''''''

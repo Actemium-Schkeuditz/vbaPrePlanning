@@ -517,7 +517,7 @@ Public Property Let Kartentyp(ByVal Value As String)
     Case "AL1400"
         pPLCtyp = "IFM IO-LINK MASTER"
         pSortingIdentifier = 51
-        pMaxChannelPerSlot = 4
+        pMaxChannelPerSlot = 3
         ' Adress
         pDatatyp = "Byte"
         pSignalDirection = "InOut"

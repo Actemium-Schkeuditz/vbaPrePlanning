@@ -113,7 +113,7 @@ Public Sub SPSZuweisenKanal()
             dataResultAdress.writeDatsetsToExcel tabelleDaten
         Next
         '### schreiben der Config Daten in eigenens Excel Sheet
-        dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation
+        dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation, PLCTyp
     Next
     
     '##### Anschlüsse zuordnen #####
