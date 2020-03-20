@@ -299,7 +299,7 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
     iSignal = 1
     'First we check if the table is intact. The
     'check is NOT complete.
-    ThisWorkbook.Worksheets(tablename).Activate
+    ThisWorkbook.Worksheets.[_Default](tablename).Activate
     'Filter aus, aber nicht löschen
     If ActiveSheet.FilterMode Then ActiveSheet.ShowAllData
     If Len(Range("A3")) = 0 Then
@@ -357,7 +357,6 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
     Dim sSpalteSteckplatz As String
     Dim sSpalteKanal As String
     Dim sSpalteSegmentvorlage As String
-    Dim sSpalteSeite As String
     Dim iSpalteSteckplatz As Long
     Dim iSpalteKanal As Long
     Dim i As Long
@@ -369,13 +368,12 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
     sSpalteSteckplatz = "CC"
     sSpalteKanal = "CD"
     sSpalteSegmentvorlage = "BL"
-    sSpalteSeite = "BR"
     ' nummerischen Wert ermitteln
     iSpalteSteckplatz = SpaltenBuchstaben2Int(sSpalteSteckplatz)
     iSpalteKanal = SpaltenBuchstaben2Int(sSpalteKanal)
         
         
-    ThisWorkbook.Worksheets(tablename).Activate
+    ThisWorkbook.Worksheets.[_Default](tablename).Activate
     Set ws1 = ThisWorkbook.ActiveSheet
     ' Tabelle mit Daten bearbeiten
     With ws1
@@ -409,8 +407,6 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
     End With
 
 BeforeExit:
-    'Set rCell = Nothing
-    'Set rTable = Nothing
     Exit Sub
 ErrorHandle:
     MsgBox Err.Description & " Fehler beim einlesen.", vbCritical, "Error"
@@ -430,7 +426,7 @@ Public Sub writePageNumbersToExcel(ByRef tablename As String)
     ' Spalten definieren
     sSpalteSeite = "BR"
         
-    ThisWorkbook.Worksheets(tablename).Activate
+    ThisWorkbook.Worksheets.[_Default](tablename).Activate
     Set ws1 = ThisWorkbook.ActiveSheet
     ' Tabelle mit Daten bearbeiten
     With ws1
@@ -614,16 +610,14 @@ Public Function searchDatasetSignal(ByVal pSignal As Integer) As cKanalBelegunge
    
 End Function
 
-Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String, ByVal dataPLCConfig As cPLCconfig) As cKanalBelegungen
+Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As String, ByVal dataPLCConfig As cPLCconfig) As cKanalBelegungen
 
     ' hochzählen der Kanäle und zurückgeben als Class
     Dim iKanal As Integer
     Dim iOldKanal As Integer
     Dim iSteckplatz As Integer
-
     Dim rData As New cKanalBelegungen
     Dim sortData As New cKanalBelegungen
-    Dim sKWSBMKold As String
     Dim bET200SPNothalt As Boolean
     Dim bRunOnce As Boolean
     Dim sSegmentCorrection As String
@@ -631,11 +625,7 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
     Dim iReserveChannelsBefor As Long
     Dim iReserveChannelsAfter As Long
     Dim iReserveAfterPLCTyp As Long
-    Dim bfirstFestoCPX As Boolean
-    Dim bfirstFestoMPX As Boolean
-    Dim bFirstReserve As Boolean
     Dim i As Long
-
     
     i = 1
     iReserveChannelPerSlot = dataPLCConfig.Item(i).ReserveChannelPerSlot
@@ -648,16 +638,10 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
     bET200SPNothalt = False
     bRunOnce = False
     iOldKanal = 0
-    bfirstFestoCPX = False
-    bfirstFestoMPX = False
-    bFirstReserve = False
     
     'Kopfstation dazu
     If (pKartentyp = "CPX-8DE-D" Or pKartentyp = "CPX-4DA" Or pKartentyp = "CPX-4AE-T" Or pKartentyp = "CPX 2x3/2 mono" Or pKartentyp = "CPX 5/2 mono" Or pKartentyp = "CPX 5/2 bistabil") And (iSteckplatz + OffsetSlot) = 0 Then
-        bfirstFestoCPX = True
         rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "FB43", iSteckplatz + OffsetSlot, iKanal
-    Else
-        bfirstFestoCPX = False
     End If
         
     If OffsetSlot = 0 Then
@@ -666,7 +650,6 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
         iSteckplatz = 0
     End If
     
-    sKWSBMKold = vbNullString
 
     Dim sData As New cBelegung
     If pKartentyp = "ET200SP 8FDI" Then
@@ -679,9 +662,7 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
                 iKanal = iKanal + 1
             Else
                 iKanal = 0
-                ' rdata.Add "LEER", "LEER", 0, sdata.Stationsnummer, sdata.Kartentyp, iSteckplatz + OffsetSlot, iKanal
                 iSteckplatz = iSteckplatz + 1
-                
             End If
             iReserveChannelsBefor = iReserveChannelsBefor - 1
         Loop
@@ -689,7 +670,7 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
         Set sortData = Me.SortSegment
         For Each sData In sortData
             ' Kanäle müssen passend aufgelgt werden
-            If Left(sData.Segmentvorlage, 20) = "FDI_ET200SP_NOT_HALT" Or sData.Segmentvorlage = "FDI_ET200SP_BMA" Or ((sData.Segmentvorlage = "FDI_ET200SP_ZUHALTUNG_AZM201B") And (sData.Signal = 1 Or sData.Signal = 2)) Then
+            If Left(sData.Segmentvorlage, 20) = "FDI_ET200SP_NOT_HALT" Or sData.Segmentvorlage = "FDI_ET200SP_BMA" Or ((Left(sData.Segmentvorlage, 21) = "FDI_ET200SP_ZUHALTUNG") And (sData.Signal = 1 Or sData.Signal = 2)) Then
                 bET200SPNothalt = True           ' Hier FDI doppelte Auswertung der Signale
                 If sData.Signal = 2 Then
                     ' Kanäle 4, 5, 6 und 7
@@ -710,7 +691,6 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
                         sData.Kanal = iKanal
                         sData.Steckplatz = iSteckplatz + OffsetSlot
                         iKanal = iKanal + 1
-                      
                     End If
                 End If
             ElseIf bET200SPNothalt = True Then
@@ -748,7 +728,6 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
                     iSteckplatz = iSteckplatz + 1
                 End If
             End If
-            sKWSBMKold = sData.KWSBMK
             rData.AddDataSet sData
         Next
         'die  nachfolgenden Kanäle bearbeiten
@@ -776,14 +755,12 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
                 If iKanal <= (sData.Kartentyp.MaxChannelPerSlot - iReserveChannelPerSlot) Then
                     sData.Kanal = iKanal
                     sData.Steckplatz = iSteckplatz + OffsetSlot
-                  
                 Else
                     iKanal = 0
                     iSteckplatz = iSteckplatz + 1
                     sData.Kanal = iKanal
                     sData.Steckplatz = iSteckplatz + OffsetSlot
                 End If
-                'sData.Segmentvorlage = "ungerade"
                 If sSegmentCorrection = "_1" Then
                     sData.Segmentvorlage = Left(sData.Segmentvorlage, Len(sData.Segmentvorlage) - 2) & "_2"
                 End If
@@ -817,7 +794,6 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
                 rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
             End If
             iReserveChannelsAfter = iReserveChannelsAfter - 1
-            'rData.Add "RESERVE", "RESERVE", "1", dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
         Loop
               
     ElseIf pKartentyp = "ET200AL 16DI" Then
@@ -837,14 +813,12 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
                 iKanal = iKanal + 1
             Else
                 iKanal = 0
-                'rdata.Add "LEER2", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
                 iSteckplatz = iSteckplatz + 1
             End If
             iReserveChannelsBefor = iReserveChannelsBefor - 1
         Loop
         
         For Each sData In Me
-       
             sData.Kanal = iKanal
             If sData.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then
                 sData.SubSlot = iKanal + 1
@@ -857,7 +831,6 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
                 iKanal = 0
                 iSteckplatz = iSteckplatz + 1
             End If
-           
         Next
         'die  nachfolgenden Kanäle bearbeiten
         Do While iReserveChannelsAfter > 0
@@ -870,7 +843,6 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
             End If
             iReserveChannelsAfter = iReserveChannelsAfter - 1
         Loop
-        
     End If
     
     Do While iReserveAfterPLCTyp >= 1
@@ -886,7 +858,6 @@ Public Function zuweisenKanal(OffsetSlot As Integer, ByVal pKartentyp As String,
         
         iReserveAfterPLCTyp = iReserveAfterPLCTyp - 1
         iKanal = 1
-        bFirstReserve = True
     Loop
   
     Set zuweisenKanal = rData

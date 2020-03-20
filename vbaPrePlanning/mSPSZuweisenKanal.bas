@@ -15,11 +15,7 @@ Option Explicit
 Public Sub SPSZuweisenKanal()
 
     Dim tabelleDaten As String
-    Dim i As Long
     Dim OffsetSlot As Integer
- 
-    Dim iInputAdress As Long
-    Dim iOutputAdress As Long
     Dim PLCTyp As String
     Dim PLCTypOld As String
 
@@ -53,8 +49,6 @@ Public Sub SPSZuweisenKanal()
     tabelleDaten = "EplSheet"
    
     'Startwerte setzen
-    iInputAdress = 0
-    iOutputAdress = 0
     dataMPAconfig.reset
     PLCTypOld = vbNullString
     '##### lesen der belegten Kanäle aus Excel Tabelle #####

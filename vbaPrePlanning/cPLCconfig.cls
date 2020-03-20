@@ -161,14 +161,14 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCTyp As Stri
         If WorksheetExist((tablename), ws1) = True Then
             Application.DisplayAlerts = False
             ' löschen deaktiviert
-            .Sheets(tablename).Delete
+            .Sheets.[_Default](tablename).Delete
             Application.DisplayAlerts = True
             'Worksheets anlegen
-            .Sheets.Add after:=Sheets(Worksheets.Count)
+            .Sheets.Add after:=Sheets.[_Default](Worksheets.Count)
             .ActiveSheet.Name = tablename
         Else
             'Worksheets anlegen
-            .Sheets.Add after:=Sheets(Worksheets.Count)
+            .Sheets.Add after:=Sheets.[_Default](Worksheets.Count)
             .ActiveSheet.Name = tablename
         End If
         ' Daten einschreiben
@@ -185,7 +185,7 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCTyp As Stri
             .ActiveSheet.Tab.ColorIndex = 17
         End If
             
-        ThisWorkbook.Worksheets(tablename).Activate
+        ThisWorkbook.Worksheets.[_Default](tablename).Activate
      
         ' Tabellenkopf
         .ActiveSheet.Cells(1, 1) = "Stationsnummer"
@@ -333,100 +333,7 @@ Public Function returnFirstOutputAdressePLCStation(ByVal Stationsnummer As Integ
  
 End Function
 
-Public Function sumAdressesPerSlot(ByVal Kanaldaten As cKanalBelegungen) As cPLCconfig
-
-    Dim InputAdress As Long
-    Dim OutputAdress As Long
-    Dim iStartInputAdress As Long
-    Dim iStartOutputAdress As Long
-    Dim iTmpInputAdress As Long
-    Dim iTmpOutputAdress As Long
-    Dim iStartSteckplatz As Long
-    Dim iSteckplatzdifferenz As Long
-    Dim sData As New cBelegung
-    Dim rData As New cPLCconfig
-    Dim sPLCData As New cPLCconfigData
-    Dim sPLCDataAdress As New cPLCconfig
-    Dim sPLCassignmentsPerSlot As New cKanalBelegungen
-    Dim sDataPLCSlot As New cBelegung
-      
-    ' Startwerte setzen
-    iStartInputAdress = Me.Item(1).FirstInputAdress
-    iStartOutputAdress = Me.Item(1).FirstOutputAdress
-    iStartSteckplatz = Me.Item(1).Steckplatz
-
-
-    ' berechnen der Adressen für jeden Steckplatz
-    For Each sPLCData In Me
-        If sPLCData.Kartentyp.VariableAdressRange = False Then
-            If sPLCData.Steckplatz > iStartSteckplatz Then
-                ' Berechnung wenn sich Steckplatz ändert
-                iSteckplatzdifferenz = sData.Steckplatz - iStartSteckplatz
-                iStartSteckplatz = sData.Steckplatz
-                InputAdress = iStartInputAdress + InputAdress + (iSteckplatzdifferenz * (sPLCData.Kartentyp.InputAdressLength + sPLCData.Kartentyp.InputAdressDiagnosticLength))
-                OutputAdress = iStartOutputAdress + OutputAdress + (iSteckplatzdifferenz * (sPLCData.Kartentyp.OutputAdressLength + sPLCData.Kartentyp.OutputAdressDiagnosticLength))
-            End If
-            'sPLCData.FirstInputAdress = InputAdress
-            'sPLCData.FirstOutputAdress = OutputAdress
-            'sPLCDataAdress.Addobj sPLCData
-        Else
-            'Variable Adressvergabe
-            'Für jede Karte einzeln berechnen
-            'Suchen nach den Belegungen der Karten mit variabler Länge
-            Set sPLCassignmentsPerSlot = Kanaldaten.searchKanalBelegungenSteckplatz(sPLCData.Stationsnummer, sPLCData.Steckplatz)
-            sPLCassignmentsPerSlot.SortChannel
-            iTmpInputAdress = 0
-            iTmpOutputAdress = 0
-            If sPLCData.Kartentyp.Kartentyp = "ET200SP 4IO-LINK" Then
-                For Each sDataPLCSlot In sPLCassignmentsPerSlot
-                    ' zusammenzählen der Adressbereiche der Sensoren
-                    iTmpInputAdress = iTmpInputAdress + sDataPLCSlot.InputAdressSize
-                    iTmpOutputAdress = iTmpOutputAdress + sDataPLCSlot.OutputAdressSize
-                Next
-                If iTmpInputAdress < 16 And iTmpOutputAdress < 16 Then
-                    InputAdress = iStartInputAdress + InputAdress + 16
-                    OutputAdress = iStartOutputAdress + OutputAdress + 16
-                ElseIf iTmpInputAdress < 32 And iTmpOutputAdress < 32 Then
-                    InputAdress = iStartInputAdress + InputAdress + 32
-                    OutputAdress = iStartOutputAdress + OutputAdress + 32
-                ElseIf iTmpInputAdress < 64 And iTmpOutputAdress < 64 Then
-                    InputAdress = iStartInputAdress + InputAdress + 64
-                    OutputAdress = iStartOutputAdress + OutputAdress + 64
-                ElseIf iTmpInputAdress <= 126 And iTmpOutputAdress <= 128 Then
-                    InputAdress = iStartInputAdress + InputAdress + 144
-                    OutputAdress = iStartOutputAdress + OutputAdress + 128
-                Else
-                    MsgBox "Fehler Adressbereich des Steckplatzes" & sDataPLCSlot.Steckplatz & " auf Station: " & sDataPLCSlot.Stationsnummer
-                End If
-            ElseIf sPLCData.Kartentyp.Kartentyp = "AL1400" Then
-                'todo Adressierung der IO-LINK master funktioniert nicht
-                
-                InputAdress = iStartInputAdress
-                OutputAdress = iStartOutputAdress
-            ElseIf sPLCData.Kartentyp.Kartentyp = "AL1402" Then
-                'todo Adressierung der IO-LINK Master funktioniert nicht
-                
-                InputAdress = iStartInputAdress
-                OutputAdress = iStartOutputAdress
-            
-            
-            ElseIf sPLCData.Kartentyp.Kartentyp = "IFM IO-LINK" Then
-                MsgBox "Fehler in Datensatz, IFM IO-Link als Kartentyp nicht zulässig, Station: " & sPLCData.Stationsnummer
-                
-                 
-            End If
-        End If
-        sPLCData.Kartentyp.FirstInputAdress = InputAdress
-        sPLCData.Kartentyp.FirstOutputAdress = OutputAdress
-        sPLCDataAdress.Addobj sPLCData
-    Next
-
-
-    Set sumAdressesPerSlot = rData
-
-End Function
-
-Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfig
+Public Function ConfigPLCToDataset(ByRef Stationdata As cKanalBelegungen) As cPLCconfig
     'extract data from a Class cKanalbelegungen to cPLCconfig
     'writes PLC Config to Dataset
     Dim iLastUsedChannel As Long
@@ -435,7 +342,7 @@ Public Function ConfigPLCToDataset(Stationdata As cKanalBelegungen) As cPLCconfi
     Dim sDataKanal As New cBelegung
     Dim dataConfig As New cPLCconfig
     Dim dataConfigSort As cPLCconfig
-    Dim dataKanaele As New cKanalBelegungen
+    'Dim dataKanaele As New cKanalBelegungen
     Dim dataSearchStation As New cKanalBelegungen
     Dim dataSearchConfig As New cKanalBelegungen
     

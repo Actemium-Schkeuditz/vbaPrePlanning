@@ -15,15 +15,12 @@ Public Sub EinbauorteSchreiben()
     ' lesen der Einbauorte aus der Exceltabelle und schreiben der Felder "Einbauort" und "Einbauort des SPS-Rack´s"
     Dim EinbauorteData As New cEinbauorte        'Klasse anlegen für Datenaustausch
 
-    Dim tablennameEinbauorte As String
-    Dim spalteKWS_BMK As String
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim j As Long
     Dim wkb As Workbook
     Dim ws1 As Worksheet
     Dim tabelleDaten As String
-    Dim dataKWSBMK As String
     Dim spalteStationsnummer As String
     Dim spalteEinbauortRack As String
     Dim spalteEinbauort As String
@@ -36,7 +33,6 @@ Public Sub EinbauorteSchreiben()
     'Tabellenamen ermitteln
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
-    spalteKWS_BMK = "B"
     spalteStationsnummer = "BU"
     spalteEinbauortRack = "BV"
     spalteEinbauort = "BQ"
@@ -49,8 +45,6 @@ Public Sub EinbauorteSchreiben()
 
     ' Tabelle mit Planungsdaten auslesen
     With ws1
-    'Filter aus, aber nicht löschen
-    'If ws1.AutoFilterMode Then ws1.ShowAllData
         'Filter aus, aber nicht löschen
         If ActiveSheet.FilterMode Then ActiveSheet.ShowAllData
                 
@@ -160,6 +154,8 @@ Public Function readEinbauorte(ByVal tabelleDaten As String) As cEinbauorte
                 tablennameEinbauorte = "Einbauorte_MH03.TRP01"
             ElseIf Left$(dataKWSBMK, 5) = "TRP03" Then
                 tablennameEinbauorte = "Einbauorte_MH03.TRP03"
+                ElseIf Left$(dataKWSBMK, 5) = "EPD02" Then
+                tablennameEinbauorte = "Einbauorte_H05.EPD02"
             Else
                 MsgBox "Keine passenden Daten mit Einbauorten gefunden, für KWS-BMK: " & dataKWSBMK
                 tablennameEinbauorte = vbNullString

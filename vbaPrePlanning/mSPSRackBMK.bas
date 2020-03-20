@@ -115,11 +115,11 @@ Public Sub SPS_RackBMK()
                                     dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen & "A.S" & .Cells.Item(i, spalteStationsnummer)
                                 End If
                     
-                                .Cells(i, iSpalteRackBMKperSignal + (14 * (iSignal - 1))) = dataRackAnlagenkennzeichen & "+" & sResult.Item(1).Einbauort
+                                .Cells.Item(i, iSpalteRackBMKperSignal + (14 * (iSignal - 1))) = dataRackAnlagenkennzeichen & "+" & sResult.Item(1).Einbauort
                             End If
                              Else
                         ' makiere fehlende / falsche Steckplatz Daten
-                        .Cells(i, iSpalteRackBMKperSignal + (14 * (iSignal - 1))).Interior.ColorIndex = 3
+                        .Cells.Item(i, iSpalteRackBMKperSignal + (14 * (iSignal - 1))).Interior.ColorIndex = 3
                         End If
                     End If
                 Next iSignal

@@ -91,7 +91,7 @@ Public Sub ReadExcelDataConnectionToCollection(ByRef dataColection As CSPSAnschl
 
     'First we check if the table is intact. The
     'check is NOT complete.
-    ThisWorkbook.Worksheets(tablename).Activate
+    ThisWorkbook.Worksheets.[_Default](tablename).Activate
     'Filter aus, aber nicht löschen
             If ActiveSheet.FilterMode Then ActiveSheet.ShowAllData
     If Len(Range("A1")) = 0 Then
@@ -145,6 +145,7 @@ Public Function searchAnschluss(ByVal pKartentyp As String, ByVal pKanal As Inte
     Set searchAnschluss = Nothing
     
     bResultOK = False
+    sKartentyp = vbNullString
     
     For Each sData In data
          
@@ -164,7 +165,6 @@ Public Function searchAnschluss(ByVal pKartentyp As String, ByVal pKanal As Inte
         End If
     Next
     If Not bResultOK Then
-        'rData.Add sKartentyp, 0, "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER", "FEHLER"
         rData.Anschluss1 = "FEHLER"
         rData.Anschluss2 = "FEHLER"
         rData.Anschluss3 = "FEHLER"

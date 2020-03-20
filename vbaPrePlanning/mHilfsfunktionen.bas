@@ -10,15 +10,13 @@ Option Explicit
 
 Public Function SpaltenBuchstaben2Int(ByVal pSpalte As String) As Long
     'ermittel der Spaltennummer aus den Spaltenbuchstaben
-    SpaltenBuchstaben2Int = Columns(pSpalte).Column
-
-
+    SpaltenBuchstaben2Int = Columns.Item(pSpalte).Column
 End Function
 
 Public Sub SortTable(ByVal tablename As String, ByVal SortSpalte1 As String, ByVal SortSpalte2 As String, Optional ByVal SortSpalte3 As String)
     ' sortieren von Daten nach drei oder zwei Spalten
     ' Aufrufen der Tabele und Auswählen dieser
-    ThisWorkbook.Worksheets(tablename).Activate
+    ThisWorkbook.Worksheets.[_Default](tablename).Activate
     ' Anzeige ausschalten
     Application.ScreenUpdating = False
         
@@ -38,53 +36,49 @@ Public Sub SortTable(ByVal tablename As String, ByVal SortSpalte1 As String, ByV
         Header:=xlYes, MatchCase:=False, _
         Orientation:=xlTopToBottom
     End If
-        
 
     Set rTable = Nothing
     Exit Sub
 End Sub
 
-
-
 Public Function newExcelFile(ByVal sNewFileName As String, ByVal sfolder As String) As Boolean
 
-Dim sFolderFile As String
-Dim sConfigFolder As String
-Dim wbnew As Workbook
+    Dim sFolderFile As String
+    Dim sConfigFolder As String
+    Dim wbnew As Workbook
 
-sConfigFolder = "config"
-sfolder = ThisWorkbook.path & "\" & sConfigFolder & "\"
-sFolderFile = ThisWorkbook.path & "\" & sConfigFolder & "\" & sNewFileName
+    sConfigFolder = "config"
+    sfolder = ThisWorkbook.path & "\" & sConfigFolder & "\"
+    sFolderFile = ThisWorkbook.path & "\" & sConfigFolder & "\" & sNewFileName
 
-createFolder sfolder
+    createFolder sfolder
 
-newExcelFile = Dir(sFolderFile) = vbNullString
+    newExcelFile = Dir(sFolderFile) = vbNullString
 
-If newExcelFile = True Then
-    Set wbnew = Application.Workbooks.Add
-    wbnew.SaveAs filename:=sFolderFile, FileFormat:=xlOpenXMLStrictWorkbook
+    If newExcelFile = True Then
+        Set wbnew = Application.Workbooks.Add
+        wbnew.SaveAs filename:=sFolderFile, FileFormat:=xlOpenXMLStrictWorkbook
     
-    wbnew.Close
-End If
+        wbnew.Close
+    End If
 End Function
 
 Public Function fileExist(ByVal sfilename As String, ByVal sfolder As String) As Boolean
 
-Dim sTestFile As String
-sTestFile = ThisWorkbook.path & "\" & sfolder & "\" & sfilename
+    Dim sTestFile As String
+    sTestFile = ThisWorkbook.path & "\" & sfolder & "\" & sfilename
     fileExist = Dir(sTestFile) <> vbNullString
 End Function
 
 Public Function createFolder(ByVal foldername As String) As Boolean
-' create folder if not exist
-If Dir(foldername, vbDirectory) = vbNullString Then
-  MkDir (foldername)
-  createFolder = True
-Else
-  createFolder = False
-End If
+    ' create folder if not exist
+    If Dir(foldername, vbDirectory) = vbNullString Then
+        MkDir (foldername)
+        createFolder = True
+    Else
+        createFolder = False
+    End If
 End Function
-
 
 Public Function ReadSecondExcelFile(ByVal sFilname As String, ByVal sfolder As String) As String
     '** Dimensionierung der Variablen
@@ -115,35 +109,34 @@ Private Function GetValue(ByVal path As String, ByVal file As String, ByVal shee
     GetValue = ExecuteExcel4Macro(arg)
 End Function
 
-
-Sub CopySheetFromClosedWB(sSheetname As String)
-Application.ScreenUpdating = False
+Public Sub CopySheetFromClosedWB(ByRef sSheetname As String)
+    Application.ScreenUpdating = False
  
     Set closedBook = Workbooks.Open("D:\Dropbox\excel\articles\example.xlsm")
-    closedBook.Sheets("Sheet1").Copy Before:=ThisWorkbook.Sheets(1)
+    closedBook.Sheets("Sheet1").Copy Before:=ThisWorkbook.Sheets.[_Default](1)
     closedBook.Close SaveChanges:=False
  
-Application.ScreenUpdating = True
+    Application.ScreenUpdating = True
 End Sub
 
-Sub CopySheetToClosedWB(ByVal sNewFileName As String, sSheetname As String)
-Application.ScreenUpdating = False
+Public Sub CopySheetToClosedWB(ByVal sNewFileName As String, ByRef sSheetname As String)
+    Application.ScreenUpdating = False
     'works not fine
     Dim sFolderFile As String
-    Dim sfolder As String
+    'Dim sfolder As String
     Dim sConfigFolder As String
     Dim wbnew As Workbook
     Dim closedBook As Workbook
 
     sConfigFolder = "config"
-    sfolder = ThisWorkbook.path & "\" & sConfigFolder & "\"
+    'sfolder = ThisWorkbook.path & "\" & sConfigFolder & "\"
     sFolderFile = ThisWorkbook.path & "\" & sConfigFolder & "\" & sNewFileName
     
     Set closedBook = Workbooks.Open(sFolderFile)
-    Sheets(sSheetname).Copy Before:=closedBook.Sheets(sSheetname)
+    Sheets.[_Default](sSheetname).Copy Before:=closedBook.Sheets.[_Default](sSheetname)
     closedBook.Close SaveChanges:=True
  
-Application.ScreenUpdating = True
+    Application.ScreenUpdating = True
 End Sub
 
 Public Function ExtractNumber(ByVal str As String) As Long
@@ -153,31 +146,30 @@ Public Function ExtractNumber(ByVal str As String) As Long
     'Prüfe ob Wert nicht leer
 
     If str <> vbNullString Then
-    For i = 1 To Len(str)
-        If IsNumeric(Mid(str, i, 1)) Then
-        Exit For
-        End If
-    Next i
-    For ii = i To Len(str)
-        If Not IsNumeric(Mid(str, ii, 1)) Then
-        Exit For
-        End If
-    Next ii
-    ExtractNumber = Mid(str, i, Len(str) - (ii - i))
+        For i = 1 To Len(str)
+            If IsNumeric(Mid(str, i, 1)) Then
+                Exit For
+            End If
+        Next i
+        For ii = i To Len(str)
+            If Not IsNumeric(Mid(str, ii, 1)) Then
+                Exit For
+            End If
+        Next ii
+        ExtractNumber = Mid(str, i, Len(str) - (ii - i))
     Else
-    ExtractNumber = 0
+        ExtractNumber = 0
     End If
 End Function
 
 Public Function WorksheetExist(ByVal sWorksheetName As String, ByVal ws1 As Worksheet) As Boolean
- With ws1
-   On Error Resume Next
-   WorksheetExist = Worksheets(sWorksheetName).Index > 0
-   End With
+    With ws1
+        On Error Resume Next
+        WorksheetExist = Worksheets.[_Default](sWorksheetName).Index > 0
+    End With
 End Function
 
-
-Function ReadXmlPLCconfig(sfolder As String, sfilename As String) As cPLCconfig
+Public Function ReadXmlPLCconfig(ByRef sfolder As String, ByRef sfilename As String) As cPLCconfig
     Dim sFile As String
     
     sFile = ThisWorkbook.path & "\" & sfolder & "\" & sfilename
@@ -190,21 +182,21 @@ Function ReadXmlPLCconfig(sfolder As String, sfilename As String) As cPLCconfig
     xmlObj.Load (sFile)
  
     Dim nodesThatMatter As Object
-    Dim node            As Object
+    'Dim node            As Object
     
     Dim rData As New cPLCconfig
     Dim sData As New cPLCconfigData
     
     Set nodesThatMatter = xmlObj.SelectNodes("//PLCconfig")
-   ' For Each node In nodesThatMatter
-   '     'Task 1 -> print the XML file within the FootballInfo node:
-   '     'Debug.Print node.XML
-   '     Dim child   As Variant
-   '     For Each child In node.ChildNodes
-   '         'Task 2 -> print only the information of the clubs.  E.g. NorthClub, EastClub etc.
-   '         'Debug.Print child.ChildNodes.Item(3).XML
-   '     Next child
-   ' Next node
+    ' For Each node In nodesThatMatter
+    '     'Task 1 -> print the XML file within the FootballInfo node:
+    '     'Debug.Print node.XML
+    '     Dim child   As Variant
+    '     For Each child In node.ChildNodes
+    '         'Task 2 -> print only the information of the clubs.  E.g. NorthClub, EastClub etc.
+    '         'Debug.Print child.ChildNodes.Item(3).XML
+    '     Next child
+    ' Next node
     
     'Dim singleNode As Object
     'Set singleNode = xmlObj.SelectSingleNode("//PLCconfig/Station[@Number='1']")
@@ -226,7 +218,7 @@ Function ReadXmlPLCconfig(sfolder As String, sfilename As String) As cPLCconfig
             
             
             For Each level3 In level2.ChildNodes.Item(3).ChildNodes
-           'Set sdata = Nothing
+                'Set sdata = Nothing
                 Debug.Print level3.Attributes.Item(0).Text 'Kartentyp
                 sData.Kartentyp.Kartentyp = level3.Attributes.Item(0).Text 'Kartentyp
                 Debug.Print level3.ChildNodes.Item(0).nodename
@@ -241,13 +233,13 @@ Function ReadXmlPLCconfig(sfolder As String, sfilename As String) As cPLCconfig
                 Debug.Print level3.ChildNodes.Item(3).nodename
                 Debug.Print level3.ChildNodes.Item(3).Text & vbCrLf 'ReserveSlots Value
                 sData.ReserveSlot = level3.ChildNodes.Item(3).Text
-            rData.Add sData.Stationsnummer, sData.Steckplatz, sData.Kartentyp.Kartentyp, "leer", sData.FirstInputAdress, sData.FirstOutputAdress, sData.ReserveChannelsBefor, sData.ReserveChannelsAfter, sData.ReserveChannelPerSlot, sData.ReserveSlot
+                rData.Add sData.Stationsnummer, sData.Steckplatz, sData.Kartentyp.Kartentyp, "leer", sData.FirstInputAdress, sData.FirstOutputAdress, sData.ReserveChannelsBefor, sData.ReserveChannelsAfter, sData.ReserveChannelPerSlot, sData.ReserveSlot
             Next
         Next
         
     Next
     
-   Set ReadXmlPLCconfig = rData
+    Set ReadXmlPLCconfig = rData
 End Function
 
 Public Function readXMLFile() As cPLCconfig
@@ -265,14 +257,14 @@ Public Function readXMLFile() As cPLCconfig
     
     createFolder ThisWorkbook.path & "\" & sfolder
     ' prüfen ob es die Datei gibt
-      bConfigFileExist = fileExist(sFileNameConfig, sfolder)
+    bConfigFileExist = fileExist(sFileNameConfig, sfolder)
     
-   If bConfigFileExist = False Then
-    'create xml file
-    XML_Export sfolder, sFileNameConfig
-            MsgBox "Bitte die Config Datei bearbeiten"
-            bConfigFileIsNew = True
-            End If
+    If bConfigFileExist = False Then
+        'create xml file
+        XML_Export sfolder, sFileNameConfig
+        MsgBox "Bitte die Config Datei bearbeiten"
+        bConfigFileIsNew = True
+    End If
    
 
     ' wenn die Datei nicht angelegt wurde prüfe ob es diese schon gibt
@@ -297,15 +289,12 @@ Public Function readXMLFile() As cPLCconfig
     Set readXMLFile = rData
 End Function
 
-Sub XML_Export(sfolder As String, sFileNameConfig As String)
+Public Sub XML_Export(ByRef sfolder As String, ByRef sFileNameConfig As String)
     '*****************************************
     '** Excel-Inside Solutions - (C)                                *
     '*****************************************
     '** Dimensionierung der Variablen
     Dim strFile As String
-    Dim Text As String
-    Dim lngRow As Long
-    Dim lngCol As Long
     Dim i As Long
     Dim y As Long
     Dim varShow As Variant
@@ -359,7 +348,6 @@ Fehlermeldung:
            , vbCritical, "Fehler"
 End Sub
 
-
 Public Sub RoundUpPLCaddresses(ByRef iInputAdress As Long, ByRef iOutputAdress As Long)
     'round up PLC adresses
     Dim iInputAdressTmp As Long
@@ -384,6 +372,11 @@ Public Sub RoundUpPLCaddresses(ByRef iInputAdress As Long, ByRef iOutputAdress A
     End If
            
 End Sub
+
+
+
+
+
 
 
 

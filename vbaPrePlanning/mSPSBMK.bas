@@ -20,13 +20,9 @@ Public Sub SPS_BMK()
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim y As Long
-    Dim slotNumber As Long
     Dim spalteSPSKartentyp As String
     Dim spalteSPSBMK As String
     Dim spalteSPSSteckplatz As String
-    Dim spalteSPSKanal As String
-      
-    spalteSPSKanal = vbNullString
       
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
@@ -52,38 +48,32 @@ Public Sub SPS_BMK()
                 spalteSPSKartentyp = "CA"
                 spalteSPSBMK = "CB"
                 spalteSPSSteckplatz = "CC"
-                spalteSPSKanal = "CD"
             ElseIf y = 2 Then
                 '**************** SPS-BMK für Signal 2 ****************
                 spalteSPSKartentyp = "CO"
                 spalteSPSBMK = "CP"
                 spalteSPSSteckplatz = "CQ"
-                spalteSPSKanal = "CR"
             ElseIf y = 3 Then
                 '**************** SPS-BMK für Signal 3 ****************
                 spalteSPSKartentyp = "DC"
                 spalteSPSBMK = "DD"
                 spalteSPSSteckplatz = "DE"
-                spalteSPSKanal = "DF"
             ElseIf y = 4 Then
                 '**************** SPS-BMK für Signal 4 ****************
                 spalteSPSKartentyp = "DQ"
                 spalteSPSBMK = "DR"
                 spalteSPSSteckplatz = "DS"
-                spalteSPSKanal = "DT"
             ElseIf y = 5 Then
                 '**************** SPS-BMK für Signal 5 ****************
                 spalteSPSKartentyp = "EE"
                 spalteSPSBMK = "EF"
                 spalteSPSSteckplatz = "EG"
-                spalteSPSKanal = "EH"
                 'MsgBox "kein Fehler"
              ElseIf y = 6 Then
                 '**************** SPS-BMK für Signal 6 ****************
                 spalteSPSKartentyp = "ES"
                 spalteSPSBMK = "ET"
                 spalteSPSSteckplatz = "EU"
-                spalteSPSKanal = "EV"
                 'MsgBox "kein Fehler"
             Else
                 MsgBox "Fehler SPS-BMK erzeugen"

@@ -9,7 +9,7 @@ Option Explicit
 ' christian.langrock@actemium.de
 '@folder (Daten.Seitenzahl)
 
-Sub SeitenZahlschreiben()
+Public Sub SeitenZahlschreiben()
     ' neu da alte Berechnung fehlerhaft
 
     Dim tabelleDaten As String

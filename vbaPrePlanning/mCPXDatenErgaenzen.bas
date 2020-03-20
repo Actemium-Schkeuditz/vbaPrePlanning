@@ -24,8 +24,8 @@ Public Sub CPXDatenErgaenzen()
     Dim sResult As New cBelegung                 'neu CL
     Dim sKartentyp As New Collection
     Dim Karten As Variant
-    Dim bAdressLaenge As Integer                 'benötigte Adresslaenge für Berechnungen
-    Dim bLastAdressPos As Integer                'benötigte Letzte Adress-Stelle für Berechnungen
+    Dim bAdressLaenge As Long                 'benötigte Adresslaenge für Berechnungen
+    Dim bLastAdressPos As Long                'benötigte Letzte Adress-Stelle für Berechnungen
     Dim sPerPLCtypKanaeleAdress2 As String       'Adresse für SPSKanal 2
     Dim iSubAnschluss As Long
    
@@ -50,7 +50,7 @@ Public Sub CPXDatenErgaenzen()
  
         For Each sPerPLCtypKanaele In dataSearchPlcTyp 'neu CL für jeden Datensatz mit dem Kartentyp einmal durchlaufen
             'neu CL schreiben der Daten für das 2.SPS Signal der 5/2 Bistabilen
-            If Karten = "CPX 5/2 bistabil" And sPerPLCtypKanaele.Adress <> "" Then
+            If Karten = "CPX 5/2 bistabil" And sPerPLCtypKanaele.Adress <> vbNullString Then
                 bAdressLaenge = Len(Trim(sPerPLCtypKanaele.Adress)) - 1 'Adresslaenge - 1 Z.B. "A8503." => 6
                 bLastAdressPos = CInt(Right(Trim(sPerPLCtypKanaele.Adress), 1)) + 1 'Letzte Adress-Stelle + 1 z.B. "A8503.0" => 1
                 sPerPLCtypKanaeleAdress2 = Left(Trim(sPerPLCtypKanaele.Adress), bAdressLaenge) & bLastAdressPos 'Adresse für SPSKanal 2
