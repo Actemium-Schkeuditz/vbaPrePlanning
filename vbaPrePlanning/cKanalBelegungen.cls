@@ -803,6 +803,7 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
         For Each sData In Me
             rData.AddDataSet sData
         Next
+        
     Else
         'hier bearbeiten alles was keine extra Behandlung benötigt
         'erstmal die Kanäle davor bearbeiten
@@ -822,6 +823,9 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
         For Each sData In Me
             sData.Kanal = iKanal
             If sData.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then
+                If iKanal = 0 Then
+                    rData.Add "DIAG_IFM", "DIAGNOSE", 0, sData.Stationsnummer, "AL140x_DIAG", 0, 0
+                End If
                 sData.SubSlot = iKanal + 1
             End If
             sData.Steckplatz = iSteckplatz + OffsetSlot
@@ -843,6 +847,13 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
                 rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
             End If
             iReserveChannelsAfter = iReserveChannelsAfter - 1
+        Loop
+    End If
+    
+    If dataPLCConfig.Item(i).Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then
+        Do While dataPLCConfig.Item(i).Kartentyp.MaxChannelPerSlot >= iKanal
+            rData.Add "IFM_RESERVE", "IFM_RESERVE", 0, dataPLCConfig.Item(i).Stationsnummer, "AL140x_RES", iSteckplatz, iKanal, "", "", 0, 0, "", "", "", iKanal + 1
+            iKanal = iKanal + 1
         Loop
     End If
     
@@ -1029,6 +1040,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
     Dim iAdressVariOutput As Long
     Dim ifirstSlot As Integer
     Dim ilastSlot As Integer
+    Dim iSubSlot As Long
     Dim sData As New cBelegung
     Dim sDataFesto As New cBelegung
     Dim sDataFestoSearch As New cBelegung
@@ -1039,7 +1051,6 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
     Dim i As Long
     Dim y As Long
     Dim x As Long
-    Dim iSubSlot As Long
     Dim iAdressLegthInput As Long
     Dim iAdressLegthOutput As Long
     
@@ -1120,19 +1131,22 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                 iAdressVariInput = iInputStartAdress
                 iAdressVariOutput = iOutputStartAdress
             ElseIf pKartentyp = "AL1400" Or pKartentyp = "AL1402" Then 'Berechnung pro Kanal und dann zusammen zählen
-               
+               iSubSlot = 0
+                iAdressVariInput = iInputStartAdress
+                iAdressVariOutput = iOutputStartAdress
                 For Each sdataVari In SlotData
-                    If sdataVari.Kanal = 0 Then
-                        iAdressVariInput = iAdressVariInput + sdataVari.Kartentyp.InputAdressDiagnosticLength + iInputStartAdress 'Wenn Kanal 0 dann Diagnosebereich belegen
-                        iAdressVariOutput = iAdressVariOutput + sdataVari.Kartentyp.OutputAdressDiagnosticLength + iOutputStartAdress
-                    End If
                     sdataVari.InputAdressPerSlot = iInputStartAdress
                     sdataVari.OutputAdressPerSlot = iOutputStartAdress
+                    
+                    sdataVari.Adress = "EB" & iAdressVariInput
+                    sdataVari.OutputAdress = "AB" & iAdressVariOutput
+                    If sdataVari.Kartentyp.Kartentyp = "AL140x_DIAG" Or sdataVari.Kartentyp.Kartentyp = "AL140x_RES" Then
+                        iAdressVariInput = iAdressVariInput + sdataVari.Kartentyp.InputAdressLength + sdataVari.Kartentyp.InputAdressDiagnosticLength
+                        iAdressVariOutput = iAdressVariOutput + sdataVari.Kartentyp.OutputAdressLength + sdataVari.Kartentyp.OutputAdressDiagnosticLength
+                    Else
                     iAdressLegthInput = sdataVari.InputAdressSize - 1
                     iAdressLegthOutput = sdataVari.OutputAdressSize - 1
                     'KWS gibt alle Adresslängen mit Diagnose (+1 Byte) an, Hier bei IFM muss di eDiagnose abgezogen werden, nicht bei ET200SP IO-LINK
-                     sdataVari.Adress = "EB" & iAdressVariInput
-                        sdataVari.OutputAdress = "AB" & iAdressVariOutput
                     If iAdressLegthInput = 1 And iAdressLegthOutput <= 1 Then
                         iAdressVariInput = iAdressVariInput + 2
                         iAdressVariOutput = iAdressVariOutput + 1
@@ -1158,25 +1172,15 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                     Else
                         MsgBox "Fehler in der Adresslänge von: " & sData.KWSBMK
                     End If
-                    
+                    End If
+                    sdataVari.SubSlot = iSubSlot
+                    iSubSlot = iSubSlot + 1
                     rData.Addobj sdataVari
                 Next
-                ' Reserve einfügen
-                ' Adressbereich für Reserve festlegen
-                If Not rData Is Nothing Then
-                    Do While rData.Item(rData.Count).Kanal < SlotData.Item(1).Kartentyp.MaxChannelPerSlot
-                     iAdressVariInput = iAdressVariInput + 5
-                     iAdressVariOutput = iAdressVariOutput + 4
-                     rData.Add "leer", "Reserve", 0, iStationsnummer, AL1400_RES, 1, rData.Count, "", CStr(iAdressVariInput)
-                        'iAdressVariInput = iAdressVariInput + (SlotData.Item(1).Kartentyp.MaxChannelPerSlot - SlotData.Count) * 5
-                    Loop
-                End If
                              
                 ' Adressen für nächste Karte schreiben
                 iInputStartAdress = iAdressVariInput
                 iOutputStartAdress = iAdressVariOutput
-                iAdressVariInput = 0
-                iAdressVariOutput = 0
             Else
                 MsgBox "Adressen für Kartentyp: " & sdataVari.Kartentyp.Kartentyp & " kann nicht berechnet werden"
             End If

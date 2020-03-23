@@ -499,7 +499,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         'IFM IO-Link Master
     Case "IFM IO-LINK"
         pPLCtyp = "IFM IO-LINK MASTER"
-        pSortingIdentifier = 50
+        pSortingIdentifier = 55
         pMaxChannelPerSlot = 7
         ' Adress
         pDatatyp = "Byte"
@@ -510,7 +510,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 0
         pOutputMinLength = 4
         pOutputMaxLength = 0
-        pInputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = True
         pSameAdressRangeForOutput = True
@@ -527,8 +527,8 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 0
         pOutputMinLength = 4
         pOutputMaxLength = 0
-        pInputAdressDiagnosticLength = 1
-        pOutputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = True
         pSameAdressRangeForOutput = True
     Case "AL1402"
@@ -544,11 +544,28 @@ Public Property Let Kartentyp(ByVal Value As String)
         pInputMaxLength = 0
         pOutputMinLength = 4
         pOutputMaxLength = 0
-        pInputAdressDiagnosticLength = 1
-        pOutputAdressDiagnosticLength = 1
+        pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = True
         pSameAdressRangeForOutput = True
-    Case "AL1400_RES"
+    Case "AL140x_DIAG"
+        pPLCtyp = "IFM IO-LINK MASTER"
+        pSortingIdentifier = 50
+        pMaxChannelPerSlot = 0
+        ' Adress
+        pDatatyp = "Byte"
+        pSignalDirection = "InOut"
+        pInputAdressLength = 1
+        pOutputAdressLength = 1
+        pInputMinLength = 1
+        pInputMaxLength = 1
+        pOutputMinLength = 1
+        pOutputMaxLength = 1
+        pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
+        pVariableAdressRange = True
+        pSameAdressRangeForOutput = True
+    Case "AL140x_RES"
         pPLCtyp = "IFM IO-LINK MASTER"
         pSortingIdentifier = 55
         pMaxChannelPerSlot = 0
@@ -563,7 +580,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputMaxLength = 4
         pInputAdressDiagnosticLength = 1
         pOutputAdressDiagnosticLength = 0
-        pVariableAdressRange = False
+        pVariableAdressRange = True
         pSameAdressRangeForOutput = True
     Case "ET200AL 16DI"
         pPLCtyp = "ET200AL"
@@ -667,9 +684,9 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
-    Case "TBEN-S IO"
+    Case "TBEN-S IO"                                'Turck
         pPLCtyp = "Turck TBEN-S"
-        pSortingIdentifier = 500
+        pSortingIdentifier = 200
         pMaxChannelPerSlot = 1
         ' Adress
         pDatatyp = "Byte"
@@ -701,6 +718,40 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
+    Case "DUNKER"                                   'Dunker
+        pPLCtyp = "Profibus"
+        pSortingIdentifier = 300
+        pMaxChannelPerSlot = 0
+        ' Adress
+        pDatatyp = "Byte"
+        pSignalDirection = "InOut"
+        pInputAdressLength = 28
+        pOutputAdressLength = 16
+        pInputMinLength = 0
+        pInputMaxLength = 0
+        pOutputMinLength = 0
+        pOutputMaxLength = 0
+        pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
+        pVariableAdressRange = False
+        pSameAdressRangeForOutput = True
+    Case "SICK Scanner"                            'SICK Scanner
+        pPLCtyp = "Profibus"
+        pSortingIdentifier = 300
+        pMaxChannelPerSlot = 0
+        ' Adress
+        pDatatyp = "Byte"
+        pSignalDirection = "InOut"
+        pInputAdressLength = 8
+        pOutputAdressLength = 8
+        pInputMinLength = 0
+        pInputMaxLength = 0
+        pOutputMinLength = 0
+        pOutputMaxLength = 0
+        pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
+        pVariableAdressRange = False
+        pSameAdressRangeForOutput = True
     Case Else
         pPLCtyp = "unbestimmt"
         pSortingIdentifier = 1000

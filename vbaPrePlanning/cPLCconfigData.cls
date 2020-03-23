@@ -8,9 +8,9 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 ' Klasse zum speichern der SPS Stationskonfiguratuion
-' V0.2
-' 17.02.2020
-' new/rename Propertys
+' V0.3
+' 23.03.2020
+' new Propertys
 ' Christian Langrock
 ' christian.langrock@actemium.de
 
@@ -32,6 +32,7 @@ Attribute VB_Exposed = False
  Private pUsedChannels As Long
  Private pInputAdress As String
  Private pOutputAdress As String
+ Private pKWSBMK As String
  
  Private Sub Class_Initialize()
     Set Me.Kartentyp = New cPLCdata
@@ -176,6 +177,17 @@ End Property
 Public Property Let OutputAdress(ByRef Value As String)
     pOutputAdress = Value
 End Property
+''''''''''''''''''''''
+' KWSBMK
+''''''''''''''''''''''
+Public Property Get KWSBMK() As String
+    KWSBMK = pKWSBMK
+End Property
+
+Public Property Let KWSBMK(ByRef Value As String)
+    pKWSBMK = Value
+End Property
+
 
 '#########################################################################
 

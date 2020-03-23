@@ -29,7 +29,7 @@ Private Sub Class_Terminate()
     Set objPLCconfig = Nothing
 End Sub
 
-Public Sub Add(ByVal Stationsnummer As Integer, ByVal Steckplatz As Integer, ByVal Kartentyp As String, Optional ByVal Key As String, Optional ByVal FirstInputAdress As Long, Optional ByVal FirstOutputAdress As Long, Optional ByVal ReserveChannelsBefor As Long, Optional ByVal ReserveChannelsAfter As Long, Optional ByVal ReserveChannel As Long, Optional ByVal ReserveSlot As Long, Optional ByVal SubSlot As Integer, Optional ByVal UsedChannels As Long, Optional ByVal InputAdress As String, Optional ByVal OutputAdress As String)
+Public Sub Add(ByVal Stationsnummer As Integer, ByVal Steckplatz As Integer, ByVal Kartentyp As String, Optional ByVal Key As String, Optional ByVal FirstInputAdress As Long, Optional ByVal FirstOutputAdress As Long, Optional ByVal ReserveChannelsBefor As Long, Optional ByVal ReserveChannelsAfter As Long, Optional ByVal ReserveChannel As Long, Optional ByVal ReserveSlot As Long, Optional ByVal SubSlot As Integer, Optional ByVal UsedChannels As Long, Optional ByVal InputAdress As String, Optional ByVal OutputAdress As String, Optional ByVal KWSBMK As String)
     'create a new Dataset and add to collection
 
     Dim p As New cPLCconfigData
@@ -47,6 +47,7 @@ Public Sub Add(ByVal Stationsnummer As Integer, ByVal Steckplatz As Integer, ByV
     p.UsedChannels = UsedChannels
     p.InputAdress = InputAdress
     p.OutputAdress = OutputAdress
+    p.KWSBMK = KWSBMK
     
     objPLCconfig.Add p
 End Sub
@@ -69,6 +70,7 @@ Public Sub AddDataSet(ByRef dataSet As cPLCconfigData)
     p.UsedChannels = dataSet.UsedChannels
     p.InputAdress = dataSet.InputAdress
     p.OutputAdress = dataSet.OutputAdress
+    p.KWSBMK = dataSet.KWSBMK
     
     objPLCconfig.Add p
 End Sub
@@ -150,7 +152,6 @@ End Function
 Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCTyp As String)
     Dim wdata As New cPLCconfigData
     Dim ws1 As Worksheet
-
     Dim i As Long
     
     On Error GoTo ErrorHandle
@@ -171,72 +172,67 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCTyp As Stri
             .Sheets.Add after:=Sheets.[_Default](Worksheets.Count)
             .ActiveSheet.Name = tablename
         End If
+        
         ' Daten einschreiben
-      
-        If PLCTyp = "ET200SP" Then
-            .ActiveSheet.Tab.ColorIndex = 28
-        ElseIf PLCTyp = "FESTO CPX" Or PLCTyp = "FESTO MPA" Then
-            .ActiveSheet.Tab.ColorIndex = 32
-        ElseIf PLCTyp = "IFM IO-LINK" Then
-            .ActiveSheet.Tab.ColorIndex = 46
-        ElseIf PLCTyp = "FU" Then
-            .ActiveSheet.Tab.ColorIndex = 50
-        Else
-            .ActiveSheet.Tab.ColorIndex = 17
-        End If
-            
-        ThisWorkbook.Worksheets.[_Default](tablename).Activate
-     
-        ' Tabellenkopf
-        .ActiveSheet.Cells(1, 1) = "Stationsnummer"
-        .ActiveSheet.Cells(1, 2) = "Steckplatz"
-        .ActiveSheet.Cells(1, 3) = "Unter Steckplatz"
-        .ActiveSheet.Cells(1, 4) = "Kartentyp"
-        .ActiveSheet.Cells(1, 5) = "Eingangsadresse Start"
-        .ActiveSheet.Cells(1, 6) = "Ausgangsadresse Start"
-        .ActiveSheet.Cells(1, 7) = "freie Kanäle"
-     
-        i = 2
-        For Each wdata In Me
-            .ActiveSheet.Cells(i, 1) = wdata.Stationsnummer
-            .ActiveSheet.Cells(i, 2) = wdata.Steckplatz
-            .ActiveSheet.Cells(i, 3) = wdata.SubSlot
-            .ActiveSheet.Cells(i, 4) = wdata.Kartentyp.Kartentyp
-            If wdata.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then 'And wdata.SubSlot > 0 Then
-                If wdata.SubSlot = 1 Then
-                    .ActiveSheet.Cells(i, 3) = 0
-                    .ActiveSheet.Cells(i, 5) = wdata.FirstInputAdress
-                    .ActiveSheet.Cells(i, 6) = wdata.FirstOutputAdress
-                    .ActiveSheet.Cells(i, 7) = wdata.Kartentyp.MaxChannelPerSlot - wdata.UsedChannels
-                    i = i + 1
-                    .ActiveSheet.Cells(i, 1) = wdata.Stationsnummer
-                    .ActiveSheet.Cells(i, 2) = wdata.Steckplatz
-                    .ActiveSheet.Cells(i, 3) = wdata.SubSlot
-                    .ActiveSheet.Cells(i, 4) = wdata.Kartentyp.Kartentyp
+        Set ws1 = ThisWorkbook.Sheets(tablename)
+        With ws1
+            If PLCTyp = "ET200SP" Then
+                .Tab.ColorIndex = 28
+            ElseIf PLCTyp = "FESTO CPX" Or PLCTyp = "FESTO MPA" Then
+                .Tab.ColorIndex = 32
+            ElseIf PLCTyp = "IFM IO-LINK MASTER" Then
+                .Tab.ColorIndex = 46
+            ElseIf PLCTyp = "FU" Then
+                .Tab.ColorIndex = 50
+            Else
+                .Tab.ColorIndex = 17
+            End If
+                 
+            ' Tabellenkopf
+            .Cells(1, 1) = "Stationsnummer"
+            .Cells(1, 2) = "Steckplatz"
+            .Cells(1, 3) = "Unter Steckplatz"
+            .Cells(1, 4) = "Kartentyp"
+            .Cells(1, 5) = "Eingangsadresse Start"
+            .Cells(1, 6) = "Ausgangsadresse Start"
+            If Me.Item(1).Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Or Me.Item(1).Kartentyp.PLCTyp = "FU" Or Me.Item(1).Kartentyp.PLCTyp = "Profibus" Then
+                .Cells(1, 7) = "KWS BMK"
+            ElseIf Me.Item(1).Kartentyp.PLCTyp = "FESTO MPA" Or Me.Item(1).Kartentyp.PLCTyp = "FESTO CPX" Then
+                .Cells(1, 7) = "freie Kanäle"
+                .Cells(1, 8) = "KWS BMK"
+            Else
+                .Cells(1, 7) = "freie Kanäle"
+            End If
+            i = 2
+            For Each wdata In Me
+                .Cells(i, 1) = wdata.Stationsnummer
+                .Cells(i, 2) = wdata.Steckplatz
+                .Cells(i, 3) = wdata.SubSlot
+                .Cells(i, 4) = wdata.Kartentyp.Kartentyp
+                If wdata.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then 'And wdata.SubSlot > 0 Then
+                    .Cells(i, 5) = wdata.InputAdress
+                    .Cells(i, 6) = wdata.OutputAdress
+                Else
+                    .Cells(i, 5) = wdata.FirstInputAdress
+                    .Cells(i, 6) = wdata.FirstOutputAdress
                 End If
-                .ActiveSheet.Cells(i, 5) = wdata.InputAdress
-                .ActiveSheet.Cells(i, 6) = wdata.OutputAdress
-            Else
-                .ActiveSheet.Cells(i, 5) = wdata.FirstInputAdress
-                .ActiveSheet.Cells(i, 6) = wdata.FirstOutputAdress
-            End If
-            If wdata.Kartentyp.PLCTyp <> "FESTO MPA" And wdata.Kartentyp.PLCTyp <> "IFM IO-LINK MASTER" Then
-                .ActiveSheet.Cells(i, 7) = wdata.Kartentyp.MaxChannelPerSlot - wdata.UsedChannels
-            Else
-                .ActiveSheet.Cells(i, 7) = 0
-            End If
-            
-            i = i + 1
-        Next
-        i = 0
-   
+                If wdata.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Or wdata.Kartentyp.PLCTyp = "FU" Or wdata.Kartentyp.PLCTyp = "Profibus" Then
+                    .Cells(i, 7) = wdata.KWSBMK
+                ElseIf wdata.Kartentyp.PLCTyp = "FESTO MPA" Then
+                    .Cells(i, 8) = wdata.KWSBMK
+                Else
+                    .Cells(i, 7) = wdata.Kartentyp.MaxChannelPerSlot - wdata.UsedChannels
+                End If
+                i = i + 1
+            Next
+            i = 0
+        End With
     End With
-
 BeforeExit:
     Set wdata = Nothing
     Exit Sub
 ErrorHandle:
-    MsgBox Err.Description & " Fehler beim einlesen.", vbCritical, "Error"
+    MsgBox Err.Description & " Fehler beim schreiben der Stationsdaten.", vbCritical, "Error"
     Resume BeforeExit
 End Sub
 
@@ -253,8 +249,7 @@ Public Function returnDatasetPerSlottyp(ByVal Station As Integer, ByVal sKartent
         End If
     
     Next
-    
-    
+        
     If rData.Count = 0 Then
         rData.Add Station, 0, sKartentyp
     End If
@@ -269,6 +264,7 @@ ErrorHandle:
     End If
 
 End Function
+
 Public Function returnDatasetPerStation(ByVal Station As Integer) As cPLCconfig
     ' returns all datasets for Station
     On Error GoTo ErrorHandle
@@ -345,8 +341,7 @@ Public Function ConfigPLCToDataset(ByRef Stationdata As cKanalBelegungen) As cPL
     'Dim dataKanaele As New cKanalBelegungen
     Dim dataSearchStation As New cKanalBelegungen
     Dim dataSearchConfig As New cKanalBelegungen
-    
-       
+         
     '##### Suche nach allen Stationsnummern
     Dim iStation As Collection
     Set iStation = Stationdata.returnStation
@@ -355,7 +350,6 @@ Public Function ConfigPLCToDataset(ByRef Stationdata As cKanalBelegungen) As cPL
     ' Durchlauf für jede Station einzeln
     Dim pStation As Variant
     Set dataConfig = Nothing
-
     
     For Each pStation In iStation
         ' suchen der Datensätze pro Station
@@ -383,19 +377,12 @@ Public Function ConfigPLCToDataset(ByRef Stationdata As cKanalBelegungen) As cPL
                     End If
                 Next
             End If
-            dataConfig.Add sData.Stationsnummer, sData.Steckplatz, sData.Kartentyp.Kartentyp, sData.Key, sData.InputAdressPerSlot, sData.OutputAdressPerSlot, 0, 0, 0, 0, sData.SubSlot, iLastUsedChannel, sData.Adress, sData.OutputAdress
+            dataConfig.Add sData.Stationsnummer, sData.Steckplatz, sData.Kartentyp.Kartentyp, sData.Key, sData.InputAdressPerSlot, sData.OutputAdressPerSlot, 0, 0, 0, 0, sData.SubSlot, iLastUsedChannel, sData.Adress, sData.OutputAdress, sData.KWSBMK
         Next
-    
         ' Sortieren der Steckplätze
         Set dataConfigSort = dataConfig.Sort
-          
     Next
     ' Rückgabe des Ergebnises
     Set ConfigPLCToDataset = dataConfigSort
     
 End Function
-
-
-
-
-
