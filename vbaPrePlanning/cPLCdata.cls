@@ -548,6 +548,23 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputAdressDiagnosticLength = 1
         pVariableAdressRange = True
         pSameAdressRangeForOutput = True
+    Case "AL1400_RES"
+        pPLCtyp = "IFM IO-LINK MASTER"
+        pSortingIdentifier = 55
+        pMaxChannelPerSlot = 0
+        ' Adress
+        pDatatyp = "Byte"
+        pSignalDirection = "InOut"
+        pInputAdressLength = 4
+        pOutputAdressLength = 4
+        pInputMinLength = 4
+        pInputMaxLength = 4
+        pOutputMinLength = 4
+        pOutputMaxLength = 4
+        pInputAdressDiagnosticLength = 1
+        pOutputAdressDiagnosticLength = 0
+        pVariableAdressRange = False
+        pSameAdressRangeForOutput = True
     Case "ET200AL 16DI"
         pPLCtyp = "ET200AL"
         pSortingIdentifier = 60
@@ -606,8 +623,8 @@ Public Property Let Kartentyp(ByVal Value As String)
         ' Adress
         pDatatyp = "Byte"
         pSignalDirection = "InOut"
-        pInputAdressLength = 60     'pro Schalter 30Byte
-        pOutputAdressLength = 4     'pro Schalter 2 Byte
+        pInputAdressLength = 60                  'pro Schalter 30Byte
+        pOutputAdressLength = 4                  'pro Schalter 2 Byte
         pInputMinLength = 30
         pInputMaxLength = 240
         pOutputMinLength = 2
@@ -650,9 +667,43 @@ Public Property Let Kartentyp(ByVal Value As String)
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
+    Case "TBEN-S IO"
+        pPLCtyp = "Turck TBEN-S"
+        pSortingIdentifier = 500
+        pMaxChannelPerSlot = 1
+        ' Adress
+        pDatatyp = "Byte"
+        pSignalDirection = "InOut"
+        pInputAdressLength = 0
+        pOutputAdressLength = 0
+        pInputMinLength = 0
+        pInputMaxLength = 0
+        pOutputMinLength = 0
+        pOutputMaxLength = 0
+        pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
+        pVariableAdressRange = False
+        pSameAdressRangeForOutput = False
+    Case "TBEN-S-RFID"
+        pPLCtyp = "Turck TBEN-S"
+        pSortingIdentifier = 500
+        pMaxChannelPerSlot = 0
+        ' Adress
+        pDatatyp = "Byte"
+        pSignalDirection = "InOut"
+        pInputAdressLength = 28
+        pOutputAdressLength = 28
+        pInputMinLength = 0
+        pInputMaxLength = 0
+        pOutputMinLength = 0
+        pOutputMaxLength = 0
+        pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
+        pVariableAdressRange = False
+        pSameAdressRangeForOutput = False
     Case Else
         pPLCtyp = "unbestimmt"
-        pSortingIdentifier = 200
+        pSortingIdentifier = 1000
         pMaxChannelPerSlot = 100
         ' Adress
         pDatatyp = "Byte"

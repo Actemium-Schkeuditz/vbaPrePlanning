@@ -79,6 +79,7 @@ Public Sub AddDataSet(ByVal dataSet As cBelegung)
     p.OutputAdress = dataSet.OutputAdress
     
     p.SPSBMK = dataSet.SPSBMK
+    p.SymbolischeAdresse = dataSet.SymbolischeAdresse
     
     objKanalBelegungen.Add p
 End Sub
@@ -1160,11 +1161,15 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                     
                     rData.Addobj sdataVari
                 Next
+                ' Reserve einfügen
                 ' Adressbereich für Reserve festlegen
-                If Not SlotData Is Nothing Then
-                    If SlotData.Count >= 1 Then
-                        iAdressVariInput = iAdressVariInput + (SlotData.Item(1).Kartentyp.MaxChannelPerSlot - SlotData.Count) * 5
-                    End If
+                If Not rData Is Nothing Then
+                    Do While rData.Item(rData.Count).Kanal < SlotData.Item(1).Kartentyp.MaxChannelPerSlot
+                     iAdressVariInput = iAdressVariInput + 5
+                     iAdressVariOutput = iAdressVariOutput + 4
+                     rData.Add "leer", "Reserve", 0, iStationsnummer, AL1400_RES, 1, rData.Count, "", CStr(iAdressVariInput)
+                        'iAdressVariInput = iAdressVariInput + (SlotData.Item(1).Kartentyp.MaxChannelPerSlot - SlotData.Count) * 5
+                    Loop
                 End If
                              
                 ' Adressen für nächste Karte schreiben
@@ -1201,8 +1206,6 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                 rDataSearch.Addobj sDataFesto
                 rData.Addobj sDataFesto
             End If
-            ' rData.Addobj sDataFesto
-           
         Next
         For Each sDataFestoSearch In Me
             If Not (sDataFestoSearch.Kartentyp.Kartentyp = "FESTO MPA1S" Or sDataFestoSearch.Kartentyp.Kartentyp = "VMPA1-FB-SPU") Then
@@ -1491,4 +1494,14 @@ Public Function correctFestoMPA(ByRef MPAconfig As cFestoMPA) As cKanalBelegunge
 
     Set correctFestoMPA = rData
 End Function
+
+Public Sub symbolischeAdressen()
+
+    Dim sData As New cBelegung
+    For Each sData In Me
+        sData.SymbolischeAdresse = Trim$(sData.KWSBMK)
+    Next
+    
+End Sub
+
 

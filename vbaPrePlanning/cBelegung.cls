@@ -44,6 +44,7 @@ Private pAnschluss4 As String
 Private pAnschlussM As String
 Private pAnschlussVS As String
 Private pSPSBMK As String
+Private pSymbolischeAdresse As String
 
 Private Sub Class_Initialize()
     Set Me.Kartentyp = New cPLCdata
@@ -310,6 +311,17 @@ End Property
 
 Public Property Let SPSBMK(ByVal Value As String)
     pSPSBMK = Value
+End Property
+
+''''''''''''''''''''''
+'SymbolischeAdresse
+''''''''''''''''''''''
+Public Property Get SymbolischeAdresse() As String
+    SymbolischeAdresse = pSymbolischeAdresse
+End Property
+
+Public Property Let SymbolischeAdresse(ByVal Value As String)
+    pSymbolischeAdresse = Value
 End Property
 
 Public Function CompareTo(ByRef per As cBelegung) As Long
