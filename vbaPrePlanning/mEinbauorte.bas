@@ -29,14 +29,15 @@ Public Sub EinbauorteSchreiben()
     Dim iSearchNumber As Long
     Dim iSpalteStationstyp As Long
     Dim tmpSpalteStationstyp As Long
-
+    Dim ExcelConfig As New cExcelConfig
+    
     'Tabellenamen ermitteln
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
-    SpalteStationsnummer = "BU"
-    spalteEinbauortRack = "BV"
-    SpalteEinbauort = "BQ"
-    spalteStationstyp = "CA"
+    SpalteStationsnummer = ExcelConfig.Stationsnummer
+    spalteEinbauortRack = ExcelConfig.SPSRackEinbauort
+    SpalteEinbauort = ExcelConfig.EinbauortEinzel
+    spalteStationstyp = ExcelConfig.Kartentyp
     Set wkb = ActiveWorkbook
     Set ws1 = Worksheets.[_Default](tabelleDaten)
     iSpalteStationstyp = SpaltenBuchstaben2Int(spalteStationstyp)

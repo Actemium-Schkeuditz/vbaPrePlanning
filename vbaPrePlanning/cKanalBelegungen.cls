@@ -276,6 +276,7 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
     Dim iSpalteEingangsAdress As Long
     Dim iSpalteAusgangsAdress As Long
     Dim iSpalteStationsnummer As Long
+    Dim iSpalteSymbolischeAdresse As Long
     Dim iSpalteKartentyp As Long
     Dim iSpalteSPSBMK As Long
     Dim iSpalteSegmentvorlage As Long
@@ -287,11 +288,12 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
     
     Dim ExcelConfig As New cExcelConfig
     
-   ' On Error GoTo ErrorHandle
+    On Error GoTo ErrorHandle
 
     iSpalteStationsnummer = SpaltenBuchstaben2Int(ExcelConfig.StationsnummerSignal_1) - 1
     iSpalteEingangsAdress = SpaltenBuchstaben2Int(ExcelConfig.EingangsAdress) - 1
     iSpalteAusgangsAdress = SpaltenBuchstaben2Int(ExcelConfig.AusgangsAdress) - 1
+    iSpalteSymbolischeAdresse = SpaltenBuchstaben2Int(ExcelConfig.SympolischeAdresse) - 1
     iSpalteSegmentvorlage = SpaltenBuchstaben2Int(ExcelConfig.Segmentvorlage) - 1
     iSpalteEinbauortEinzel = SpaltenBuchstaben2Int(ExcelConfig.EinbauortEinzel) - 1
     iSpalteEinbauort = SpaltenBuchstaben2Int(ExcelConfig.Einbauort) - 1
@@ -337,32 +339,28 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
                 ' die gelesenen Daten anhängen
                 For iSignal = 1 To 6
                     If rCell.Offset(0, iSpalteKartentyp - 1 + (14 * (iSignal - 1))).Value <> vbNullString Then
-                        'Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, iSignal, CInt(rCell.Offset(0, iSpalteStationsnummer + (14 * (iSignal - 1))).Value), _
-                            rCell.Offset(0, iSpalteKartentyp + (14 * (iSignal - 1))).Value, CInt(rCell.Offset(0, iSpalteKartentyp + 2 + (14 * (iSignal - 1))).Value), CInt(rCell.Offset(0, iSpalteKartentyp + 3 + (14 * (iSignal - 1))).Value), _
-                            rCell.Offset(0, iSpalteSegmentvorlage).Value, rCell.Offset(0, iSpalteKartentyp + 4 + (14 * (iSignal - 1))).Value, CLng(rCell.Offset(0, iSpalteEingangsAdress)), CLng(rCell.Offset(0, iSpalteAusgangsAdress)), _
-                             rCell.Offset(0, iSpalteKartentyp + 1 + (14 * (iSignal - 1))).Value, rCell.Offset(0, 2).Value, rCell.Offset(0, iSpalteEinbauortEinzel).Value, 0, rCell.Offset(0, iSpalteEinbauortEinzel - 1).Value
+                        rData.Key = rCell.Offset(0, 0).Value
+                        rData.KWSBMK = rCell.Offset(0, 1).Value2
+                        rData.Anlage = rCell.Offset(0, 2).Value2
+                        rData.SymbolischeAdresse = rCell.Offset(0, iSpalteSymbolischeAdresse).Value2
+                        rData.Einbauort = rCell.Offset(0, iSpalteEinbauort).Value
+                        rData.EinbauortEinzel = rCell.Offset(0, iSpalteEinbauortEinzel).Value
+                        rData.Signal = iSignal
+                        rData.Stationsnummer = CInt(rCell.Offset(0, iSpalteStationsnummer + (14 * (iSignal - 1))).Value2)
                     
-                    rData.Key = rCell.Offset(0, 0).Value
-                    rData.KWSBMK = rCell.Offset(0, 1).Value
-                    rData.Anlage = rCell.Offset(0, 2).Value
-                    rData.Einbauort = rCell.Offset(0, iSpalteEinbauort).Value
-                    rData.EinbauortEinzel = rCell.Offset(0, iSpalteEinbauortEinzel).Value
-                    rData.Signal = iSignal
-                    rData.Stationsnummer = CInt(rCell.Offset(0, iSpalteStationsnummer + (14 * (iSignal - 1))).Value2)
-                    
-                    rData.Kartentyp.Kartentyp = rCell.Offset(0, iSpalteKartentyp + (14 * (iSignal - 1))).Value
-                    rData.Steckplatz = CInt(rCell.Offset(0, iSpalteSteckplatz + (14 * (iSignal - 1))).Value2)
-                    rData.Kanal = CInt(rCell.Offset(0, iSpalteKartentyp + 3 + (14 * (iSignal - 1))).Value)
+                        rData.Kartentyp.Kartentyp = rCell.Offset(0, iSpalteKartentyp + (14 * (iSignal - 1))).Value
+                        rData.Steckplatz = CInt(rCell.Offset(0, iSpalteSteckplatz + (14 * (iSignal - 1))).Value2)
+                        rData.Kanal = CInt(rCell.Offset(0, iSpalteKartentyp + 3 + (14 * (iSignal - 1))).Value)
                     
                     
-                    rData.Segmentvorlage = rCell.Offset(0, iSpalteSegmentvorlage).Value
-                    rData.Adress = rCell.Offset(0, iSpalteKartentyp + 4 + (14 * (iSignal - 1))).Value
-                    rData.InputAdressSize = CLng(rCell.Offset(0, iSpalteEingangsAdress))
-                    rData.OutputAdressSize = CLng(rCell.Offset(0, iSpalteAusgangsAdress))
+                        rData.Segmentvorlage = rCell.Offset(0, iSpalteSegmentvorlage).Value
+                        rData.Adress = rCell.Offset(0, iSpalteKartentyp + 4 + (14 * (iSignal - 1))).Value
+                        rData.InputAdressSize = CLng(rCell.Offset(0, iSpalteEingangsAdress))
+                        rData.OutputAdressSize = CLng(rCell.Offset(0, iSpalteAusgangsAdress))
                     
-                    rData.SPSBMK = rCell.Offset(0, iSpalteSPSBMK + (14 * (iSignal - 1))).Value
+                        rData.SPSBMK = rCell.Offset(0, iSpalteSPSBMK + (14 * (iSignal - 1))).Value
                     
-                    Me.AddDataSet rData
+                        Me.AddDataSet rData
                     End If
                 Next iSignal
             End If
@@ -432,7 +430,7 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
 BeforeExit:
     Exit Sub
 ErrorHandle:
-    MsgBox Err.Description & " Fehler beim einlesen.", vbCritical, "Error"
+    MsgBox Err.Description & " Fehler beim schreiben der Datensätze.", vbCritical, "Error"
     Resume BeforeExit
 End Sub
 

@@ -154,7 +154,7 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCTyp As Stri
     Dim ws1 As Worksheet
     Dim i As Long
     
-    On Error GoTo ErrorHandle
+    'On Error GoTo ErrorHandle
 
     With ThisWorkbook
         ' alte Daten löschen
@@ -195,37 +195,42 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCTyp As Stri
             .Cells(1, 4) = "Kartentyp"
             .Cells(1, 5) = "Eingangsadresse Start"
             .Cells(1, 6) = "Ausgangsadresse Start"
-            If Me.Item(1).Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Or Me.Item(1).Kartentyp.PLCTyp = "FU" Or Me.Item(1).Kartentyp.PLCTyp = "Profibus" Then
-                .Cells(1, 7) = "KWS BMK"
-            ElseIf Me.Item(1).Kartentyp.PLCTyp = "FESTO MPA" Or Me.Item(1).Kartentyp.PLCTyp = "FESTO CPX" Then
-                .Cells(1, 7) = "freie Kanäle"
-                .Cells(1, 8) = "KWS BMK"
-            Else
-                .Cells(1, 7) = "freie Kanäle"
+            
+            If Not (Me Is Nothing) Then
+                If Me.Count > 0 Then
+                    If Me.Item(1).Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Or Me.Item(1).Kartentyp.PLCTyp = "FU" Or Me.Item(1).Kartentyp.PLCTyp = "Profibus" Then
+                        .Cells(1, 7) = "KWS BMK"
+                    ElseIf Me.Item(1).Kartentyp.PLCTyp = "FESTO MPA" Or Me.Item(1).Kartentyp.PLCTyp = "FESTO CPX" Then
+                        .Cells(1, 7) = "freie Kanäle"
+                        .Cells(1, 8) = "KWS BMK"
+                    Else
+                        .Cells(1, 7) = "freie Kanäle"
+                    End If
+                    i = 2
+                    For Each wdata In Me
+                        .Cells(i, 1) = wdata.Stationsnummer
+                        .Cells(i, 2) = wdata.Steckplatz
+                        .Cells(i, 3) = wdata.SubSlot
+                        .Cells(i, 4) = wdata.Kartentyp.Kartentyp
+                        If wdata.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then 'And wdata.SubSlot > 0 Then
+                            .Cells(i, 5) = wdata.InputAdress
+                            .Cells(i, 6) = wdata.OutputAdress
+                        Else
+                            .Cells(i, 5) = wdata.FirstInputAdress
+                            .Cells(i, 6) = wdata.FirstOutputAdress
+                        End If
+                        If wdata.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Or wdata.Kartentyp.PLCTyp = "FU" Or wdata.Kartentyp.PLCTyp = "Profibus" Then
+                            .Cells(i, 7) = wdata.KWSBMK
+                        ElseIf wdata.Kartentyp.PLCTyp = "FESTO MPA" Then
+                            .Cells(i, 8) = wdata.KWSBMK
+                        Else
+                            .Cells(i, 7) = wdata.Kartentyp.MaxChannelPerSlot - wdata.UsedChannels
+                        End If
+                        i = i + 1
+                    Next
+                    i = 0
+                End If
             End If
-            i = 2
-            For Each wdata In Me
-                .Cells(i, 1) = wdata.Stationsnummer
-                .Cells(i, 2) = wdata.Steckplatz
-                .Cells(i, 3) = wdata.SubSlot
-                .Cells(i, 4) = wdata.Kartentyp.Kartentyp
-                If wdata.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then 'And wdata.SubSlot > 0 Then
-                    .Cells(i, 5) = wdata.InputAdress
-                    .Cells(i, 6) = wdata.OutputAdress
-                Else
-                    .Cells(i, 5) = wdata.FirstInputAdress
-                    .Cells(i, 6) = wdata.FirstOutputAdress
-                End If
-                If wdata.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Or wdata.Kartentyp.PLCTyp = "FU" Or wdata.Kartentyp.PLCTyp = "Profibus" Then
-                    .Cells(i, 7) = wdata.KWSBMK
-                ElseIf wdata.Kartentyp.PLCTyp = "FESTO MPA" Then
-                    .Cells(i, 8) = wdata.KWSBMK
-                Else
-                    .Cells(i, 7) = wdata.Kartentyp.MaxChannelPerSlot - wdata.UsedChannels
-                End If
-                i = i + 1
-            Next
-            i = 0
         End With
     End With
 BeforeExit:
@@ -247,7 +252,6 @@ Public Function returnDatasetPerSlottyp(ByVal Station As Integer, ByVal sKartent
             rData.Addobj sData
             Exit For
         End If
-    
     Next
         
     If rData.Count = 0 Then
