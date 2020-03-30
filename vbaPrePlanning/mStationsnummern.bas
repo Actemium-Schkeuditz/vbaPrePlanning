@@ -25,6 +25,7 @@ Public Sub RACK_STATIONSNUMMERN()
     Dim spalteKWS_StationsNummer As String
     Dim sSpalteStationsnummerSignal As String
     Dim iSpalteStationsnummerSignal As Long
+    Dim ExcelConfig As New cExcelConfig
       
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
@@ -41,9 +42,9 @@ Public Sub RACK_STATIONSNUMMERN()
         zeilenanzahl = .Cells.Item(Rows.Count, 2).End(xlUp).Row ' zweite Spalte wird gezählt
         'MsgBox zeilenanzahl
  
-        spalteKWS_StationsNummer = "BC"
-        SpalteStationsnummer = "BU"
-        sSpalteStationsnummerSignal = "BX"
+        spalteKWS_StationsNummer = ExcelConfig.StationsnummerKWS
+        SpalteStationsnummer = ExcelConfig.Stationsnummer
+        sSpalteStationsnummerSignal = ExcelConfig.StationsnummerSignal_1
         
         iSpalteStationsnummerSignal = SpaltenBuchstaben2Int(sSpalteStationsnummerSignal)
     

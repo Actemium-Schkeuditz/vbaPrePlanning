@@ -277,20 +277,27 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
     Dim iSpalteAusgangsAdress As Long
     Dim iSpalteStationsnummer As Long
     Dim iSpalteKartentyp As Long
+    Dim iSpalteSPSBMK As Long
     Dim iSpalteSegmentvorlage As Long
     Dim iSpalteEinbauortEinzel As Long
+    Dim iSpalteEinbauort As Long
+    Dim iSpalteSteckplatz As Long
+    Dim rData As New cBelegung
     Dim iSignal As Long
     
     Dim ExcelConfig As New cExcelConfig
     
-    On Error GoTo ErrorHandle
+   ' On Error GoTo ErrorHandle
 
-    iSpalteStationsnummer = SpaltenBuchstaben2Int(ExcelConfig.Stationsnummer) - 1
+    iSpalteStationsnummer = SpaltenBuchstaben2Int(ExcelConfig.StationsnummerSignal_1) - 1
     iSpalteEingangsAdress = SpaltenBuchstaben2Int(ExcelConfig.EingangsAdress) - 1
     iSpalteAusgangsAdress = SpaltenBuchstaben2Int(ExcelConfig.AusgangsAdress) - 1
     iSpalteSegmentvorlage = SpaltenBuchstaben2Int(ExcelConfig.Segmentvorlage) - 1
     iSpalteEinbauortEinzel = SpaltenBuchstaben2Int(ExcelConfig.EinbauortEinzel) - 1
+    iSpalteEinbauort = SpaltenBuchstaben2Int(ExcelConfig.Einbauort) - 1
     iSpalteKartentyp = SpaltenBuchstaben2Int(ExcelConfig.Kartentyp) - 1
+    iSpalteSPSBMK = SpaltenBuchstaben2Int(ExcelConfig.SPSBMK) - 1
+    iSpalteSteckplatz = SpaltenBuchstaben2Int(ExcelConfig.Steckplatz) - 1
     
     iSignal = 1
     'First we check if the table is intact. The
@@ -330,10 +337,32 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
                 ' die gelesenen Daten anhängen
                 For iSignal = 1 To 6
                     If rCell.Offset(0, iSpalteKartentyp - 1 + (14 * (iSignal - 1))).Value <> vbNullString Then
-                        Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, iSignal, CInt(rCell.Offset(0, iSpalteStationsnummer + (14 * (iSignal - 1))).Value), _
+                        'Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, iSignal, CInt(rCell.Offset(0, iSpalteStationsnummer + (14 * (iSignal - 1))).Value), _
                             rCell.Offset(0, iSpalteKartentyp + (14 * (iSignal - 1))).Value, CInt(rCell.Offset(0, iSpalteKartentyp + 2 + (14 * (iSignal - 1))).Value), CInt(rCell.Offset(0, iSpalteKartentyp + 3 + (14 * (iSignal - 1))).Value), _
                             rCell.Offset(0, iSpalteSegmentvorlage).Value, rCell.Offset(0, iSpalteKartentyp + 4 + (14 * (iSignal - 1))).Value, CLng(rCell.Offset(0, iSpalteEingangsAdress)), CLng(rCell.Offset(0, iSpalteAusgangsAdress)), _
-                            rCell.Offset(0, iSpalteKartentyp + 1 + (14 * (iSignal - 1))).Value, rCell.Offset(0, 2).Value, rCell.Offset(0, iSpalteEinbauortEinzel).Value, 0, rCell.Offset(0, iSpalteEinbauortEinzel - 1).Value
+                             rCell.Offset(0, iSpalteKartentyp + 1 + (14 * (iSignal - 1))).Value, rCell.Offset(0, 2).Value, rCell.Offset(0, iSpalteEinbauortEinzel).Value, 0, rCell.Offset(0, iSpalteEinbauortEinzel - 1).Value
+                    
+                    rData.Key = rCell.Offset(0, 0).Value
+                    rData.KWSBMK = rCell.Offset(0, 1).Value
+                    rData.Anlage = rCell.Offset(0, 2).Value
+                    rData.Einbauort = rCell.Offset(0, iSpalteEinbauort).Value
+                    rData.EinbauortEinzel = rCell.Offset(0, iSpalteEinbauortEinzel).Value
+                    rData.Signal = iSignal
+                    rData.Stationsnummer = CInt(rCell.Offset(0, iSpalteStationsnummer + (14 * (iSignal - 1))).Value2)
+                    
+                    rData.Kartentyp.Kartentyp = rCell.Offset(0, iSpalteKartentyp + (14 * (iSignal - 1))).Value
+                    rData.Steckplatz = CInt(rCell.Offset(0, iSpalteSteckplatz + (14 * (iSignal - 1))).Value2)
+                    rData.Kanal = CInt(rCell.Offset(0, iSpalteKartentyp + 3 + (14 * (iSignal - 1))).Value)
+                    
+                    
+                    rData.Segmentvorlage = rCell.Offset(0, iSpalteSegmentvorlage).Value
+                    rData.Adress = rCell.Offset(0, iSpalteKartentyp + 4 + (14 * (iSignal - 1))).Value
+                    rData.InputAdressSize = CLng(rCell.Offset(0, iSpalteEingangsAdress))
+                    rData.OutputAdressSize = CLng(rCell.Offset(0, iSpalteAusgangsAdress))
+                    
+                    rData.SPSBMK = rCell.Offset(0, iSpalteSPSBMK + (14 * (iSignal - 1))).Value
+                    
+                    Me.AddDataSet rData
                     End If
                 Next iSignal
             End If
@@ -437,7 +466,7 @@ Public Sub writePageNumbersToExcel(ByRef tablename As String)
             For i = 3 To zeilenanzahl
                 ' suchen nach dem passenden key
                 If .Cells.Item(i, "A") = sData.Key Then
-                    .Cells.Item(i, sSpalteSeite) = sData.Seite
+                    .Cells.Item(i, ExcelConfig.Seite) = sData.Seite
                 End If
             Next i
         Next

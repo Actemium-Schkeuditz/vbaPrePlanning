@@ -21,6 +21,7 @@ Private pAnlage As String
 Private pSympolischeAdresse As String
 Private pArtikel As String
 Private pArtikelKWS As String
+Private pStationsnummerKWS As String
 Private pSegmentvorlage As String
 Private pEingangsAdress As String
 Private pAusgangsAdress As String
@@ -45,6 +46,7 @@ Private Sub Class_Initialize()
 ' Spalten definieren
     pAnlage = "C"
     pArtikelKWS = "F"
+    pStationsnummerKWS = "BC"
     pArtikel = "BK"
     pSympolischeAdresse = "BJ"
     pSegmentvorlage = "BL"
@@ -72,11 +74,19 @@ End Sub
 Public Property Get Anlage() As String
     Anlage = pAnlage
 End Property
+
 ''''''''''''''''''''''
 ' ArtikelKWS
 ''''''''''''''''''''''
 Public Property Get ArtikelKWS() As String
     ArtikelKWS = pArtikelKWS
+End Property
+
+''''''''''''''''''''''
+'StationsnummerKWS
+''''''''''''''''''''''
+Public Property Get StationsnummerKWS() As String
+    StationsnummerKWS = pStationsnummerKWS
 End Property
 
 ''''''''''''''''''''''

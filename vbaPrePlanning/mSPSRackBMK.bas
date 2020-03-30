@@ -58,7 +58,7 @@ Public Sub SPS_RackBMK()
 
         spalteAnlagenkennzeichen = ExcelConfig.Anlage
         SpalteStationsnummer = ExcelConfig.Stationsnummer
-        spalteEinbauortRack = ExcelConfig.SPSRackAnlage
+        spalteEinbauortRack = ExcelConfig.SPSRackEinbauort
         spalteRackAnlagenkennzeichen = ExcelConfig.SPSRackAnlage
         sSpalteRackBMKperSignal = ExcelConfig.SPSRackBMKSignal_1
         sSpalteStationPerSignal = ExcelConfig.StationsnummerSignal_1
