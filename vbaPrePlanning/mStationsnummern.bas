@@ -21,7 +21,7 @@ Public Sub RACK_STATIONSNUMMERN()
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim iKanal As Long
-    Dim spalteStationsnummer As String
+    Dim SpalteStationsnummer As String
     Dim spalteKWS_StationsNummer As String
     Dim sSpalteStationsnummerSignal As String
     Dim iSpalteStationsnummerSignal As Long
@@ -42,7 +42,7 @@ Public Sub RACK_STATIONSNUMMERN()
         'MsgBox zeilenanzahl
  
         spalteKWS_StationsNummer = "BC"
-        spalteStationsnummer = "BU"
+        SpalteStationsnummer = "BU"
         sSpalteStationsnummerSignal = "BX"
         
         iSpalteStationsnummerSignal = SpaltenBuchstaben2Int(sSpalteStationsnummerSignal)
@@ -54,10 +54,10 @@ Public Sub RACK_STATIONSNUMMERN()
             If .Cells.Item(i, spalteKWS_StationsNummer) <> vbNullString Then
                 If IsNumeric(.Cells.Item(i, spalteKWS_StationsNummer)) Then
                     ' Mache
-                    .Cells.Item(i, spalteStationsnummer) = .Cells.Item(i, spalteKWS_StationsNummer)
+                    .Cells.Item(i, SpalteStationsnummer) = .Cells.Item(i, spalteKWS_StationsNummer)
                 Else
-                    .Cells.Item(i, spalteStationsnummer) = .Cells.Item(i, spalteKWS_StationsNummer)
-                    .Cells.Item(i, spalteStationsnummer).Interior.ColorIndex = 3
+                    .Cells.Item(i, SpalteStationsnummer) = .Cells.Item(i, spalteKWS_StationsNummer)
+                    .Cells.Item(i, SpalteStationsnummer).Interior.ColorIndex = 3
                     MsgBox "Stationsnummer Prüfen!  Zeile: " + str(i)
                 End If
                  For iKanal = 1 To 6

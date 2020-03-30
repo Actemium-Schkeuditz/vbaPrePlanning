@@ -8,8 +8,8 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 ' Klasse zum speichern der SPS Belegungsdaten
-' V0.4
-' 12.03.2020
+' V0.5
+' 30.03.2020
 ' new propertys
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -22,6 +22,7 @@ Private pKey As String
 Private pKWSBMK As String
 Private pAnlage As String
 Private pEinbauort As String
+Private pEinbauortEinzel As String
 Private pSeite As Long
 Private pSignal As Integer
 Public Kartentyp As cPLCdata
@@ -92,6 +93,17 @@ End Property
 
 Public Property Let Einbauort(ByVal Value As String)
     pEinbauort = Value
+End Property
+
+''''''''''''''''''''''
+' EinbauortEinzel property
+''''''''''''''''''''''
+Public Property Get EinbauortEinzel() As String
+    EinbauortEinzel = pEinbauortEinzel
+End Property
+
+Public Property Let EinbauortEinzel(ByVal Value As String)
+    pEinbauortEinzel = Value
 End Property
 
 ''''''''''''''''''''''

@@ -1,8 +1,8 @@
 Attribute VB_Name = "mArtikelSchreiben"
 ' Skript zum Übertragen der Artikeldaten
-' V1.1
-' 22.01.2020
-' Änderung Zielzellen
+' V1.2
+' 30.03.2020
+' Änderung auf ExcelConfig
 ' Christian Langrock
 ' christian.langrock@actemium.de
 '@folder (Daten.Artikel)
@@ -10,13 +10,12 @@ Option Explicit
 
 Public Sub ArtikelBearbeiten()
 
-
-    '@Ignore VariableNotUsed
     Dim wkb As Workbook
     Dim ws1 As Worksheet
     Dim tabelleDaten As String
     Dim zeilenanzahl As Long
     Dim i As Long
+    Dim ExcelConfig As New cExcelConfig
       
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
@@ -34,7 +33,7 @@ Public Sub ArtikelBearbeiten()
         'MsgBox zeilenanzahl
 
         ' Spaltenbreiten anpassen
-        ActiveSheet.Columns.Item("BK").Select
+        ActiveSheet.Columns.Item(ExcelConfig.Artikel).Select
         Selection.ColumnWidth = 25
 
 
@@ -42,33 +41,29 @@ Public Sub ArtikelBearbeiten()
 
         For i = 3 To zeilenanzahl
  
-            If .Cells.Item(i, "F") <> "." Then
+            If .Cells.Item(i, ExcelConfig.ArtikelKWS) <> "." Then
                 'Prüfen ob am Ende ein Punkt ist
-                If Right$(.Cells.Item(i, "F"), 1) <> "." Then
-                    'MsgBox ("kein Artikel: " + Right(Cells(i, "F"), 1))
-                    'Else
-                    .Cells.Item(i, "BK") = .Cells.Item(i, "F")
+                If Right$(.Cells.Item(i, ExcelConfig.ArtikelKWS), 1) <> "." Then
+                    .Cells.Item(i, ExcelConfig.Artikel) = .Cells.Item(i, ExcelConfig.ArtikelKWS)
     
-                    'Else
-                    'MsgBox "kein Artikel"
                 End If
             End If
             ' Artikel die nicht gewollt sind entfernen
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "Siemens.7MH4138-6AA00-0BA0", vbNullString)
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "Siemens.Siwarex WP321", vbNullString)
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "Siwarex WP321.7MH4138-6AA00-0BA0+BU15-P16+A0+2D", vbNullString)
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "Siemens.Sirius Act", vbNullString)
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "Stöbich.", vbNullString)
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Siemens.7MH4138-6AA00-0BA0", vbNullString)
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Siemens.Siwarex WP321", vbNullString)
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Siwarex WP321.7MH4138-6AA00-0BA0+BU15-P16+A0+2D", vbNullString)
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Siemens.Sirius Act", vbNullString)
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Stöbich.", vbNullString)
     
             ' ersetzen von falschen Ausdrücken
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "Baumer", "BAU")
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "ifm", "IFM")
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "Rechner Sensors", "RECH")
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "MARTENS", "MAR")
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "Siemens", "SIE")
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "Schmersal", "SCHM")
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "IFM.IS 5001", "IFM.IS5001")
-            .Cells.Item(i, "BK") = Replace(.Cells.Item(i, "BK"), "RECH.KA 0655", "RECH.KA0655")
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Baumer", "BAU")
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "ifm", "IFM")
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Rechner Sensors", "RECH")
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "MARTENS", "MAR")
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Siemens", "SIE")
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Schmersal", "SCHM")
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "IFM.IS 5001", "IFM.IS5001")
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "RECH.KA 0655", "RECH.KA0655")
     
         
         Next i

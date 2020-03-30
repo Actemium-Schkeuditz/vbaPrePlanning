@@ -1,9 +1,9 @@
 Attribute VB_Name = "mSPSBMK"
 ' Skript zur Ermittlung der SPS BMK´s
 ' Die Daten werden Kanalweise zugeordnet
-' V0.3
+' V0.4
 ' getestet
-' 02.03.2020
+' 30.03.2020
 ' überflüssige Leerzeichen entfernt
 '
 ' Christian Langrock
@@ -20,10 +20,12 @@ Public Sub SPS_BMK()
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim y As Long
-    Dim spalteSPSKartentyp As String
-    Dim spalteSPSBMK As String
-    Dim spalteSPSSteckplatz As String
-      
+    Dim spalteSPSKartentyp As Long
+    Dim spalteSPSBMK As Long
+    Dim spalteSPSSteckplatz As Long
+    Dim ExcelConfig As New cExcelConfig
+
+        
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
 
@@ -41,43 +43,12 @@ Public Sub SPS_BMK()
 
         For y = 1 To 6
             '*********** SPS-BMK erzeugen ******************
-
             ' Auswahl der Spalten pro SPS Kanal
-            If y = 1 Then
-                '**************** SPS-BMK für Signal 1 ****************
-                spalteSPSKartentyp = "CA"
-                spalteSPSBMK = "CB"
-                spalteSPSSteckplatz = "CC"
-            ElseIf y = 2 Then
-                '**************** SPS-BMK für Signal 2 ****************
-                spalteSPSKartentyp = "CO"
-                spalteSPSBMK = "CP"
-                spalteSPSSteckplatz = "CQ"
-            ElseIf y = 3 Then
-                '**************** SPS-BMK für Signal 3 ****************
-                spalteSPSKartentyp = "DC"
-                spalteSPSBMK = "DD"
-                spalteSPSSteckplatz = "DE"
-            ElseIf y = 4 Then
-                '**************** SPS-BMK für Signal 4 ****************
-                spalteSPSKartentyp = "DQ"
-                spalteSPSBMK = "DR"
-                spalteSPSSteckplatz = "DS"
-            ElseIf y = 5 Then
-                '**************** SPS-BMK für Signal 5 ****************
-                spalteSPSKartentyp = "EE"
-                spalteSPSBMK = "EF"
-                spalteSPSSteckplatz = "EG"
-                'MsgBox "kein Fehler"
-             ElseIf y = 6 Then
-                '**************** SPS-BMK für Signal 6 ****************
-                spalteSPSKartentyp = "ES"
-                spalteSPSBMK = "ET"
-                spalteSPSSteckplatz = "EU"
-                'MsgBox "kein Fehler"
-            Else
-                MsgBox "Fehler SPS-BMK erzeugen"
-            End If
+            '**************** SPS-BMK für Signal 1 bis 6 ****************
+            spalteSPSKartentyp = SpaltenBuchstaben2Int(ExcelConfig.Kartentyp) + 14 * (y - 1)
+            spalteSPSBMK = SpaltenBuchstaben2Int(ExcelConfig.SPSBMK) + 14 * (y - 1)
+            spalteSPSSteckplatz = SpaltenBuchstaben2Int(ExcelConfig.Steckplatz) + 14 * (y - 1)
+          
             ' Daten schreiben
             For i = 3 To zeilenanzahl
                 ' Prüfen auf SPS-Typ
@@ -127,4 +98,5 @@ Public Sub SPS_BMK()
 
     End With
 End Sub
+
 

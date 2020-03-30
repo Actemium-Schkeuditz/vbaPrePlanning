@@ -23,7 +23,10 @@ Private Sub Class_Terminate()
     Set objKanalBelegungen = Nothing
 End Sub
 
-Public Sub Add(ByRef Key As String, ByRef KWSBMK As String, ByVal Signal As Integer, ByRef Stationsnummer As Integer, Optional ByRef Kartentyp As String, Optional ByVal Steckplatz As Integer, Optional ByRef Kanal As Integer, Optional ByRef Segmentvorlage As String, Optional ByRef Adresse As String, Optional ByRef InputAdressSize As Long, Optional ByRef OutputAdressSize As Long, Optional ByRef SPSBMK As String, Optional ByRef Anlage As String, Optional ByRef Einbauort As String, Optional ByRef SubSlot As Integer)
+Public Sub Add(ByRef Key As String, ByRef KWSBMK As String, ByVal Signal As Integer, ByRef Stationsnummer As Integer, Optional ByRef Kartentyp As String, _
+               Optional ByVal Steckplatz As Integer, Optional ByRef Kanal As Integer, Optional ByRef Segmentvorlage As String, Optional ByRef Adresse As String, Optional ByRef InputAdressSize As Long, _
+               Optional ByRef OutputAdressSize As Long, Optional ByRef SPSBMK As String, Optional ByRef Anlage As String, Optional ByRef Einbauort As String, Optional ByRef SubSlot As Integer, _
+               Optional ByRef EinbauortEinzel As String)
     'create a dataset for Chanel and add to collection
 
     Dim p As New cBelegung
@@ -42,6 +45,7 @@ Public Sub Add(ByRef Key As String, ByRef KWSBMK As String, ByVal Signal As Inte
     p.SPSBMK = SPSBMK
     p.Anlage = Anlage
     p.Einbauort = Einbauort
+    p.EinbauortEinzel = EinbauortEinzel
     
     objKanalBelegungen.Add p
 End Sub
@@ -57,6 +61,7 @@ Public Sub AddDataSet(ByVal dataSet As cBelegung)
     p.KWSBMK = dataSet.KWSBMK
     p.Anlage = dataSet.Anlage
     p.Einbauort = dataSet.Einbauort
+    p.EinbauortEinzel = dataSet.EinbauortEinzel
     p.Seite = dataSet.Seite
     p.Signal = dataSet.Signal
     p.Stationsnummer = dataSet.Stationsnummer
@@ -268,35 +273,25 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
     'to the product's properties.
     Dim rCell As Range
     Dim rTable As Range
-    Dim sSpalteEingangsAdress As String
-    Dim sSpalteAusgangsAdress As String
-    Dim sSpalteStationsnummer As String
-    Dim sSpalteSegmentvorlage As String
-    Dim sSpalteKartentyp As String
-    Dim sSpalteEinbauort As String
     Dim iSpalteEingangsAdress As Long
     Dim iSpalteAusgangsAdress As Long
     Dim iSpalteStationsnummer As Long
     Dim iSpalteKartentyp As Long
     Dim iSpalteSegmentvorlage As Long
-    Dim iSpalteEinbauort As Long
+    Dim iSpalteEinbauortEinzel As Long
     Dim iSignal As Long
+    
+    Dim ExcelConfig As New cExcelConfig
     
     On Error GoTo ErrorHandle
 
-    sSpalteEingangsAdress = "BD"
-    sSpalteAusgangsAdress = "BE"
-    sSpalteSegmentvorlage = "BL"
-    sSpalteStationsnummer = "BX"                 'erste Spalte der Anschlüsse
-    sSpalteKartentyp = "CA"
-    sSpalteEinbauort = "BQ"
-    ' Konvertierung Spaltenbuchstaben in LONG
-    iSpalteStationsnummer = SpaltenBuchstaben2Int(sSpalteStationsnummer) - 1
-    iSpalteEingangsAdress = SpaltenBuchstaben2Int(sSpalteEingangsAdress) - 1
-    iSpalteAusgangsAdress = SpaltenBuchstaben2Int(sSpalteAusgangsAdress) - 1
-    iSpalteSegmentvorlage = SpaltenBuchstaben2Int(sSpalteSegmentvorlage) - 1
-    iSpalteEinbauort = SpaltenBuchstaben2Int(sSpalteEinbauort) - 1
-    iSpalteKartentyp = SpaltenBuchstaben2Int(sSpalteKartentyp) - 1
+    iSpalteStationsnummer = SpaltenBuchstaben2Int(ExcelConfig.Stationsnummer) - 1
+    iSpalteEingangsAdress = SpaltenBuchstaben2Int(ExcelConfig.EingangsAdress) - 1
+    iSpalteAusgangsAdress = SpaltenBuchstaben2Int(ExcelConfig.AusgangsAdress) - 1
+    iSpalteSegmentvorlage = SpaltenBuchstaben2Int(ExcelConfig.Segmentvorlage) - 1
+    iSpalteEinbauortEinzel = SpaltenBuchstaben2Int(ExcelConfig.EinbauortEinzel) - 1
+    iSpalteKartentyp = SpaltenBuchstaben2Int(ExcelConfig.Kartentyp) - 1
+    
     iSignal = 1
     'First we check if the table is intact. The
     'check is NOT complete.
@@ -335,7 +330,10 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
                 ' die gelesenen Daten anhängen
                 For iSignal = 1 To 6
                     If rCell.Offset(0, iSpalteKartentyp - 1 + (14 * (iSignal - 1))).Value <> vbNullString Then
-                        Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, iSignal, CInt(rCell.Offset(0, iSpalteStationsnummer + (14 * (iSignal - 1))).Value), rCell.Offset(0, iSpalteKartentyp + (14 * (iSignal - 1))).Value, CInt(rCell.Offset(0, iSpalteKartentyp + 2 + (14 * (iSignal - 1))).Value), CInt(rCell.Offset(0, iSpalteKartentyp + 3 + (14 * (iSignal - 1))).Value), rCell.Offset(0, iSpalteSegmentvorlage).Value, rCell.Offset(0, iSpalteKartentyp + 4 + (14 * (iSignal - 1))).Value, CLng(rCell.Offset(0, iSpalteEingangsAdress)), CLng(rCell.Offset(0, iSpalteAusgangsAdress)), rCell.Offset(0, iSpalteKartentyp + 1 + (14 * (iSignal - 1))).Value, rCell.Offset(0, 2).Value, rCell.Offset(0, iSpalteEinbauort).Value
+                        Me.Add rCell.Offset(0, 0).Value, rCell.Offset(0, 1).Value, iSignal, CInt(rCell.Offset(0, iSpalteStationsnummer + (14 * (iSignal - 1))).Value), _
+                            rCell.Offset(0, iSpalteKartentyp + (14 * (iSignal - 1))).Value, CInt(rCell.Offset(0, iSpalteKartentyp + 2 + (14 * (iSignal - 1))).Value), CInt(rCell.Offset(0, iSpalteKartentyp + 3 + (14 * (iSignal - 1))).Value), _
+                            rCell.Offset(0, iSpalteSegmentvorlage).Value, rCell.Offset(0, iSpalteKartentyp + 4 + (14 * (iSignal - 1))).Value, CLng(rCell.Offset(0, iSpalteEingangsAdress)), CLng(rCell.Offset(0, iSpalteAusgangsAdress)), _
+                            rCell.Offset(0, iSpalteKartentyp + 1 + (14 * (iSignal - 1))).Value, rCell.Offset(0, 2).Value, rCell.Offset(0, iSpalteEinbauortEinzel).Value, 0, rCell.Offset(0, iSpalteEinbauortEinzel - 1).Value
                     End If
                 Next iSignal
             End If
@@ -355,24 +353,18 @@ End Sub
 Public Sub writeDatsetsToExcel(ByRef tablename As String)
     Dim sData As New cBelegung
     Dim ws1 As Worksheet
-    Dim sSpalteSteckplatz As String
-    Dim sSpalteKanal As String
-    Dim sSpalteSegmentvorlage As String
     Dim iSpalteSteckplatz As Long
     Dim iSpalteKanal As Long
     Dim i As Long
     Dim zeilenanzahl As Long
+    Dim ExcelConfig As New cExcelConfig
         
      On Error GoTo ErrorHandle
      
     ' Spalten definieren
-    sSpalteSteckplatz = "CC"
-    sSpalteKanal = "CD"
-    sSpalteSegmentvorlage = "BL"
     ' nummerischen Wert ermitteln
-    iSpalteSteckplatz = SpaltenBuchstaben2Int(sSpalteSteckplatz)
-    iSpalteKanal = SpaltenBuchstaben2Int(sSpalteKanal)
-        
+    iSpalteSteckplatz = SpaltenBuchstaben2Int(ExcelConfig.Steckplatz)
+    iSpalteKanal = SpaltenBuchstaben2Int(ExcelConfig.Kanal)
         
     ThisWorkbook.Worksheets.[_Default](tablename).Activate
     Set ws1 = ThisWorkbook.ActiveSheet
@@ -390,6 +382,7 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
             For i = 3 To zeilenanzahl
                 ' suchen nach dem passenden key
                 If .Cells.Item(i, "A") = sData.Key Then
+                    .Cells.Item(i, ExcelConfig.SympolischeAdresse) = sData.SymbolischeAdresse
                     .Cells.Item(i, (iSpalteSteckplatz - 1 + (14 * (sData.Signal - 1)))) = sData.SPSBMK
                     .Cells.Item(i, (iSpalteSteckplatz + (14 * (sData.Signal - 1)))) = sData.Steckplatz
                     .Cells.Item(i, (iSpalteKanal + (14 * (sData.Signal - 1)))) = sData.Kanal
@@ -400,7 +393,7 @@ Public Sub writeDatsetsToExcel(ByRef tablename As String)
                     .Cells.Item(i, (iSpalteKanal + 5 + (14 * (sData.Signal - 1)))) = sData.Anschluss4
                     .Cells.Item(i, (iSpalteKanal + 6 + (14 * (sData.Signal - 1)))) = sData.AnschlussM
                     .Cells.Item(i, (iSpalteKanal + 7 + (14 * (sData.Signal - 1)))) = sData.AnschlussVS
-                    .Cells.Item(i, sSpalteSegmentvorlage) = sData.Segmentvorlage
+                    .Cells.Item(i, ExcelConfig.Segmentvorlage) = sData.Segmentvorlage
                 End If
             
             Next i
@@ -417,15 +410,11 @@ End Sub
 Public Sub writePageNumbersToExcel(ByRef tablename As String)
     Dim sData As New cBelegung
     Dim ws1 As Worksheet
-    Dim sSpalteSeite As String
 
     Dim i As Long
     Dim zeilenanzahl As Long
-        
+    Dim ExcelConfig As New cExcelConfig
     On Error GoTo ErrorHandle
-     
-    ' Spalten definieren
-    sSpalteSeite = "BR"
         
     ThisWorkbook.Worksheets.[_Default](tablename).Activate
     Set ws1 = ThisWorkbook.ActiveSheet
@@ -441,7 +430,7 @@ Public Sub writePageNumbersToExcel(ByRef tablename As String)
         
         'alte Daten löschen
         For i = 3 To zeilenanzahl
-            .Cells.Item(i, sSpalteSeite) = vbNullString
+            .Cells.Item(i, ExcelConfig.Seite) = vbNullString
         Next i
         
         For Each sData In Me

@@ -102,7 +102,7 @@ Public Sub SPSZuweisenKanal()
             Set dataPLCConfigResult = dataPLCConfigResult.ConfigPLCToDataset(dataResultAdress)
             dataPLCConfigResultOutput.Append dataPLCConfigResult
             
-             '##### symbolische Adresse ermitteln #####
+            '##### symbolische Adresse ermitteln #####
             dataResultAdress.symbolischeAdressen
             
             OffsetSlot = OffsetSlot + 1
@@ -121,9 +121,7 @@ Public Sub SPSZuweisenKanal()
     CPXDatenErgaenzen
     '##### Seitenzahl schreiben #####
     SeitenZahlschreiben
-    '##### symbolische Adresse schreiben #####
-    'symbolische_Adresse
-    
+
     MsgBox "Zuweisen fertig"
     
 End Sub

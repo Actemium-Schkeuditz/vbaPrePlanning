@@ -1,9 +1,9 @@
 Attribute VB_Name = "mSeitenZahl"
 Option Explicit
 ' Skript zum schreiben der Seitenzahlen
-' V0.5
-' 12.03.2020
-' neu Funktion zum schreiben der Seitenzahl
+' V0.6
+' 30.03.2020
+' Änderung Einbauort + EinbauortEinzeln
 '
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -56,7 +56,7 @@ Public Sub SeitenZahlschreiben()
     For Each sData In dataKanaeleElektrikSort
       
         If sData.Anlage = AnlageOld Then
-            If sData.Einbauort = EinbauortOld Then
+            If sData.Einbauort & sData.EinbauortEinzel = EinbauortOld Then
                 iSeite = iSeite + 1
             Else
                 iSeite = 1
@@ -66,7 +66,7 @@ Public Sub SeitenZahlschreiben()
         End If
               
         AnlageOld = sData.Anlage
-        EinbauortOld = sData.Einbauort
+        EinbauortOld = sData.Einbauort & sData.EinbauortEinzel
         sData.Seite = iSeite
         rData.AddDataSet sData
     Next
@@ -79,7 +79,7 @@ Public Sub SeitenZahlschreiben()
     For Each sData In dataKanaelePneumatikSort
       
         If sData.Anlage = AnlageOld Then
-            If sData.Einbauort = EinbauortOld Then
+            If sData.Einbauort & sData.EinbauortEinzel = EinbauortOld Then
                 iSeite = iSeite + 1
             Else
                 iSeite = 1
@@ -89,7 +89,7 @@ Public Sub SeitenZahlschreiben()
         End If
         
         AnlageOld = sData.Anlage
-        EinbauortOld = sData.Einbauort
+        EinbauortOld = sData.Einbauort & sData.EinbauortEinzel
         sData.Seite = iSeite
         rData.AddDataSet sData
     Next
@@ -98,8 +98,6 @@ Public Sub SeitenZahlschreiben()
     rData.writePageNumbersToExcel tabelleDaten
 
 BeforeExit:
-    ' Set rCell = Nothing
-    'Set rTable = Nothing
     Exit Sub
 ErrorHandle:
     MsgBox Err.Description & " Fehler im Modul Seitenzahl.", vbCritical, "Error"
