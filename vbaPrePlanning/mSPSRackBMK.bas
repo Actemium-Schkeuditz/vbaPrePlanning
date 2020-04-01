@@ -29,6 +29,7 @@ Public Sub SPS_RackBMK()
     Dim dataRackAnlagenkennzeichen As String
     Dim iSpalteRackBMKperSignal As Long
     Dim iSpalteStationPerSignal As Long
+    Dim tmpSpalteStationsnummer As Long
     Dim answer As Long
     Dim iSignal As Long
     Dim iSearchNumber As Long
@@ -37,6 +38,7 @@ Public Sub SPS_RackBMK()
     Dim ExcelConfig As New cExcelConfig
     
     iSearchNumber = 0
+      tmpSpalteStationsnummer = 0
       
     ' Tabellen definieren
     tabelleDaten = "EplSheet"
@@ -97,7 +99,8 @@ Public Sub SPS_RackBMK()
                     .Cells.Item(i, spalteRackAnlagenkennzeichen) = vbNullString
                 End If
                 For iSignal = 1 To 6
-                    iSearchNumber = .Cells.Item(i, iSpalteStationPerSignal + (14 * (iSignal - 1)))
+                    tmpSpalteStationsnummer = iSpalteStationPerSignal + (14 * (iSignal - 1))
+                    iSearchNumber = .Cells.Item(i, tmpSpalteStationsnummer)
                     If iSearchNumber <> 0 Then   'nur weiter wenn Stationsnummer nicht leer
                         'Suchen nach den passenden Einbauort zur Station
                         Set sResult = Nothing
@@ -109,10 +112,10 @@ Public Sub SPS_RackBMK()
                                 dataAnlagenkennzeichen = LTrim$(.Cells.Item(i, spalteAnlagenkennzeichen))
                                 ' Anlagenkennzeichen ermitteln
                                 dataRackAnlagenkennzeichen = "=" + Left$(dataAnlagenkennzeichen, InStr(1, dataAnlagenkennzeichen, "."))
-                                If Len(.Cells.Item(i, SpalteStationsnummer)) = 1 Then
-                                    dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen & "A.S0" & .Cells.Item(i, SpalteStationsnummer)
+                                If Len(.Cells.Item(i, tmpSpalteStationsnummer)) = 1 Then
+                                    dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen & "A.S0" & .Cells.Item(i, tmpSpalteStationsnummer)
                                 Else
-                                    dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen & "A.S" & .Cells.Item(i, SpalteStationsnummer)
+                                    dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen & "A.S" & .Cells.Item(i, tmpSpalteStationsnummer)
                                 End If
                     
                                 .Cells.Item(i, iSpalteRackBMKperSignal + (14 * (iSignal - 1))) = dataRackAnlagenkennzeichen & "+" & sResult.Item(1).Einbauort

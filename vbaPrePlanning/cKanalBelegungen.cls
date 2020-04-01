@@ -280,6 +280,7 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
     Dim iSpalteKartentyp As Long
     Dim iSpalteSPSBMK As Long
     Dim iSpalteSegmentvorlage As Long
+    Dim iSpalteSegmentdefinition As Long
     Dim iSpalteEinbauortEinzel As Long
     Dim iSpalteEinbauort As Long
     Dim iSpalteSteckplatz As Long
@@ -300,6 +301,8 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
     iSpalteKartentyp = SpaltenBuchstaben2Int(ExcelConfig.Kartentyp) - 1
     iSpalteSPSBMK = SpaltenBuchstaben2Int(ExcelConfig.SPSBMK) - 1
     iSpalteSteckplatz = SpaltenBuchstaben2Int(ExcelConfig.Steckplatz) - 1
+    iSpalteSegmentdefinition = SpaltenBuchstaben2Int(ExcelConfig.Segmentdefinition) - 1
+    
     
     iSignal = 1
     'First we check if the table is intact. The
@@ -335,7 +338,7 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
     For Each rCell In rTable
         With rCell
             ' prüfen ob Stationsnummer nicht leer
-            If rCell.Offset(0, iSpalteStationsnummer).Value <> vbNullString Then
+            If rCell.Offset(0, iSpalteStationsnummer).Value2 <> vbNullString Or rCell.Offset(0, iSpalteSegmentdefinition).Value2 = "Schaltschrankgeräte" Then
                 ' die gelesenen Daten anhängen
                 For iSignal = 1 To 6
                     If rCell.Offset(0, iSpalteKartentyp - 1 + (14 * (iSignal - 1))).Value <> vbNullString Then

@@ -21,6 +21,7 @@ Private pAnlage As String
 Private pSympolischeAdresse As String
 Private pArtikel As String
 Private pArtikelKWS As String
+Private pSegmentdefinition As String
 Private pStationsnummerKWS As String
 Private pSegmentvorlage As String
 Private pEingangsAdress As String
@@ -47,11 +48,13 @@ Private Sub Class_Initialize()
     pAnlage = "C"
     pArtikelKWS = "F"
     pStationsnummerKWS = "BC"
-    pArtikel = "BK"
-    pSympolischeAdresse = "BJ"
-    pSegmentvorlage = "BL"
-    pEingangsAdress = "BD"
+        pEingangsAdress = "BD"
     pAusgangsAdress = "BE"
+    pSympolischeAdresse = "BJ"
+    pArtikel = "BK"
+    pSegmentvorlage = "BL"
+    pSegmentdefinition = "BP"
+
     pEinbauortEinzel = "BR"
     pEinbauort = "BQ"
     pSeite = "BS"
@@ -108,6 +111,13 @@ End Property
 ''''''''''''''''''''''
 Public Property Get Segmentvorlage() As String
     Segmentvorlage = pSegmentvorlage
+End Property
+
+''''''''''''''''''''''
+' Segmentdefinition property
+''''''''''''''''''''''
+Public Property Get Segmentdefinition() As String
+    Segmentdefinition = pSegmentdefinition
 End Property
 
 ''''''''''''''''''''''
