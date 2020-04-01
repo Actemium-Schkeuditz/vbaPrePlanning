@@ -27,7 +27,7 @@
           <Val>XPXfConverterExcelImpl</Val>
          </Setting>
          <Setting name="Template" type="string">
-          <Val>$(MD_TEMPLATES)\KWS\Vorlage_externesBearbeiten_Planungsobjekte_V2.1.xlsm</Val>
+          <Val>$(MD_TEMPLATES)\KWS\Vorlage_externesBearbeiten_Planungsobjekte_V2.2.xlsm</Val>
          </Setting>
         </LEV6>
         <LEV6 name="Properties">
@@ -99,6 +99,7 @@
           <Val>44004</Val>
           <Val>1828</Val>
           <Val>44041</Val>
+          <Val>1220</Val>
           <Val>1228</Val>
           <Val>65535</Val>
           <Val>65535</Val>
@@ -261,6 +262,7 @@
           <Val>0</Val>
           <Val>0</Val>
           <Val>1</Val>
+          <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
@@ -531,6 +533,7 @@
           <Val>0</Val>
           <Val>0</Val>
           <Val>0</Val>
+          <Val>0</Val>
          </Setting>
          <Setting name="Name" type="string">
           <Val/>
@@ -593,6 +596,7 @@
           <Val>ACT.REV.CRC_ALT</Val>
           <Val>ACT.REV.CRC_Datum</Val>
           <Val>ACT.REV.CRC_ALT_DATUM</Val>
+          <Val/>
           <Val/>
           <Val/>
           <Val/>
@@ -702,7 +706,7 @@
         </LEV6>
        </LEV5>
        <Setting name="Description" type="mlstring">
-        <Val>??_??@KWS MH04 Projekte&#10;V2.1&#10;Ausgabe mit SPS-Anschlussdaten&#10;Bearbeitung der Vorplanungsobjekte Stand 26.02.2020&#10;mit CRC Check, SPS-Daten, Artikel, Änderung SPS-Daten&#10;Signal 6;</Val>
+        <Val>??_??@KWS MH04 Projekte&#10;V2.2&#10;Ausgabe mit SPS-Anschlussdaten, Einbauort + Einbauort Einzelbestandteil&#10;Bearbeitung der Vorplanungsobjekte Stand 26.02.2020&#10;mit CRC Check, SPS-Daten, Artikel, Änderung SPS-Daten&#10;Signal 6;</Val>
        </Setting>
        <Setting name="Name" type="mlstring">
         <Val>??_??@KWS_MH04_Vorplanung_Planungsobjekte;</Val>
