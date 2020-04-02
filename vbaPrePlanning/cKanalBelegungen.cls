@@ -337,8 +337,8 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
 
     For Each rCell In rTable
         With rCell
-            ' prüfen ob Stationsnummer nicht leer
-            If rCell.Offset(0, iSpalteStationsnummer).Value2 <> vbNullString Or rCell.Offset(0, iSpalteSegmentdefinition).Value2 = "Schaltschrankgeräte" Then
+            ' prüfen ob Stationsnummer nicht leer, oder Datensätze vom Typ "Schaltschrankgeräte" oder "SPSundNetzwerk"
+            If rCell.Offset(0, iSpalteStationsnummer).Value2 <> vbNullString Or rCell.Offset(0, iSpalteSegmentdefinition).Value2 = "Schaltschrankgeräte" Or rCell.Offset(0, iSpalteSegmentdefinition).Value2 = "SPSundNetzwerk" Then
                 ' die gelesenen Daten anhängen
                 For iSignal = 1 To 6
                     If rCell.Offset(0, iSpalteKartentyp - 1 + (14 * (iSignal - 1))).Value <> vbNullString Then
