@@ -85,9 +85,10 @@ Public Sub ReadExcelDataConnectionToCollection(ByRef dataColection As CSPSAnschl
     Dim rCell As Range
     Dim rTable As Range
     Dim tablename As String
+    Dim ExcelConfig As New cExcelConfig
 
     On Error GoTo ErrorHandle
-    tablename = "SPS_Anschluesse"
+    tablename = ExcelConfig.TabelleSPSAnschluesse
 
     'First we check if the table is intact. The
     'check is NOT complete.

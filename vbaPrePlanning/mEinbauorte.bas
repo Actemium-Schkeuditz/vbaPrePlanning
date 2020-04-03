@@ -20,7 +20,7 @@ Public Sub EinbauorteSchreiben()
     Dim j As Long
     Dim wkb As Workbook
     Dim ws1 As Worksheet
-    Dim tabelleDaten As String
+    Dim TabelleDaten As String
     Dim SpalteStationsnummer As String
     Dim spalteEinbauortRack As String
     Dim SpalteEinbauort As String
@@ -33,13 +33,15 @@ Public Sub EinbauorteSchreiben()
     
     'Tabellenamen ermitteln
     ' Tabellen definieren
-    tabelleDaten = "EplSheet"
+    TabelleDaten = ExcelConfig.TabelleDaten
+    
     SpalteStationsnummer = ExcelConfig.Stationsnummer
     spalteEinbauortRack = ExcelConfig.SPSRackEinbauort
     SpalteEinbauort = ExcelConfig.EinbauortEinzel
     spalteStationstyp = ExcelConfig.Kartentyp
+    
     Set wkb = ActiveWorkbook
-    Set ws1 = Worksheets.[_Default](tabelleDaten)
+    Set ws1 = Worksheets.[_Default](TabelleDaten)
     iSpalteStationstyp = SpaltenBuchstaben2Int(spalteStationstyp)
    
     Application.ScreenUpdating = False
@@ -50,10 +52,10 @@ Public Sub EinbauorteSchreiben()
         If ActiveSheet.FilterMode Then ActiveSheet.ShowAllData
                 
         'hier einlesen der Daten aus der Exceltabelle Einbauorte für die einzelnen Anlagen
-        Set EinbauorteData = readEinbauorte(tabelleDaten)
+        Set EinbauorteData = readEinbauorte(TabelleDaten)
         
         ' Spaltenbreiten anpassen
-        ThisWorkbook.Worksheets.[_Default](tabelleDaten).Activate
+        ThisWorkbook.Worksheets.[_Default](TabelleDaten).Activate
         ActiveSheet.Columns.Item(SpalteEinbauort).Select
         '.Columns.Item(spalteEinbauort).Select
         Selection.ColumnWidth = 15
@@ -117,7 +119,7 @@ Public Sub EinbauorteSchreiben()
 
 End Sub
 
-Public Function readEinbauorte(ByVal tabelleDaten As String) As cEinbauorte
+Public Function readEinbauorte(ByVal TabelleDaten As String) As cEinbauorte
     'return dataset with all installation locations per project
     Dim tablennameEinbauorte As String
     Dim wkb As Workbook
@@ -125,12 +127,13 @@ Public Function readEinbauorte(ByVal tabelleDaten As String) As cEinbauorte
     Dim dataKWSBMK As String
     Dim spalteKWS_BMK As String
     Dim EinbauorteData As New cEinbauorte        'Klasse anlegen für Datenaustausch
-
-    spalteKWS_BMK = "B"
-     tablennameEinbauorte = vbNullString
+    Dim ExcelConfig As New cExcelConfig
+    
+    spalteKWS_BMK = ExcelConfig.KWSBMK
+    tablennameEinbauorte = vbNullString
      
     Set wkb = ActiveWorkbook
-    Set ws1 = Worksheets.[_Default](tabelleDaten)
+    Set ws1 = Worksheets.[_Default](TabelleDaten)
      
     ' Tabelle mit Planungsdaten auslesen
     With ws1
@@ -155,7 +158,7 @@ Public Function readEinbauorte(ByVal tabelleDaten As String) As cEinbauorte
                 tablennameEinbauorte = "Einbauorte_MH03.TRP01"
             ElseIf Left$(dataKWSBMK, 5) = "TRP03" Then
                 tablennameEinbauorte = "Einbauorte_MH03.TRP03"
-                ElseIf Left$(dataKWSBMK, 5) = "EPD02" Then
+            ElseIf Left$(dataKWSBMK, 5) = "EPD02" Then
                 tablennameEinbauorte = "Einbauorte_H05.EPD02"
             Else
                 MsgBox "Keine passenden Daten mit Einbauorten gefunden, für KWS-BMK: " & dataKWSBMK
@@ -166,13 +169,13 @@ Public Function readEinbauorte(ByVal tabelleDaten As String) As cEinbauorte
             MsgBox "Fehler in Daten, KWS-BMK erwartet"
         End If
     
-    
         ' hier einlesen der Daten aus der Exceltabelle Einbauorte für die einzelnen Anlagen
         EinbauorteData.ReadExcelDataToCollection tablennameEinbauorte, EinbauorteData
               
     End With
     Set readEinbauorte = EinbauorteData
 End Function
+
 
 
 

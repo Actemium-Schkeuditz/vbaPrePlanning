@@ -1,8 +1,8 @@
 Attribute VB_Name = "mSPSZuweisenKanal"
 ' Skript zur Ermittlung der SPS Kanäle
-' V0.5
+' V0.6
 ' Änderung MPA Kartenzählung und Steckplatzbezeichnung
-' 11.03.2020
+' 03.04.2020
 'diverse Fehler müssen abgefangen werden,
 '
 ' Christian Langrock
@@ -14,7 +14,7 @@ Option Explicit
 
 Public Sub SPSZuweisenKanal()
 
-    Dim tabelleDaten As String
+    Dim TabelleDaten As String
     Dim OffsetSlot As Integer
     Dim PLCTyp As String
     Dim PLCTypOld As String
@@ -40,19 +40,19 @@ Public Sub SPSZuweisenKanal()
     Dim dataPLCConfigResult As New cPLCconfig
     Dim dataPLCConfigResultOutput As New cPLCconfig
     Dim dataMPAconfig As New cFestoMPA
+    Dim ExcelConfig As New cExcelConfig
     
     '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
     Dim dataSort As New cKanalBelegungen         'Ergebnis der Sortierung
-     
-    
+       
     ' Tabellen definieren
-    tabelleDaten = "EplSheet"
-   
+    TabelleDaten = ExcelConfig.TabelleDaten
+    
     'Startwerte setzen
     dataMPAconfig.reset
     PLCTypOld = vbNullString
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
-    dataKanaele.ReadExcelDataChanelToCollection tabelleDaten, dataKanaele
+    dataKanaele.ReadExcelDataChanelToCollection TabelleDaten, dataKanaele
         
     '##### Suche nach allen Stationsnummern
     Dim iStation As Collection
@@ -107,7 +107,7 @@ Public Sub SPSZuweisenKanal()
             
             OffsetSlot = OffsetSlot + 1
             '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
-            dataResultAdress.writeDatsetsToExcel tabelleDaten
+            dataResultAdress.writeDatsetsToExcel TabelleDaten
         Next
         '### schreiben der Config Daten in eigenens Excel Sheet
         dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation, PLCTyp

@@ -109,40 +109,48 @@ ErrHandler:
     CRC32FromFile = -1
 End Function
 
-' Skript zur Ermittlung der CRC-Summe einer Zeile
-' V3.1
-'20.01.2020
-'angepasst für MH04
+'Skript zur Ermittlung der CRC-Summe einer Zeile
+'V3.2
+'30.04.2020
+' Einbindung cExcelconfig
 '
-' Christian Langrock + TH
+' Christian Langrock
+' Tobias Heinrich
 ' christian.langrock@actemium.de
-
+' Tobias.Heinrich@actemium.de
 
 Public Sub CRC_Zeile()
 
     Dim wkb As Workbook
     Dim ws1 As Worksheet
-    Dim tabelleDaten As String
+    Dim TabelleDaten As String
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim y As Long
     Dim nCRCSum As Long
-    
-    
+    Dim sSpalteCRC As String
+    Dim sSpalteCRCAlt As String
+    Dim sSpalteCRCDatum As String
+    Dim sSpalteCRCDatumAlt As String
+     
     Dim sText As String
     Dim sTextGesamt As String
-    
+    Dim ExcelConfig As New cExcelConfig
     
     ' Tabellen definieren
-    tabelleDaten = "EplSheet"
-
-
+    TabelleDaten = ExcelConfig.TabelleDaten
+    sSpalteCRC = ExcelConfig.CRC
+    sSpalteCRCAlt = ExcelConfig.CRCAlt
+    sSpalteCRCDatum = ExcelConfig.CRCDatum
+    sSpalteCRCDatumAlt = ExcelConfig.CRCDatumAlt
+    
+    On Error GoTo ErrorHandle
+    
     Set wkb = ActiveWorkbook
-    Set ws1 = Worksheets.[_Default](tabelleDaten)
+    Set ws1 = Worksheets.[_Default](TabelleDaten)
    
     Application.ScreenUpdating = False
 
-  
     ' Tabelle mit Daten bearbeiten
     With ws1
    
@@ -151,68 +159,64 @@ Public Sub CRC_Zeile()
         'MsgBox zeilenanzahl
  
         ' Spaltenbreiten anpassen
-        ActiveSheet.Columns.Item("BF").Select
+        ActiveSheet.Columns.Item(sSpalteCRC).Select
         Selection.ColumnWidth = 15
-        ActiveSheet.Columns.Item("BG").Select
+        ActiveSheet.Columns.Item(sSpalteCRCAlt).Select
         Selection.ColumnWidth = 15
 
-        ActiveSheet.Columns.Item("BH").Select
+        ActiveSheet.Columns.Item(sSpalteCRCDatum).Select
         Selection.ColumnWidth = 12
-        ActiveSheet.Columns.Item("BI").Select
+        ActiveSheet.Columns.Item(sSpalteCRCDatumAlt).Select
         Selection.ColumnWidth = 12
  
         '*********** Checksumme von aktuell nach alt kopieren******************
  
         For i = 3 To zeilenanzahl
-            .Cells.Item(i, "BG") = .Cells.Item(i, "BF")
+            .Cells.Item(i, sSpalteCRCAlt) = .Cells.Item(i, sSpalteCRC)
         Next i
  
         '***********************************************************************
 
         ' CRC für jede Zelle berechnen
         For i = 3 To zeilenanzahl
-            sTextGesamt = vbNullString                     ' neue Zeile Text löschen
+            sTextGesamt = vbNullString           ' neue Zeile Text löschen
             For y = 2 To 54
                 sText = .Cells.Item(2, y) & .Cells.Item(i, y)
-                'MsgBox sText
                 sTextGesamt = sTextGesamt & sText
-
                 'MsgBox "CRC32-Checksumme: " & CStr(nCRCSum) & " bzw. &H" & Hex$(nCRCSum)
-       
             Next y
             ' CRC schreiben
             nCRCSum = CRC32(StrConv(sTextGesamt, vbFromUnicode))
-            .Cells.Item(i, "BF") = "H" & Hex$(nCRCSum)
+            .Cells.Item(i, sSpalteCRC) = "H" & Hex$(nCRCSum)
         Next i
- 
  
         '*********** Checksumme vergleichen, markieren von Unterschieden und Datum erzeugen******************
         'Datum wird nur bei unterschiedlicher Checksumme neu generiert
         Dim Datum
         Datum = Format$(Date, "dd.mm.yyyy")
         For i = 3 To zeilenanzahl
-            If .Cells.Item(i, "BG") = .Cells.Item(i, "BF") Then
-                .Cells.Item(i, "BG").Interior.ColorIndex = 4
-                .Cells.Item(i, "BF").Interior.ColorIndex = 4
-                .Cells.Item(i, "BI") = .Cells.Item(i, "BH")
+            If .Cells.Item(i, sSpalteCRCAlt) = .Cells.Item(i, sSpalteCRC) Then
+                .Cells.Item(i, sSpalteCRCAlt).Interior.ColorIndex = 4
+                .Cells.Item(i, sSpalteCRC).Interior.ColorIndex = 4
+                .Cells.Item(i, sSpalteCRCDatumAlt) = .Cells.Item(i, sSpalteCRCDatum)
             Else
-                .Cells.Item(i, "BG").Interior.ColorIndex = 3
-                .Cells.Item(i, "BF").Interior.ColorIndex = 3
-                .Cells.Item(i, "BI") = .Cells.Item(i, "BH")
-                .Cells.Item(i, "BH") = Datum
+                .Cells.Item(i, sSpalteCRCAlt).Interior.ColorIndex = 3
+                .Cells.Item(i, sSpalteCRC).Interior.ColorIndex = 3
+                .Cells.Item(i, sSpalteCRCDatumAlt) = .Cells.Item(i, sSpalteCRCDatum)
+                .Cells.Item(i, sSpalteCRCDatum) = Datum
             End If
         Next i
-
-
-
         '***********************************************************************
-     
     End With
+    
+BeforeExit:
+    Set wkb = Nothing
+    Set ws1 = Nothing
+    Exit Sub
+ErrorHandle:
+    MsgBox Err.Description & " Fehler beim erzeugen des CRC.", vbCritical, "Error"
+    Resume BeforeExit
+    
 End Sub
-
-
-
-
-
 
 

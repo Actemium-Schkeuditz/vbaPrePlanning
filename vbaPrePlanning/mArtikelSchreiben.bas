@@ -12,16 +12,16 @@ Public Sub ArtikelBearbeiten()
 
     Dim wkb As Workbook
     Dim ws1 As Worksheet
-    Dim tabelleDaten As String
+    Dim TabelleDaten As String
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim ExcelConfig As New cExcelConfig
       
     ' Tabellen definieren
-    tabelleDaten = "EplSheet"
+    TabelleDaten = ExcelConfig.TabelleDaten
 
     Set wkb = ActiveWorkbook
-    Set ws1 = Worksheets.[_Default](tabelleDaten)
+    Set ws1 = Worksheets.[_Default](TabelleDaten)
    
     Application.ScreenUpdating = False
 

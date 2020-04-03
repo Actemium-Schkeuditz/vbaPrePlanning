@@ -17,6 +17,11 @@ Attribute VB_Exposed = False
 '@folder (Daten.Excel)
   
 Option Explicit
+' Tabelle mit den Daten
+Private pTabelleDaten As String     'Datensätze aus Eplan zur Bearbeitung
+Private pTabelleSPSAnschluesse As String   'Daten der Anschlüsse für die SPS Karten
+' Spalten
+Private pKWSBMK As String
 Private pAnlage As String
 Private pSympolischeAdresse As String
 Private pArtikel As String
@@ -26,6 +31,10 @@ Private pStationsnummerKWS As String
 Private pSegmentvorlage As String
 Private pEingangsAdress As String
 Private pAusgangsAdress As String
+Private pCRC As String
+Private pCRCAlt As String
+Private pCRCDatum As String
+Private pCRCDatumAlt As String
 Private pStationsnummer As String
 Private pEinbauortEinzel As String
 Private pEinbauort As String
@@ -43,13 +52,20 @@ Private pKartentyp As String
 
 
 Private Sub Class_Initialize()
-    
+    ' Tabelle mit den Daten
+    pTabelleDaten = "EplSheet"
+    pTabelleSPSAnschluesse = "SPS_Anschluesse"
 ' Spalten definieren
+    pKWSBMK = "B"
     pAnlage = "C"
     pArtikelKWS = "F"
     pStationsnummerKWS = "BC"
-        pEingangsAdress = "BD"
+    pEingangsAdress = "BD"
     pAusgangsAdress = "BE"
+    pCRC = "BF"
+    pCRCAlt = "BG"
+    pCRCDatum = "BH"
+    pCRCDatumAlt = "BI"
     pSympolischeAdresse = "BJ"
     pArtikel = "BK"
     pSegmentvorlage = "BL"
@@ -70,6 +86,27 @@ Private Sub Class_Initialize()
     pKanal = "CE"
     
 End Sub
+
+''''''''''''''''''''''
+' TabelleDaten
+''''''''''''''''''''''
+Public Property Get TabelleDaten() As String
+    TabelleDaten = pTabelleDaten
+End Property
+
+''''''''''''''''''''''
+'TabelleSPSAnschluesse
+''''''''''''''''''''''
+Public Property Get TabelleSPSAnschluesse() As String
+    TabelleSPSAnschluesse = pTabelleSPSAnschluesse
+End Property
+
+''''''''''''''''''''''
+' KWSBMK
+''''''''''''''''''''''
+Public Property Get KWSBMK() As String
+    KWSBMK = pKWSBMK
+End Property
 
 ''''''''''''''''''''''
 ' Anlage
@@ -132,6 +169,34 @@ End Property
 ''''''''''''''''''''''
 Public Property Get AusgangsAdress() As String
     AusgangsAdress = pAusgangsAdress
+End Property
+
+''''''''''''''''''''''
+' CRC
+''''''''''''''''''''''
+Public Property Get CRC() As String
+    CRC = pCRC
+End Property
+
+''''''''''''''''''''''
+'CRCAlt
+''''''''''''''''''''''
+Public Property Get CRCAlt() As String
+    CRCAlt = pCRCAlt
+End Property
+
+''''''''''''''''''''''
+'CRCDatum
+''''''''''''''''''''''
+Public Property Get CRCDatum() As String
+    CRCDatum = pCRCDatum
+End Property
+
+''''''''''''''''''''''
+'CRC_DatumAlt
+''''''''''''''''''''''
+Public Property Get CRCDatumAlt() As String
+    CRCDatumAlt = pCRCDatumAlt
 End Property
 
 ''''''''''''''''''''''

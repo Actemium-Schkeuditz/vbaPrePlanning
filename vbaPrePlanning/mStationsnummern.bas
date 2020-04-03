@@ -1,8 +1,8 @@
 Attribute VB_Name = "mStationsnummern"
 ' Skript zur Ermittlung der Stationsnummern der IO-Racks
-' V0.2
+' V0.3
 ' nicht fertig
-' 02.03.2020
+' 03.04.2020
 ' angepasst für MH04
 '
 ' Christian Langrock
@@ -14,10 +14,9 @@ Option Explicit
 
 Public Sub RACK_STATIONSNUMMERN()
 
-
     Dim wkb As Workbook
     Dim ws1 As Worksheet
-    Dim tabelleDaten As String
+    Dim TabelleDaten As String
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim iKanal As Long
@@ -28,10 +27,10 @@ Public Sub RACK_STATIONSNUMMERN()
     Dim ExcelConfig As New cExcelConfig
       
     ' Tabellen definieren
-    tabelleDaten = "EplSheet"
+    TabelleDaten = ExcelConfig.TabelleDaten
    
     Set wkb = ActiveWorkbook
-    Set ws1 = Worksheets.[_Default](tabelleDaten)
+    Set ws1 = Worksheets.[_Default](TabelleDaten)
    
     Application.ScreenUpdating = False
 
@@ -74,11 +73,6 @@ Public Sub RACK_STATIONSNUMMERN()
                     End If
                 Next iKanal
             End If
-    
         Next i
-    
-    
     End With
-
 End Sub
-

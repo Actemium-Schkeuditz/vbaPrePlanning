@@ -1,7 +1,7 @@
 Attribute VB_Name = "mCPXDatenErgaenzen"
 ' Skript zur Korrektur der Festo Anschlussdaten
-' V0.1
-' 09.03.2020
+' V0.2
+' 03.04.2020
 ' Christian Langrock
 ' christian.langrock@actemium.de
 ' Mohammad Safaadin Hussein
@@ -14,7 +14,7 @@ Attribute VB_Name = "mCPXDatenErgaenzen"
 
 Public Sub CPXDatenErgaenzen()
 
-    Dim tabelleDaten As String
+    Dim TabelleDaten As String
     Dim dataKanaele As New cKanalBelegungen
     Dim sKanaele As New cBelegung
     Dim sPerPLCtypKanaele As New cBelegung
@@ -28,9 +28,10 @@ Public Sub CPXDatenErgaenzen()
     Dim bLastAdressPos As Long                'benötigte Letzte Adress-Stelle für Berechnungen
     Dim sPerPLCtypKanaeleAdress2 As String       'Adresse für SPSKanal 2
     Dim iSubAnschluss As Long
+    Dim ExcelConfig As New cExcelConfig
    
     ' Tabellen definieren
-    tabelleDaten = "EplSheet"
+    TabelleDaten = ExcelConfig.TabelleDaten
 
     ' Kartentypen definieren
     sKartentyp.Add "CPX 5/2 bistabil"
@@ -40,7 +41,7 @@ Public Sub CPXDatenErgaenzen()
     iSubAnschluss = 0
   
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
-    dataKanaele.ReadExcelDataChanelToCollection tabelleDaten, dataKanaele 'Auslesen der DAten aus Excelliste
+    dataKanaele.ReadExcelDataChanelToCollection TabelleDaten, dataKanaele 'Auslesen der DAten aus Excelliste
     
     Set sortKanaele = dataKanaele.Sort           'Sortieren nach spalteStationsnummer, spalteKartentyp
     '##### Daten bearbeiten #####
@@ -109,7 +110,7 @@ Public Sub CPXDatenErgaenzen()
         Next
     Next
     '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
-    rData.writeDatsetsToExcel tabelleDaten
+    rData.writeDatsetsToExcel TabelleDaten
     
     'MsgBox "Daten geschrieben"
 End Sub

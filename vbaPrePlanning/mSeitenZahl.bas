@@ -1,22 +1,24 @@
 Attribute VB_Name = "mSeitenZahl"
 Option Explicit
 ' Skript zum schreiben der Seitenzahlen
-' V0.6
-' 30.03.2020
+' V0.7
+' 03.04.2020
 ' Änderung Einbauort + EinbauortEinzeln
+' Einbindung ExcelConfig
 '
 ' Christian Langrock
 ' christian.langrock@actemium.de
 '@folder (Daten.Seitenzahl)
 
 Public Sub SeitenZahlschreiben()
-    ' neu da alte Berechnung fehlerhaft
 
-    Dim tabelleDaten As String
+    Dim TabelleDaten As String
     Dim iSignal As Integer
     Dim iSeite As Long
     Dim AnlageOld As String
     Dim EinbauortOld As String
+    
+    On Error GoTo ErrorHandle
       
     ' Class einbinden
     Dim dataKanaele As New cKanalBelegungen
@@ -27,15 +29,14 @@ Public Sub SeitenZahlschreiben()
     Dim dataKanaeleElektrikSort As New cKanalBelegungen
     Dim sData As New cBelegung
     Dim rData As New cKanalBelegungen
- 
-    On Error GoTo ErrorHandle
- 
+    Dim ExcelConfig As New cExcelConfig
+     
     ' Tabellen definieren
-    tabelleDaten = "EplSheet"
+    TabelleDaten = ExcelConfig.TabelleDaten
     iSignal = 1
 
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
-    dataKanaele.ReadExcelDataChanelToCollection tabelleDaten, dataKanaele
+    dataKanaele.ReadExcelDataChanelToCollection TabelleDaten, dataKanaele
               
     '##### suchen nach den Datensätzen mit dem Signal 1
     Set dataKanaeleSignal = dataKanaele.searchDatasetSignal(iSignal)
@@ -95,7 +96,7 @@ Public Sub SeitenZahlschreiben()
     Next
     
     '#### Daten schreiben
-    rData.writePageNumbersToExcel tabelleDaten
+    rData.writePageNumbersToExcel TabelleDaten
 
 BeforeExit:
     Exit Sub

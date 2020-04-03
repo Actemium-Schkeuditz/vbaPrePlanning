@@ -1,11 +1,12 @@
 Attribute VB_Name = "mSPSBMK"
 ' Skript zur Ermittlung der SPS BMK´s
 ' Die Daten werden Kanalweise zugeordnet
-' V0.4
+' V0.5
 ' getestet
-' 30.03.2020
+' 03.04.2020
 ' überflüssige Leerzeichen entfernt
 '
+
 ' Christian Langrock
 ' christian.langrock@actemium.de
 
@@ -16,7 +17,7 @@ Public Sub SPS_BMK()
 
     Dim wkb As Workbook
     Dim ws1 As Worksheet
-    Dim tabelleDaten As String
+    Dim TabelleDaten As String
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim y As Long
@@ -24,13 +25,12 @@ Public Sub SPS_BMK()
     Dim spalteSPSBMK As Long
     Dim spalteSPSSteckplatz As Long
     Dim ExcelConfig As New cExcelConfig
-
         
     ' Tabellen definieren
-    tabelleDaten = "EplSheet"
+    TabelleDaten = ExcelConfig.TabelleDaten
 
     Set wkb = ActiveWorkbook
-    Set ws1 = Worksheets.[_Default](tabelleDaten)
+    Set ws1 = Worksheets.[_Default](TabelleDaten)
    
     Application.ScreenUpdating = False
 

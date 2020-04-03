@@ -1,8 +1,9 @@
 Attribute VB_Name = "mSPSAnschluesseZuweisen"
 ' Skript zur Ermittlung der SPS Anschlüsse
-' V0.12
-' 11.03.2020
+' V0.13
+' 03.04.2020
 ' Such- und Schreibfunktion fehlerbehoben
+' Einbindung ExcelConfig
 
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -13,7 +14,7 @@ Option Explicit
 
 Public Sub SPS_KartenAnschluss()
 
-    Dim tabelleDaten As String
+    Dim TabelleDaten As String
       
     ' Class einbinden
     Dim dataAnschluesse As New CSPSAnschluesse
@@ -21,15 +22,16 @@ Public Sub SPS_KartenAnschluss()
     Dim sData As New cBelegung
     Dim rData As New cKanalBelegungen
     Dim dataResult As New cAnschluss
-      
+    Dim ExcelConfig As New cExcelConfig
+    
     ' Tabellen definieren
-    tabelleDaten = "EplSheet"
+    TabelleDaten = ExcelConfig.TabelleDaten
    
     '##### lesen der Anschlussdaten aus Excel Tabelle  #####
     dataAnschluesse.ReadExcelDataConnectionToCollection dataAnschluesse
         
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
-    dataKanaele.ReadExcelDataChanelToCollection tabelleDaten, dataKanaele
+    dataKanaele.ReadExcelDataChanelToCollection TabelleDaten, dataKanaele
               
     For Each sData In dataKanaele
         
@@ -47,7 +49,7 @@ Public Sub SPS_KartenAnschluss()
         End If
     Next
     '#### Daten schreiben
-    rData.writeDatsetsToExcel tabelleDaten
+    rData.writeDatsetsToExcel TabelleDaten
         
 End Sub
 

@@ -1,8 +1,8 @@
 Attribute VB_Name = "mSPSRackBMK"
 ' Skript zur Ermittlung der Anlagen und Ortskennzeichen der IO-Racks
-' V0.5
+' V0.6
 ' nicht fertig
-' 02.03.2020
+' 03.04.2020
 ' angepasst für MH04
 '
 ' Christian Langrock
@@ -15,7 +15,7 @@ Public Sub SPS_RackBMK()
     ' Erzeugen des gesamten Anlagen und Ortskennzeichen für SPS-Rack
     Dim wkb As Workbook
     Dim ws1 As Worksheet
-    Dim tabelleDaten As String
+    Dim TabelleDaten As String
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim SpalteStationsnummer As String
@@ -38,18 +38,18 @@ Public Sub SPS_RackBMK()
     Dim ExcelConfig As New cExcelConfig
     
     iSearchNumber = 0
-      tmpSpalteStationsnummer = 0
+    tmpSpalteStationsnummer = 0
       
     ' Tabellen definieren
-    tabelleDaten = "EplSheet"
+    TabelleDaten = ExcelConfig.TabelleDaten
 
     Set wkb = ActiveWorkbook
-    Set ws1 = Worksheets.[_Default](tabelleDaten)
+    Set ws1 = Worksheets.[_Default](TabelleDaten)
    
     Application.ScreenUpdating = False
 
     'read installation locations
-    Set EinbauorteData = readEinbauorte(tabelleDaten)
+    Set EinbauorteData = readEinbauorte(TabelleDaten)
 
     ' Tabelle mit Daten bearbeiten
     With ws1
@@ -120,9 +120,9 @@ Public Sub SPS_RackBMK()
                     
                                 .Cells.Item(i, iSpalteRackBMKperSignal + (14 * (iSignal - 1))) = dataRackAnlagenkennzeichen & "+" & sResult.Item(1).Einbauort
                             End If
-                             Else
-                        ' makiere fehlende / falsche Steckplatz Daten
-                        .Cells.Item(i, iSpalteRackBMKperSignal + (14 * (iSignal - 1))).Interior.ColorIndex = 3
+                        Else
+                            ' makiere fehlende / falsche Steckplatz Daten
+                            .Cells.Item(i, iSpalteRackBMKperSignal + (14 * (iSignal - 1))).Interior.ColorIndex = 3
                         End If
                     End If
                 Next iSignal
@@ -134,3 +134,4 @@ Public Sub SPS_RackBMK()
     End With
 
 End Sub
+
