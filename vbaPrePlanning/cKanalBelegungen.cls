@@ -870,7 +870,7 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
     End If
     
     If dataPLCConfig.Item(i).Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then
-        Do While dataPLCConfig.Item(i).Kartentyp.MaxChannelPerSlot >= iKanal
+        Do While dataPLCConfig.Item(i).Kartentyp.MaxChannelPerSlot > rData.Count - 2
             rData.Add "IFM_RESERVE", "IFM_RESERVE", 0, dataPLCConfig.Item(i).Stationsnummer, "AL140x_RES", iSteckplatz, iKanal, "", "", 0, 0, "", "", "", iKanal + 1
             iKanal = iKanal + 1
         Loop
