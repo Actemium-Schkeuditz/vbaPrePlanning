@@ -360,6 +360,10 @@ Public Function ConfigPLCToDataset(ByRef Stationdata As cKanalBelegungen) As cPL
         Set dataSearchStation = Stationdata.searchDatasetPerStation(pStation)
         If dataSearchStation.Item(1).Kartentyp.PLCTyp = "FESTO MPA" Or dataSearchStation.Item(1).Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then
             Set dataSearchConfig = dataSearchStation
+        ElseIf dataSearchStation.Count > 1 Then
+            If dataSearchStation.Item(2).Kartentyp.PLCTyp = "FESTO MPA" Then
+                Set dataSearchConfig = dataSearchStation
+            End If
         Else
             Set dataSearchConfig = dataSearchStation.returnAllSlotsPerRack
             
@@ -390,3 +394,4 @@ Public Function ConfigPLCToDataset(ByRef Stationdata As cKanalBelegungen) As cPL
     Set ConfigPLCToDataset = dataConfigSort
     
 End Function
+

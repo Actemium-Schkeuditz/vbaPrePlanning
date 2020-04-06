@@ -1464,7 +1464,7 @@ Public Function correctFestoMPA(ByRef MPAconfig As cFestoMPA) As cKanalBelegunge
     For Each sData In cData
         If sData.Kartentyp.PLCTyp = "FESTO MPA" Then
             ' firstrun
-            If rData.Count = 0 And MPAconfig.KanalMPA = 1 And iSubSlot = 0 Then
+            If MPAconfig.KanalMPA = 1 And iSubSlot = 0 Then
                 MPAconfig.AnschlussplatteMPA = 1
                 rData.Add "ADRESS", "FESTO_MPA", 0, sData.Stationsnummer, "FESTO MPA1S", MPAconfig.AnschlussplatteMPA
             End If
@@ -1526,5 +1526,3 @@ Public Sub symbolischeAdressen()
     Next
     
 End Sub
-
-
