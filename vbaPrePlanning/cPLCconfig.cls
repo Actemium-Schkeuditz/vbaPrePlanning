@@ -363,10 +363,11 @@ Public Function ConfigPLCToDataset(ByRef Stationdata As cKanalBelegungen) As cPL
         ElseIf dataSearchStation.Count > 1 Then
             If dataSearchStation.Item(2).Kartentyp.PLCTyp = "FESTO MPA" Then
                 Set dataSearchConfig = dataSearchStation
+            Else
+                Set dataSearchConfig = dataSearchStation.returnAllSlotsPerRack
             End If
         Else
             Set dataSearchConfig = dataSearchStation.returnAllSlotsPerRack
-            
         End If
         
         ' Übertragen der Daten
@@ -394,4 +395,5 @@ Public Function ConfigPLCToDataset(ByRef Stationdata As cKanalBelegungen) As cPL
     Set ConfigPLCToDataset = dataConfigSort
     
 End Function
+
 
