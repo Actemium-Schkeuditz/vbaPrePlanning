@@ -703,18 +703,52 @@ Public Property Let Kartentyp(ByVal Value As String)
         pSameAdressRangeForOutput = False
     Case "TBEN-S-RFID"
         pPLCtyp = "Turck TBEN-S"
-        pSortingIdentifier = 500
+        pSortingIdentifier = 202
         pMaxChannelPerSlot = 0
         ' Adress
         pDatatyp = "Byte"
         pSignalDirection = "InOut"
-        pInputAdressLength = 28
-        pOutputAdressLength = 28
+        pInputAdressLength = 8
+        pOutputAdressLength = 8
         pInputMinLength = 0
         pInputMaxLength = 0
         pOutputMinLength = 0
         pOutputMaxLength = 0
         pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
+        pVariableAdressRange = False
+        pSameAdressRangeForOutput = False
+    Case "TBEN-S-HF-Busmodul"
+        pPLCtyp = "Turck TBEN-S"
+        pSortingIdentifier = 201
+        pMaxChannelPerSlot = 0
+        ' Adress
+        pDatatyp = "Byte"
+        pSignalDirection = "InOut"
+        pInputAdressLength = 0
+        pOutputAdressLength = 0
+        pInputMinLength = 0
+        pInputMaxLength = 0
+        pOutputMinLength = 0
+        pOutputMaxLength = 0
+        pInputAdressDiagnosticLength = 24
+        pOutputAdressDiagnosticLength = 24
+        pVariableAdressRange = False
+        pSameAdressRangeForOutput = False
+    Case "TBEN-S-DIAG"                                'Turck Diagnose
+        pPLCtyp = "Turck TBEN-S"
+        pSortingIdentifier = 210
+        pMaxChannelPerSlot = 0
+        ' Adress
+        pDatatyp = "Byte"
+        pSignalDirection = "InOut"
+        pInputAdressLength = 0
+        pOutputAdressLength = 0
+        pInputMinLength = 0
+        pInputMaxLength = 0
+        pOutputMinLength = 0
+        pOutputMaxLength = 0
+        pInputAdressDiagnosticLength = 74
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False

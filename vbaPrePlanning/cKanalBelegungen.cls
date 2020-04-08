@@ -691,8 +691,8 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
         For Each sData In sortData
             ' Kanäle müssen passend aufgelgt werden
             If Left(sData.Segmentvorlage, 20) = "FDI_ET200SP_NOT_HALT" Or sData.Segmentvorlage = "FDI_ET200SP_BMA" _
-            Or ((Left(sData.Segmentvorlage, 21) = "FDI_ET200SP_ZUHALTUNG") And (sData.Signal = 1 Or sData.Signal = 2)) _
-            Or ((Left(sData.Segmentvorlage, 36) = "FDI_ET200SP_SICHERHEITSSCHALTER_2FDI") And (sData.Signal = 1 Or sData.Signal = 2)) Then
+                                                Or ((Left(sData.Segmentvorlage, 21) = "FDI_ET200SP_ZUHALTUNG") And (sData.Signal = 1 Or sData.Signal = 2)) _
+                                                Or ((Left(sData.Segmentvorlage, 36) = "FDI_ET200SP_SICHERHEITSSCHALTER_2FDI") And (sData.Signal = 1 Or sData.Signal = 2)) Then
                 bET200SPNothalt = True           ' Hier FDI doppelte Auswertung der Signale
                 If sData.Signal = 2 Then
                     ' Kanäle 4, 5, 6 und 7
@@ -767,7 +767,7 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
         
     ElseIf pKartentyp = "CPX-8DE-D" Then
         
-         Do While iReserveChannelsBefor > 0
+        Do While iReserveChannelsBefor > 0
             If iKanal < dataPLCConfig.Item(i).Kartentyp.MaxChannelPerSlot - iReserveChannelPerSlot Then
                 If iKanal = 0 Then               'And rdata Is Nothing Then
                     rData.Add "LEER1", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
@@ -862,7 +862,10 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
                     rData.Add "DIAG_IFM", "DIAGNOSE", 0, sData.Stationsnummer, "AL140x_DIAG", 0, 0
                 End If
                 sData.SubSlot = iKanal + 1
+            ElseIf pKartentyp = "TBEN-S-RFID" Then
+                rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "TBEN-S-HF-Busmodul", iSteckplatz + OffsetSlot, iKanal
             End If
+            
             sData.Steckplatz = iSteckplatz + OffsetSlot
             rData.AddDataSet sData
             If iKanal < sData.Kartentyp.MaxChannelPerSlot - iReserveChannelPerSlot Then
@@ -884,6 +887,10 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
             iReserveChannelsAfter = iReserveChannelsAfter - 1
         Loop
     End If
+    ' hier die Reserven und Diagnosen anfügen
+    If dataPLCConfig.Item(i).Kartentyp.PLCTyp = "Turck TBEN-S" Then
+        rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "TBEN-S-DIAG", iSteckplatz + OffsetSlot, iKanal
+    End If
     
     If dataPLCConfig.Item(i).Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then
         Do While dataPLCConfig.Item(i).Kartentyp.MaxChannelPerSlot > rData.Count - 2
@@ -900,9 +907,7 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
             rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "ET200SP RESERVE", iSteckplatz + OffsetSlot, 0
         ElseIf dataPLCConfig.Item(i).Kartentyp.PLCTyp = "FESTO MPA" Then
             rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "CPX RESERVE", iSteckplatz + OffsetSlot, 0
-        
         End If
-        
         iReserveAfterPLCTyp = iReserveAfterPLCTyp - 1
         iKanal = 1
     Loop
