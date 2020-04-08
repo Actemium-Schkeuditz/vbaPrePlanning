@@ -690,7 +690,9 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
         Set sortData = Me.SortSegment
         For Each sData In sortData
             ' Kanäle müssen passend aufgelgt werden
-            If Left(sData.Segmentvorlage, 20) = "FDI_ET200SP_NOT_HALT" Or sData.Segmentvorlage = "FDI_ET200SP_BMA" Or ((Left(sData.Segmentvorlage, 21) = "FDI_ET200SP_ZUHALTUNG") And (sData.Signal = 1 Or sData.Signal = 2)) Then
+            If Left(sData.Segmentvorlage, 20) = "FDI_ET200SP_NOT_HALT" Or sData.Segmentvorlage = "FDI_ET200SP_BMA" _
+            Or ((Left(sData.Segmentvorlage, 21) = "FDI_ET200SP_ZUHALTUNG") And (sData.Signal = 1 Or sData.Signal = 2)) _
+            Or ((Left(sData.Segmentvorlage, 36) = "FDI_ET200SP_SICHERHEITSSCHALTER_2FDI") And (sData.Signal = 1 Or sData.Signal = 2)) Then
                 bET200SPNothalt = True           ' Hier FDI doppelte Auswertung der Signale
                 If sData.Signal = 2 Then
                     ' Kanäle 4, 5, 6 und 7
