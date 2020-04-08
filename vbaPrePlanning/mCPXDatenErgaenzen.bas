@@ -1,7 +1,7 @@
 Attribute VB_Name = "mCPXDatenErgaenzen"
 ' Skript zur Korrektur der Festo Anschlussdaten
-' V0.2
-' 03.04.2020
+' V0.3
+' 08.04.2020
 ' Christian Langrock
 ' christian.langrock@actemium.de
 ' Mohammad Safaadin Hussein
@@ -57,6 +57,7 @@ Public Sub CPXDatenErgaenzen()
                 sPerPLCtypKanaeleAdress2 = Left(Trim(sPerPLCtypKanaele.Adress), bAdressLaenge) & bLastAdressPos 'Adresse für SPSKanal 2
                 
                 rData.Add sPerPLCtypKanaele.Key, sPerPLCtypKanaele.KWSBMK, 2, sPerPLCtypKanaele.Stationsnummer, vbNullString, sPerPLCtypKanaele.Steckplatz, sPerPLCtypKanaele.Kanal + 1, sPerPLCtypKanaele.Segmentvorlage, sPerPLCtypKanaeleAdress2, 0, 0, sPerPLCtypKanaele.SPSBMK
+                rData.Item(rData.Count).SymbolischeAdresse = sPerPLCtypKanaele.SymbolischeAdresse
             End If
             
             For Each sKanaele In sortKanaele     'neu CL in allen Kanaele nach den passenden Datensätzen suchen
@@ -65,6 +66,7 @@ Public Sub CPXDatenErgaenzen()
                     'Neu Signal 5
                     If sPerPLCtypKanaele.Signal = 1 Then
                         sResult.Key = sKanaele.Key
+                        sResult.SymbolischeAdresse = sPerPLCtypKanaele.SymbolischeAdresse
                         sResult.Signal = 5
                         sResult.Steckplatz = sPerPLCtypKanaele.Steckplatz
                         sResult.Kanal = sPerPLCtypKanaele.Kanal
@@ -87,6 +89,7 @@ Public Sub CPXDatenErgaenzen()
                     'Neu Signal 6
                     If sPerPLCtypKanaele.Signal = 1 And Karten = "CPX 5/2 bistabil" Then
                         sResult.Key = sKanaele.Key
+                        sResult.SymbolischeAdresse = sPerPLCtypKanaele.SymbolischeAdresse
                         sResult.Signal = 6
                         sResult.Steckplatz = sPerPLCtypKanaele.Steckplatz
                         sResult.Kanal = sPerPLCtypKanaele.Kanal + 1
@@ -111,7 +114,5 @@ Public Sub CPXDatenErgaenzen()
     Next
     '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
     rData.writeDatsetsToExcel TabelleDaten
-    
-    'MsgBox "Daten geschrieben"
 End Sub
 
