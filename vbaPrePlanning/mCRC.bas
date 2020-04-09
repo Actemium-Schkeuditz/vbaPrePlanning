@@ -121,7 +121,6 @@ End Function
 
 Public Sub CRC_Zeile()
 
-    Dim wkb As Workbook
     Dim ws1 As Worksheet
     Dim TabelleDaten As String
     Dim zeilenanzahl As Long
@@ -146,7 +145,6 @@ Public Sub CRC_Zeile()
     
     On Error GoTo ErrorHandle
     
-    Set wkb = ActiveWorkbook
     Set ws1 = Worksheets.[_Default](TabelleDaten)
    
     Application.ScreenUpdating = False
@@ -210,7 +208,6 @@ Public Sub CRC_Zeile()
     End With
     
 BeforeExit:
-    Set wkb = Nothing
     Set ws1 = Nothing
     Exit Sub
 ErrorHandle:

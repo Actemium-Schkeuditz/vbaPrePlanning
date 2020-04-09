@@ -140,18 +140,14 @@ End Sub
 Public Function searchAnschluss(ByVal pKartentyp As String, ByVal pKanal As Integer, ByVal data As CSPSAnschluesse) As cAnschluss ' only ByVal works
     ' Suchen nach den Anschlüssen passend zum Kartentyp und zum Kanal
     Dim sData As New cAnschluss
-    Dim sKartentyp As String
     Dim rData As New cAnschluss
     Dim bResultOK As Boolean
     Set searchAnschluss = Nothing
     
     bResultOK = False
-    sKartentyp = vbNullString
     
     For Each sData In data
-         
         If sData.Kartentyp.Kartentyp = pKartentyp Then
-            sKartentyp = sData.Kartentyp.Kartentyp
             If sData.Kanal = pKanal Then
                 rData.Anschluss1 = sData.Anschluss1
                 rData.Anschluss2 = sData.Anschluss2

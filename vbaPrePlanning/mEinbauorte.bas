@@ -18,7 +18,6 @@ Public Sub EinbauorteSchreiben()
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim j As Long
-    Dim wkb As Workbook
     Dim ws1 As Worksheet
     Dim TabelleDaten As String
     Dim SpalteStationsnummer As String
@@ -40,7 +39,6 @@ Public Sub EinbauorteSchreiben()
     SpalteEinbauort = ExcelConfig.EinbauortEinzel
     spalteStationstyp = ExcelConfig.Kartentyp
     
-    Set wkb = ActiveWorkbook
     Set ws1 = Worksheets.[_Default](TabelleDaten)
     iSpalteStationstyp = SpaltenBuchstaben2Int(spalteStationstyp)
    
@@ -122,7 +120,6 @@ End Sub
 Public Function readEinbauorte(ByVal TabelleDaten As String) As cEinbauorte
     'return dataset with all installation locations per project
     Dim tablennameEinbauorte As String
-    Dim wkb As Workbook
     Dim ws1 As Worksheet
     Dim dataKWSBMK As String
     Dim spalteKWS_BMK As String
@@ -132,7 +129,6 @@ Public Function readEinbauorte(ByVal TabelleDaten As String) As cEinbauorte
     spalteKWS_BMK = ExcelConfig.KWSBMK
     tablennameEinbauorte = vbNullString
      
-    Set wkb = ActiveWorkbook
     Set ws1 = Worksheets.[_Default](TabelleDaten)
      
     ' Tabelle mit Planungsdaten auslesen

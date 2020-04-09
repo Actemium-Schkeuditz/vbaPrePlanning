@@ -154,7 +154,7 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCTyp As Stri
     Dim ws1 As Worksheet
     Dim i As Long
     
-    'On Error GoTo ErrorHandle
+    On Error GoTo ErrorHandle
 
     With ThisWorkbook
         ' alte Daten löschen

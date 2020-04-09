@@ -14,7 +14,6 @@ Option Explicit
 
 Public Sub RACK_STATIONSNUMMERN()
 
-    Dim wkb As Workbook
     Dim ws1 As Worksheet
     Dim TabelleDaten As String
     Dim zeilenanzahl As Long
@@ -28,8 +27,6 @@ Public Sub RACK_STATIONSNUMMERN()
       
     ' Tabellen definieren
     TabelleDaten = ExcelConfig.TabelleDaten
-   
-    Set wkb = ActiveWorkbook
     Set ws1 = Worksheets.[_Default](TabelleDaten)
    
     Application.ScreenUpdating = False

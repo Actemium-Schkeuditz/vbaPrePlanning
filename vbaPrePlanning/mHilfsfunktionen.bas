@@ -112,7 +112,7 @@ End Function
 Public Sub CopySheetFromClosedWB(ByRef sSheetname As String)
     Application.ScreenUpdating = False
  
-    Set closedBook = Workbooks.Open("D:\Dropbox\excel\articles\example.xlsm")
+    Set closedBook = Workbooks.Open("D:\Dropbox\excel\articles\" & sSheetname)
     closedBook.Sheets("Sheet1").Copy Before:=ThisWorkbook.Sheets.[_Default](1)
     closedBook.Close SaveChanges:=False
  
@@ -125,7 +125,6 @@ Public Sub CopySheetToClosedWB(ByVal sNewFileName As String, ByRef sSheetname As
     Dim sFolderFile As String
     'Dim sfolder As String
     Dim sConfigFolder As String
-    Dim wbnew As Workbook
     Dim closedBook As Workbook
 
     sConfigFolder = "config"
