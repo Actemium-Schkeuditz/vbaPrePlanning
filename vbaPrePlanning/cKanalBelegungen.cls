@@ -1516,11 +1516,17 @@ Public Function correctFestoMPA(ByRef MPAconfig As cFestoMPA) As cKanalBelegunge
                     iSubSlot = iSubSlot + 1
                     MPAconfig.KanalMPA = MPAconfig.KanalMPA + 1
                     sData.Anschluss1 = 2
+                    If Right(sData.Segmentvorlage, 1) = "0" Then
+                        sData.Segmentvorlage = Replace(sData.Segmentvorlage, "KANAL_0", "KANAL_1")
+                    End If
                 Else                             ' Spule 14  gerade Adressen
                     iSubSlot = 0
                     MPAconfig.KanalMPA = MPAconfig.KanalMPA + 1
                     MPAconfig.SteckplatzMPA = MPAconfig.SteckplatzMPA + 1
                     sData.Anschluss1 = 4
+                    If Right(sData.Segmentvorlage, 1) = "1" Then
+                        sData.Segmentvorlage = Replace(sData.Segmentvorlage, "KANAL_1", "KANAL_0")
+                    End If
                 End If
             Else
                 MsgBox "Fehler in den Daten, Kartentyp: " & sData.Kartentyp.Kartentyp
