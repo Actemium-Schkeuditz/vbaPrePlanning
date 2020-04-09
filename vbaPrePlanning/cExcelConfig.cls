@@ -26,6 +26,7 @@ Private pAnlage As String
 Private pSympolischeAdresse As String
 Private pArtikel As String
 Private pArtikelKWS As String
+Private pB_Art_nr As String
 Private pSegmentdefinition As String
 Private pStationsnummerKWS As String
 Private pSegmentvorlage As String
@@ -59,6 +60,7 @@ Private Sub Class_Initialize()
     pKWSBMK = "B"
     pAnlage = "C"
     pArtikelKWS = "F"
+    pB_Art_nr = "G"
     pStationsnummerKWS = "BC"
     pEingangsAdress = "BD"
     pAusgangsAdress = "BE"
@@ -120,6 +122,13 @@ End Property
 ''''''''''''''''''''''
 Public Property Get ArtikelKWS() As String
     ArtikelKWS = pArtikelKWS
+End Property
+
+''''''''''''''''''''''
+' B_Art_nr
+''''''''''''''''''''''
+Public Property Get B_Art_nr() As String
+    B_Art_nr = pB_Art_nr
 End Property
 
 ''''''''''''''''''''''

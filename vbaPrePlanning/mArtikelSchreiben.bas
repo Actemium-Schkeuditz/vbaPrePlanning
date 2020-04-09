@@ -45,7 +45,8 @@ Public Sub ArtikelBearbeiten()
                 'Prüfen ob am Ende ein Punkt ist
                 If Right$(.Cells.Item(i, ExcelConfig.ArtikelKWS), 1) <> "." Then
                     .Cells.Item(i, ExcelConfig.Artikel) = .Cells.Item(i, ExcelConfig.ArtikelKWS)
-    
+                ElseIf .Cells.Item(i, ExcelConfig.B_Art_nr) <> vbNullString Then
+                    .Cells.Item(i, ExcelConfig.Artikel) = .Cells.Item(i, ExcelConfig.ArtikelKWS) & .Cells.Item(i, ExcelConfig.B_Art_nr)
                 End If
             End If
             ' Artikel die nicht gewollt sind entfernen
@@ -57,6 +58,7 @@ Public Sub ArtikelBearbeiten()
     
             ' ersetzen von falschen Ausdrücken
             .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Baumer", "BAU")
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Festo", "FES")
             .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "ifm", "IFM")
             .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Rechner Sensors", "RECH")
             .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "MARTENS", "MAR")
@@ -64,6 +66,7 @@ Public Sub ArtikelBearbeiten()
             .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Schmersal", "SCHM")
             .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "IFM.IS 5001", "IFM.IS5001")
             .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "RECH.KA 0655", "RECH.KA0655")
+            .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Vega.VEGAMIP R61 MPR61.DKAGA1TAMX", "VEGA.MPR61.******T***")
     
         
         Next i
