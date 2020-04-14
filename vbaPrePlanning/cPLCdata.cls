@@ -687,7 +687,7 @@ Public Property Let Kartentyp(ByVal Value As String)
     Case "TBEN-S IO"                                'Turck
         pPLCtyp = "Turck TBEN-S"
         pSortingIdentifier = 200
-        pMaxChannelPerSlot = 1
+        pMaxChannelPerSlot = 31
         ' Adress
         pDatatyp = "Byte"
         pSignalDirection = "InOut"
@@ -778,6 +778,23 @@ Public Property Let Kartentyp(ByVal Value As String)
         pSignalDirection = "InOut"
         pInputAdressLength = 8
         pOutputAdressLength = 8
+        pInputMinLength = 0
+        pInputMaxLength = 0
+        pOutputMinLength = 0
+        pOutputMaxLength = 0
+        pInputAdressDiagnosticLength = 0
+        pOutputAdressDiagnosticLength = 0
+        pVariableAdressRange = False
+        pSameAdressRangeForOutput = True
+    Case "WATSON MARLOW QDOS"                            'WATSON MARLOW QDOS
+        pPLCtyp = "Profibus"
+        pSortingIdentifier = 300
+        pMaxChannelPerSlot = 0
+        ' Adress
+        pDatatyp = "Byte"
+        pSignalDirection = "InOut"
+        pInputAdressLength = 28
+        pOutputAdressLength = 6
         pInputMinLength = 0
         pInputMaxLength = 0
         pOutputMinLength = 0
