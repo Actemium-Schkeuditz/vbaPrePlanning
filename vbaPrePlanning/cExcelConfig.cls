@@ -49,6 +49,7 @@ Private pSPSRackBMKSignal_1 As String
 Private pSPSBMK As String
 Private pSteckplatz As String
 Private pKanal As String
+Private pPLCtyp As String
 Private pKartentyp As String
 
 
@@ -82,6 +83,7 @@ Private Sub Class_Initialize()
   
     pStationsnummerSignal_1 = "BY"
     pSPSRackBMKSignal_1 = "BZ"
+    pPLCtyp = "CA"
     pKartentyp = "CB"
     pSPSBMK = "CC"
     pSteckplatz = "CD"
@@ -290,4 +292,9 @@ Public Property Get Kartentyp() As String
 End Property
 
 ''''''''''''''''''''''
+'PLCtyp property
+''''''''''''''''''''''
+Public Property Get PLCtyp() As String
+    PLCtyp = pPLCtyp
+End Property
 

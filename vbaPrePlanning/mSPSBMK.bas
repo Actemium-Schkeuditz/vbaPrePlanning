@@ -1,9 +1,9 @@
 Attribute VB_Name = "mSPSBMK"
 ' Skript zur Ermittlung der SPS BMK´s
 ' Die Daten werden Kanalweise zugeordnet
-' V0.5
+' V0.6
 ' getestet
-' 03.04.2020
+' 15.04.2020
 ' überflüssige Leerzeichen entfernt
 '
 
@@ -21,6 +21,9 @@ Public Sub SPS_BMK()
     Dim i As Long
     Dim y As Long
     Dim spalteSPSKartentyp As Long
+    Dim spaltePLCtyp As Long
+    
+    Dim sPLCtyp As String
     Dim spalteSPSBMK As Long
     Dim spalteSPSSteckplatz As Long
     Dim ExcelConfig As New cExcelConfig
@@ -46,13 +49,13 @@ Public Sub SPS_BMK()
             spalteSPSKartentyp = SpaltenBuchstaben2Int(ExcelConfig.Kartentyp) + 14 * (y - 1)
             spalteSPSBMK = SpaltenBuchstaben2Int(ExcelConfig.SPSBMK) + 14 * (y - 1)
             spalteSPSSteckplatz = SpaltenBuchstaben2Int(ExcelConfig.Steckplatz) + 14 * (y - 1)
-          
+            spaltePLCtyp = SpaltenBuchstaben2Int(ExcelConfig.PLCtyp) + 14 * (y - 1)
             ' Daten schreiben
             For i = 3 To zeilenanzahl
                 ' Prüfen auf SPS-Typ
-                ' ET200SP
-                If Left$(.Cells.Item(i, spalteSPSKartentyp), 7) = "ET200SP" Then
-                    '  MsgBox "Treffer" + Str(i)
+
+                sPLCtyp = .Cells.Item(i, spaltePLCtyp)
+                 If sPLCtyp = "ET200SP" Then
                     ' erzeuge SPS-BMK wenn Steckplatz beschrieben
                     If .Cells.Item(i, spalteSPSSteckplatz) <> vbNullString Then
                         .Cells.Item(i, spalteSPSBMK) = Trim(str(.Cells.Item(i, spalteSPSSteckplatz) + 3)) + "K5"
@@ -61,7 +64,7 @@ Public Sub SPS_BMK()
                         .Cells.Item(i, spalteSPSSteckplatz).Interior.ColorIndex = 3
                     End If
                     ' ET200AL
-                ElseIf Left$(.Cells.Item(i, spalteSPSKartentyp), 7) = "ET200AL" Then
+                ElseIf sPLCtyp = "ET200AL" Then
                     'MsgBox "Treffer" + str(i) + "nicht fertig programmiert"
                     If .Cells.Item(i, spalteSPSSteckplatz) <> vbNullString Then
                         'MsgBox "ET200AL" + str(i) + "nicht fertig programmiert, BMK prüfen"
@@ -71,21 +74,18 @@ Public Sub SPS_BMK()
                         .Cells.Item(i, spalteSPSSteckplatz).Interior.ColorIndex = 3
                     End If
                     ' CPX-  elektrisch
-                ElseIf Left$(.Cells.Item(i, spalteSPSKartentyp), 4) = "CPX-" Then
+                ElseIf sPLCtyp = "FESTO CPX" Then
                     'MsgBox "CPX " + Str(i) + "nicht fertig programmiert"
                     If .Cells.Item(i, spalteSPSSteckplatz) <> vbNullString Then
-                        ' MsgBox "CPX" + Str(i) + "nicht fertig programmiert, BMK prüfen"
                         .Cells.Item(i, spalteSPSBMK) = Trim(str(.Cells.Item(i, spalteSPSSteckplatz) + 3)) + "KF2"
                     Else
                         ' makiere fehlende Steckplatz Daten
                         .Cells.Item(i, spalteSPSSteckplatz).Interior.ColorIndex = 3
                     End If
                     ' IFM IO-LINK
-                ElseIf .Cells.Item(i, spalteSPSKartentyp) = "IFM IO-LINK" Then
-                    'MsgBox "IFM IO-LINK " + Str(i) + "nicht fertig programmiert"
+                ElseIf sPLCtyp = "IFM IO-LINK" Then
                     If .Cells.Item(i, spalteSPSSteckplatz) <> vbNullString Then
-                        ' MsgBox "CPX " + Str(i) + "nicht fertig programmiert, BMK prüfen"
-                        .Cells.Item(i, spalteSPSBMK) = "1KF5" ' + Str(Cells(i, spalteSPSSteckplatz))
+                        .Cells.Item(i, spalteSPSBMK) = "1KF5"
                     Else
                         ' makiere fehlende Steckplatz Daten
                         .Cells.Item(i, spalteSPSSteckplatz).Interior.ColorIndex = 3
@@ -93,7 +93,6 @@ Public Sub SPS_BMK()
                 End If
             Next i
         Next y
-
     End With
 End Sub
 

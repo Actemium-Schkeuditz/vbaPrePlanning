@@ -37,7 +37,7 @@ Public Sub SPS_KartenAnschluss()
         
         Set dataResult = Nothing
         Set dataResult = dataAnschluesse.searchAnschluss(sData.Kartentyp.Kartentyp, sData.Kanal, dataAnschluesse)
-        If Not sData.Kartentyp.PLCTyp = "FESTO MPA" Then
+        If Not sData.Kartentyp.PLCtyp = "FESTO MPA" Then
             sData.Anschluss1 = dataResult.Anschluss1
             sData.Anschluss2 = dataResult.Anschluss2
             sData.Anschluss3 = dataResult.Anschluss3

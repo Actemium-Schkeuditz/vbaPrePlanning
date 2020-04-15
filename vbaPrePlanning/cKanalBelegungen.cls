@@ -580,7 +580,7 @@ Public Function searchDatasetPlcTyp(ByVal pPLCtyp As String) As cKanalBelegungen
     Dim rData As New cKanalBelegungen
    
     For Each sData In Me
-        If sData.Kartentyp.PLCTyp = pPLCtyp Then
+        If sData.Kartentyp.PLCtyp = pPLCtyp Then
             rData.AddDataSet sData
         End If
     Next
@@ -599,7 +599,7 @@ Public Function excludeDatasetPlcTyp(ByVal pPLCtyp As String) As cKanalBelegunge
     Dim rData As New cKanalBelegungen
    
     For Each sData In Me
-        If sData.Kartentyp.PLCTyp <> pPLCtyp Then
+        If sData.Kartentyp.PLCtyp <> pPLCtyp Then
             rData.AddDataSet sData
         End If
     Next
@@ -857,7 +857,7 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
         
         For Each sData In Me
             sData.Kanal = iKanal
-            If sData.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then
+            If sData.Kartentyp.PLCtyp = "IFM IO-LINK MASTER" Then
                 If iKanal = 0 Then
                     rData.Add "DIAG_IFM", "DIAGNOSE", 0, sData.Stationsnummer, "AL140x_DIAG", 0, 0
                 End If
@@ -888,11 +888,12 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
         Loop
     End If
     ' hier die Reserven und Diagnosen anfügen
-    If dataPLCConfig.Item(i).Kartentyp.PLCTyp = "Turck TBEN-S" Then
+   ' If dataPLCConfig.Item(i).Kartentyp.PLCTyp = "Turck TBEN-S" Then
+    If pKartentyp = "TBEN-S-RFID" Then
         rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "TBEN-S-DIAG", iSteckplatz + OffsetSlot, iKanal
     End If
     
-    If dataPLCConfig.Item(i).Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then
+    If dataPLCConfig.Item(i).Kartentyp.PLCtyp = "IFM IO-LINK MASTER" Then
         Do While dataPLCConfig.Item(i).Kartentyp.MaxChannelPerSlot > rData.Count - 2
             rData.Add "IFM_RESERVE", "IFM_RESERVE", 0, dataPLCConfig.Item(i).Stationsnummer, "AL140x_RES", iSteckplatz, iKanal, vbNullString, vbNullString, 0, 0, vbNullString, vbNullString, vbNullString, iKanal + 1
             iKanal = iKanal + 1
@@ -903,9 +904,9 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
         If iKanal > 0 Then
             iSteckplatz = iSteckplatz + 1
         End If
-        If dataPLCConfig.Item(i).Kartentyp.PLCTyp = "ET200SP" Then
+        If dataPLCConfig.Item(i).Kartentyp.PLCtyp = "ET200SP" Then
             rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "ET200SP RESERVE", iSteckplatz + OffsetSlot, 0
-        ElseIf dataPLCConfig.Item(i).Kartentyp.PLCTyp = "FESTO MPA" Then
+        ElseIf dataPLCConfig.Item(i).Kartentyp.PLCtyp = "FESTO MPA" Then
             rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "CPX RESERVE", iSteckplatz + OffsetSlot, 0
         End If
         iReserveAfterPLCTyp = iReserveAfterPLCTyp - 1
@@ -1084,6 +1085,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
     Dim sData As New cBelegung
     Dim sDataFesto As New cBelegung
     Dim sDataFestoSearch As New cBelegung
+    Dim sDataTurck As New cBelegung
     Dim sdataVari As New cBelegung
     Dim SlotData As New cKanalBelegungen
     Dim rData As New cKanalBelegungen
@@ -1171,7 +1173,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                 iAdressVariInput = iInputStartAdress
                 iAdressVariOutput = iOutputStartAdress
             ElseIf pKartentyp = "AL1400" Or pKartentyp = "AL1402" Then 'Berechnung pro Kanal und dann zusammen zählen
-               iSubSlot = 0
+                iSubSlot = 0
                 iAdressVariInput = iInputStartAdress
                 iAdressVariOutput = iOutputStartAdress
                 For Each sdataVari In SlotData
@@ -1184,34 +1186,34 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                         iAdressVariInput = iAdressVariInput + sdataVari.Kartentyp.InputAdressLength + sdataVari.Kartentyp.InputAdressDiagnosticLength
                         iAdressVariOutput = iAdressVariOutput + sdataVari.Kartentyp.OutputAdressLength + sdataVari.Kartentyp.OutputAdressDiagnosticLength
                     Else
-                    iAdressLegthInput = sdataVari.InputAdressSize - 1
-                    iAdressLegthOutput = sdataVari.OutputAdressSize - 1
-                    'KWS gibt alle Adresslängen mit Diagnose (+1 Byte) an, Hier bei IFM muss di eDiagnose abgezogen werden, nicht bei ET200SP IO-LINK
-                    If iAdressLegthInput = 1 And iAdressLegthOutput <= 1 Then
-                        iAdressVariInput = iAdressVariInput + 2
-                        iAdressVariOutput = iAdressVariOutput + 1
-                    ElseIf iAdressLegthInput <= 1 And iAdressLegthOutput = 1 Then 'beide null ist Fehler
-                        iAdressVariInput = iAdressVariInput + 2
-                        iAdressVariOutput = iAdressVariOutput + 1
-                    ElseIf iAdressLegthInput <= 2 And iAdressLegthOutput <= 2 Then
-                        sdataVari.OutputAdress = "AB" & iAdressVariOutput
-                        iAdressVariInput = iAdressVariInput + 3
-                        iAdressVariOutput = iAdressVariOutput + 2
-                    ElseIf iAdressLegthInput <= 4 And iAdressLegthOutput <= 4 Then
-                        iAdressVariInput = iAdressVariInput + 5
-                        iAdressVariOutput = iAdressVariOutput + 4
-                    ElseIf iAdressLegthInput <= 8 And iAdressLegthOutput <= 8 Then
-                        iAdressVariInput = iAdressVariInput + 9
-                        iAdressVariOutput = iAdressVariOutput + 8
-                    ElseIf iAdressLegthInput <= 16 And iAdressLegthOutput <= 16 Then
-                        iAdressVariInput = iAdressVariInput + 17
-                        iAdressVariOutput = iAdressVariOutput + 16
-                    ElseIf iAdressLegthInput <= 32 And iAdressLegthOutput <= 32 Then
-                        iAdressVariInput = iAdressVariInput + 33
-                        iAdressVariOutput = iAdressVariOutput + 32
-                    Else
-                        MsgBox "Fehler in der Adresslänge von: " & sData.KWSBMK
-                    End If
+                        iAdressLegthInput = sdataVari.InputAdressSize - 1
+                        iAdressLegthOutput = sdataVari.OutputAdressSize - 1
+                        'KWS gibt alle Adresslängen mit Diagnose (+1 Byte) an, Hier bei IFM muss di eDiagnose abgezogen werden, nicht bei ET200SP IO-LINK
+                        If iAdressLegthInput = 1 And iAdressLegthOutput <= 1 Then
+                            iAdressVariInput = iAdressVariInput + 2
+                            iAdressVariOutput = iAdressVariOutput + 1
+                        ElseIf iAdressLegthInput <= 1 And iAdressLegthOutput = 1 Then 'beide null ist Fehler
+                            iAdressVariInput = iAdressVariInput + 2
+                            iAdressVariOutput = iAdressVariOutput + 1
+                        ElseIf iAdressLegthInput <= 2 And iAdressLegthOutput <= 2 Then
+                            sdataVari.OutputAdress = "AB" & iAdressVariOutput
+                            iAdressVariInput = iAdressVariInput + 3
+                            iAdressVariOutput = iAdressVariOutput + 2
+                        ElseIf iAdressLegthInput <= 4 And iAdressLegthOutput <= 4 Then
+                            iAdressVariInput = iAdressVariInput + 5
+                            iAdressVariOutput = iAdressVariOutput + 4
+                        ElseIf iAdressLegthInput <= 8 And iAdressLegthOutput <= 8 Then
+                            iAdressVariInput = iAdressVariInput + 9
+                            iAdressVariOutput = iAdressVariOutput + 8
+                        ElseIf iAdressLegthInput <= 16 And iAdressLegthOutput <= 16 Then
+                            iAdressVariInput = iAdressVariInput + 17
+                            iAdressVariOutput = iAdressVariOutput + 16
+                        ElseIf iAdressLegthInput <= 32 And iAdressLegthOutput <= 32 Then
+                            iAdressVariInput = iAdressVariInput + 33
+                            iAdressVariOutput = iAdressVariOutput + 32
+                        Else
+                            MsgBox "Fehler in der Adresslänge von: " & sData.KWSBMK
+                        End If
                     End If
                     sdataVari.SubSlot = iSubSlot
                     iSubSlot = iSubSlot + 1
@@ -1226,7 +1228,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
             End If
         Next i
         
-    ElseIf Me.Item(1).Kartentyp.PLCTyp = "FESTO MPA" Then
+    ElseIf Me.Item(1).Kartentyp.PLCtyp = "FESTO MPA" Then
         ' hier alles abhandeln was die Festo Ventilinsel betrifft
         'suchen der Datensätze mit den Grundmodulen
         For Each sDataFesto In Me
@@ -1304,7 +1306,19 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                 rData.Addobj sDataFestoSearch
             End If
         Next
-           
+    ElseIf Me.Item(1).Kartentyp.PLCtyp = "Turck TBEN-S" Then
+        ' hier alles für TURCK RFID
+        For Each sDataTurck In Me
+            sDataTurck.InputAdressPerSlot = iInputStartAdress
+            sDataTurck.OutputAdressPerSlot = iOutputStartAdress
+            If sDataTurck.Kartentyp.Kartentyp <> "TBEN-S IO" Then
+                iInputStartAdress = iInputStartAdress + sDataTurck.Kartentyp.InputAdressLength + sDataTurck.Kartentyp.InputAdressDiagnosticLength
+                iOutputStartAdress = iOutputStartAdress + sDataTurck.Kartentyp.OutputAdressLength + sDataTurck.Kartentyp.OutputAdressDiagnosticLength
+            Else
+                sDataTurck.Adress = ""
+            End If
+            rData.Addobj sDataTurck
+        Next
            
     Else
         ' hier die anderen Karten
@@ -1483,7 +1497,7 @@ Public Function correctFestoMPA(ByRef MPAconfig As cFestoMPA) As cKanalBelegunge
     iSubSlot = 0
     
     For Each sData In cData
-        If sData.Kartentyp.PLCTyp = "FESTO MPA" Then
+        If sData.Kartentyp.PLCtyp = "FESTO MPA" Then
             ' firstrun
             If MPAconfig.KanalMPA = 1 And iSubSlot = 0 Then
                 MPAconfig.AnschlussplatteMPA = 1

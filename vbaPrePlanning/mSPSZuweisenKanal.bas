@@ -16,7 +16,7 @@ Public Sub SPSZuweisenKanal()
 
     Dim TabelleDaten As String
     Dim OffsetSlot As Integer
-    Dim PLCTyp As String
+    Dim PLCtyp As String
     Dim PLCTypOld As String
 
     '####### zuweisen der Kanäle #######
@@ -74,12 +74,12 @@ Public Sub SPSZuweisenKanal()
         Set dataResultAdress = Nothing
         Set dataPLCConfigStation = dataPLCConfig.returnDatasetPerStation(pStation)
         '### PLC Typ ermitteln
-        PLCTyp = dataSearchStation.Item(1).Kartentyp.PLCTyp
+        PLCtyp = dataSearchStation.Item(1).Kartentyp.PLCtyp
         ' Erkennen von Stationswechseln und dann aufrunden der Adressen
-        If PLCTyp <> PLCTypOld And Not PLCTypOld = vbNullString Then
+        If PLCtyp <> PLCTypOld And Not PLCTypOld = vbNullString Then
             RoundUpPLCaddresses iInputStartAdress, iOutputStartAdress
         End If
-        PLCTypOld = PLCTyp
+        PLCTypOld = PLCtyp
     
         '### Sortieren nach Stationsnummer, Sortierkennung der Karte und KWS-BMK ####
         Set dataSort = dataSearchStation.Sort
@@ -92,7 +92,7 @@ Public Sub SPSZuweisenKanal()
             Set dataConfigPerPLCTyp = dataPLCConfigStation.returnDatasetPerSlottyp(pStation, pKartentyp)
             Set dataSearchPlcTyp = dataSort.searchDatasetPlcModules(pKartentyp)
             Set dataResult = dataSearchPlcTyp.zuweisenKanal(OffsetSlot, pKartentyp, dataConfigPerPLCTyp)
-            PLCTyp = dataResult.Item(1).Kartentyp.PLCTyp
+            PLCtyp = dataResult.Item(1).Kartentyp.PLCtyp
             OffsetSlot = dataResult.returnLastSlotNumber
             ' Korrektur FESTO Ventilinsel
             Set dataResult = dataResult.correctFestoMPA(dataMPAconfig)
@@ -110,7 +110,7 @@ Public Sub SPSZuweisenKanal()
             dataResultAdress.writeDatsetsToExcel TabelleDaten
         Next
         '### schreiben der Config Daten in eigenens Excel Sheet
-        dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation, PLCTyp
+        dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation, PLCtyp
     Next
     
     '##### Anschlüsse zuordnen #####

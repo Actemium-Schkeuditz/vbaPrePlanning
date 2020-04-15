@@ -149,7 +149,7 @@ Public Function Sort() As cPLCconfig
     Set Sort = ppl
 End Function
 
-Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCTyp As String)
+Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCtyp As String)
     Dim wdata As New cPLCconfigData
     Dim ws1 As Worksheet
     Dim i As Long
@@ -176,13 +176,13 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCTyp As Stri
         ' Daten einschreiben
         Set ws1 = ThisWorkbook.Sheets(tablename)
         With ws1
-            If PLCTyp = "ET200SP" Then
+            If PLCtyp = "ET200SP" Then
                 .Tab.ColorIndex = 28
-            ElseIf PLCTyp = "FESTO CPX" Or PLCTyp = "FESTO MPA" Then
+            ElseIf PLCtyp = "FESTO CPX" Or PLCtyp = "FESTO MPA" Then
                 .Tab.ColorIndex = 32
-            ElseIf PLCTyp = "IFM IO-LINK MASTER" Then
+            ElseIf PLCtyp = "IFM IO-LINK MASTER" Then
                 .Tab.ColorIndex = 46
-            ElseIf PLCTyp = "FU" Then
+            ElseIf PLCtyp = "FU" Then
                 .Tab.ColorIndex = 50
             Else
                 .Tab.ColorIndex = 17
@@ -198,9 +198,9 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCTyp As Stri
             
             If Not (Me Is Nothing) Then
                 If Me.Count > 0 Then
-                    If Me.Item(1).Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Or Me.Item(1).Kartentyp.PLCTyp = "FU" Or Me.Item(1).Kartentyp.PLCTyp = "Profibus" Then
+                    If Me.Item(1).Kartentyp.PLCtyp = "IFM IO-LINK MASTER" Or Me.Item(1).Kartentyp.PLCtyp = "FU" Or Me.Item(1).Kartentyp.PLCtyp = "Profibus" Then
                         .Cells(1, 7) = "KWS BMK"
-                    ElseIf Me.Item(1).Kartentyp.PLCTyp = "FESTO MPA" Or Me.Item(1).Kartentyp.PLCTyp = "FESTO CPX" Then
+                    ElseIf Me.Item(1).Kartentyp.PLCtyp = "FESTO MPA" Or Me.Item(1).Kartentyp.PLCtyp = "FESTO CPX" Then
                         .Cells(1, 7) = "freie Kanäle"
                         .Cells(1, 8) = "KWS BMK"
                     Else
@@ -208,23 +208,29 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCTyp As Stri
                     End If
                     i = 2
                     For Each wdata In Me
-                        .Cells(i, 1) = wdata.Stationsnummer
-                        .Cells(i, 2) = wdata.Steckplatz
-                        .Cells(i, 3) = wdata.SubSlot
-                        .Cells(i, 4) = wdata.Kartentyp.Kartentyp
-                        If wdata.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then 'And wdata.SubSlot > 0 Then
-                            .Cells(i, 5) = wdata.InputAdress
-                            .Cells(i, 6) = wdata.OutputAdress
-                        Else
-                            .Cells(i, 5) = wdata.FirstInputAdress
-                            .Cells(i, 6) = wdata.FirstOutputAdress
-                        End If
-                        If wdata.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Or wdata.Kartentyp.PLCTyp = "FU" Or wdata.Kartentyp.PLCTyp = "Profibus" Then
-                            .Cells(i, 7) = wdata.KWSBMK
-                        ElseIf wdata.Kartentyp.PLCTyp = "FESTO MPA" Then
-                            .Cells(i, 8) = wdata.KWSBMK
-                        Else
-                            .Cells(i, 7) = wdata.Kartentyp.MaxChannelPerSlot - wdata.UsedChannels
+                        If wdata.Kartentyp.Kartentyp <> "TBEN-S IO" Then
+                            .Cells(i, 1) = wdata.Stationsnummer
+                            .Cells(i, 2) = wdata.Steckplatz
+                            .Cells(i, 3) = wdata.SubSlot
+                            .Cells(i, 4) = wdata.Kartentyp.Kartentyp
+                            If wdata.Kartentyp.PLCtyp = "IFM IO-LINK MASTER" Then
+                                .Cells(i, 5) = wdata.InputAdress
+                                .Cells(i, 6) = wdata.OutputAdress
+                            Else
+                                If wdata.Kartentyp.InputAdressLength > 0 Or wdata.Kartentyp.InputAdressDiagnosticLength > 0 Then
+                                    .Cells(i, 5) = wdata.FirstInputAdress
+                                    End If
+                                If wdata.Kartentyp.OutputAdressLength > 0 Or wdata.Kartentyp.OutputAdressDiagnosticLength > 0 Then
+                                    .Cells(i, 6) = wdata.FirstOutputAdress
+                                End If
+                            End If
+                            If wdata.Kartentyp.PLCtyp = "IFM IO-LINK MASTER" Or wdata.Kartentyp.PLCtyp = "FU" Or wdata.Kartentyp.PLCtyp = "Profibus" Then
+                                .Cells(i, 7) = wdata.KWSBMK
+                            ElseIf wdata.Kartentyp.PLCtyp = "FESTO MPA" Then
+                                .Cells(i, 8) = wdata.KWSBMK
+                            Else
+                                .Cells(i, 7) = wdata.Kartentyp.MaxChannelPerSlot - wdata.UsedChannels
+                            End If
                         End If
                         i = i + 1
                     Next
@@ -358,10 +364,10 @@ Public Function ConfigPLCToDataset(ByRef Stationdata As cKanalBelegungen) As cPL
     For Each pStation In iStation
         ' suchen der Datensätze pro Station
         Set dataSearchStation = Stationdata.searchDatasetPerStation(pStation)
-        If dataSearchStation.Item(1).Kartentyp.PLCTyp = "FESTO MPA" Or dataSearchStation.Item(1).Kartentyp.PLCTyp = "IFM IO-LINK MASTER" Then
+        If dataSearchStation.Item(1).Kartentyp.PLCtyp = "FESTO MPA" Or dataSearchStation.Item(1).Kartentyp.PLCtyp = "IFM IO-LINK MASTER" Then
             Set dataSearchConfig = dataSearchStation
         ElseIf dataSearchStation.Count > 1 Then
-            If dataSearchStation.Item(2).Kartentyp.PLCTyp = "FESTO MPA" Then
+            If dataSearchStation.Item(2).Kartentyp.PLCtyp = "FESTO MPA" Then
                 Set dataSearchConfig = dataSearchStation
             Else
                 Set dataSearchConfig = dataSearchStation.returnAllSlotsPerRack
@@ -373,7 +379,7 @@ Public Function ConfigPLCToDataset(ByRef Stationdata As cKanalBelegungen) As cPL
         ' Übertragen der Daten
         For Each sData In dataSearchConfig
             iLastUsedChannel = -1
-            If sData.Kartentyp.PLCTyp = "FESTO MPA" Or (sData.Kartentyp.PLCTyp = "IFM IO-LINK MASTER" And sData.Kanal <> 0) Then
+            If sData.Kartentyp.PLCtyp = "FESTO MPA" Or (sData.Kartentyp.PLCtyp = "IFM IO-LINK MASTER" And sData.Kanal <> 0) Then
                 iLastUsedChannel = 0
             Else
                 For Each sDataKanal In Stationdata

@@ -686,7 +686,7 @@ Public Property Let Kartentyp(ByVal Value As String)
         pSameAdressRangeForOutput = False
     Case "TBEN-S IO"                                'Turck
         pPLCtyp = "Turck TBEN-S"
-        pSortingIdentifier = 200
+        pSortingIdentifier = 1000
         pMaxChannelPerSlot = 31
         ' Adress
         pDatatyp = "Byte"
@@ -834,8 +834,8 @@ End Property
 ''''''''''''''''''''''
 ' SPS-Typ
 ''''''''''''''''''''''
-Public Property Get PLCTyp() As String
-    PLCTyp = pPLCtyp
+Public Property Get PLCtyp() As String
+    PLCtyp = pPLCtyp
 End Property
 
 ''''''''''''''''''''''
