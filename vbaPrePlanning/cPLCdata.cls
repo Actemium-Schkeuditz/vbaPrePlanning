@@ -317,13 +317,13 @@ Public Property Let Kartentyp(ByVal Value As String)
         ' Adress
         pDatatyp = "Byte"
         pSignalDirection = "Output"
-        pInputAdressLength = 4
+        pInputAdressLength = 0
         pOutputAdressLength = 2
         pInputMinLength = 4
         pInputMaxLength = 4
         pOutputMinLength = 2
         pOutputMaxLength = 2
-        pInputAdressDiagnosticLength = 0
+        pInputAdressDiagnosticLength = 4
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
@@ -334,13 +334,13 @@ Public Property Let Kartentyp(ByVal Value As String)
         ' Adress
         pDatatyp = "Byte"
         pSignalDirection = "Output"
-        pInputAdressLength = 4
+        pInputAdressLength = 0
         pOutputAdressLength = 2
         pInputMinLength = 4
         pInputMaxLength = 4
         pOutputMinLength = 2
         pOutputMaxLength = 2
-        pInputAdressDiagnosticLength = 0
+        pInputAdressDiagnosticLength = 4
         pOutputAdressDiagnosticLength = 0
         pVariableAdressRange = False
         pSameAdressRangeForOutput = False
