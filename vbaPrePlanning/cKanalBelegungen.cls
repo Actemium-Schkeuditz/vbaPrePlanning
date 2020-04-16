@@ -849,8 +849,8 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
                 iKanal = iKanal + 1
             Else
                 iKanal = 0
-                rData.Add "LEER1", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
                 iSteckplatz = iSteckplatz + 1
+               ' rData.Add "LEER1", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
             End If
             iReserveChannelsBefor = iReserveChannelsBefor - 1
         Loop
