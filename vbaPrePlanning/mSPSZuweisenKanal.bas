@@ -18,6 +18,7 @@ Public Sub SPSZuweisenKanal()
     Dim OffsetSlot As Integer
     Dim PLCtyp As String
     Dim PLCTypOld As String
+    Dim iStationOld As Long
 
     '####### zuweisen der Kanäle #######
     Dim pStation As Variant
@@ -51,6 +52,7 @@ Public Sub SPSZuweisenKanal()
     'Startwerte setzen
     dataMPAconfig.reset
     PLCTypOld = vbNullString
+    iStationOld = 0
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
     dataKanaele.ReadExcelDataChanelToCollection TabelleDaten, dataKanaele
         
@@ -76,7 +78,7 @@ Public Sub SPSZuweisenKanal()
         '### PLC Typ ermitteln
         PLCtyp = dataSearchStation.Item(1).Kartentyp.PLCtyp
         ' Erkennen von Stationswechseln und dann aufrunden der Adressen
-        If PLCtyp <> PLCTypOld And Not PLCTypOld = vbNullString Then
+        If PLCtyp <> PLCTypOld And Not PLCTypOld = vbNullString Or (PLCtyp = "ET200SP" And iStationOld > 0 And pStation <> iStationOld) Then
             RoundUpPLCaddresses iInputStartAdress, iOutputStartAdress
         End If
         PLCTypOld = PLCtyp
@@ -111,6 +113,8 @@ Public Sub SPSZuweisenKanal()
         Next
         '### schreiben der Config Daten in eigenens Excel Sheet
         dataPLCConfigResultOutput.writePLCConfigToExcel "Station_" & pStation, PLCtyp
+        '# Stationsnummer sichern
+        iStationOld = pStation
     Next
     
     '##### Anschlüsse zuordnen #####
