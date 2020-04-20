@@ -247,6 +247,61 @@ ErrorHandle:
     Resume BeforeExit
 End Sub
 
+Public Sub writePLCOverviewToExcel(ByVal tablename As String)
+    Dim wdata As New cPLCconfigData
+    Dim ws1 As Worksheet
+    Dim i As Long
+    
+    On Error GoTo ErrorHandle
+
+    With ThisWorkbook
+        ' alte Daten löschen
+        Application.ScreenUpdating = False
+        If WorksheetExist((tablename), ws1) = True Then
+            Application.DisplayAlerts = False
+            ' löschen deaktiviert
+            .Sheets.[_Default](tablename).Delete
+            Application.DisplayAlerts = True
+            'Worksheets anlegen
+            .Sheets.Add after:=Sheets.[_Default](Worksheets.Count)
+            .ActiveSheet.Name = tablename
+        Else
+            'Worksheets anlegen
+            .Sheets.Add after:=Sheets.[_Default](Worksheets.Count)
+            .ActiveSheet.Name = tablename
+        End If
+        
+        ' Daten einschreiben
+        Set ws1 = ThisWorkbook.Sheets(tablename)
+        With ws1
+            .Tab.ColorIndex = 48
+                       
+            ' Tabellenkopf
+            .Cells(1, 1) = "Belegte Eingangsadressen"
+            .Cells(1, 2) = "Belegte Ausgangsadressen"
+            
+            If Not (Me Is Nothing) Then
+                If Me.Count > 0 Then
+                  
+                    i = 2
+                    For Each wdata In Me
+                        .Cells(i, 1) = wdata.FirstInputAdress
+                        .Cells(i, 2) = wdata.FirstOutputAdress
+                        i = i + 1
+                    Next
+                    i = 0
+                End If
+            End If
+        End With
+    End With
+BeforeExit:
+    Set wdata = Nothing
+    Exit Sub
+ErrorHandle:
+    MsgBox Err.Description & " Fehler beim schreiben der Stationsdaten.", vbCritical, "Error"
+    Resume BeforeExit
+End Sub
+
 Public Function returnDatasetPerSlottyp(ByVal Station As Integer, ByVal sKartentyp As String) As cPLCconfig
     ' returns first Dataset for Station and plctyp
     On Error GoTo ErrorHandle

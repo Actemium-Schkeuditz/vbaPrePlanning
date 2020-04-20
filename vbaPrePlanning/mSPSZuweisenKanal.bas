@@ -25,6 +25,10 @@ Public Sub SPSZuweisenKanal()
     Dim pKartentyp As Variant
     Dim iInputStartAdress As Long
     Dim iOutputStartAdress As Long
+    Dim iInputAdressUsed As Long
+    Dim iOutputAdressUsed As Long
+    Dim iTmpInputAdressUsed As Long
+    Dim iTmpOutputAdressUsed As Long
 
     '##### Suche nach allen verwendeten Kartentypen
     Dim iKartentyp As Collection
@@ -40,6 +44,7 @@ Public Sub SPSZuweisenKanal()
     Dim dataConfigPerPLCTyp As New cPLCconfig
     Dim dataPLCConfigResult As New cPLCconfig
     Dim dataPLCConfigResultOutput As New cPLCconfig
+    Dim dataPLCOverview As New cPLCconfig
     Dim dataMPAconfig As New cFestoMPA
     Dim ExcelConfig As New cExcelConfig
     
@@ -53,6 +58,9 @@ Public Sub SPSZuweisenKanal()
     dataMPAconfig.reset
     PLCTypOld = vbNullString
     iStationOld = 0
+    iInputAdressUsed = 0
+    iOutputAdressUsed = 0
+    Set dataPLCOverview = Nothing
     '##### lesen der belegten Kanäle aus Excel Tabelle #####
     dataKanaele.ReadExcelDataChanelToCollection TabelleDaten, dataKanaele
         
@@ -64,6 +72,7 @@ Public Sub SPSZuweisenKanal()
     Set dataPLCConfig = readXMLFile
     iInputStartAdress = dataPLCConfig.returnFirstInputAdressePLCStation(1)
     iOutputStartAdress = dataPLCConfig.returnFirstOutputAdressePLCStation(1)
+   
     
     For Each pStation In iStation
         '### reset der Festo config Daten
@@ -74,9 +83,11 @@ Public Sub SPSZuweisenKanal()
         Set dataPLCConfigStation = Nothing
         Set dataPLCConfigResultOutput = Nothing
         Set dataResultAdress = Nothing
+    
         Set dataPLCConfigStation = dataPLCConfig.returnDatasetPerStation(pStation)
         '### PLC Typ ermitteln
         PLCtyp = dataSearchStation.Item(1).Kartentyp.PLCtyp
+        
         ' Erkennen von Stationswechseln und dann aufrunden der Adressen
         If PLCtyp <> PLCTypOld And Not PLCTypOld = vbNullString Or (PLCtyp = "ET200SP" And iStationOld > 0 And pStation <> iStationOld) Then
             RoundUpPLCaddresses iInputStartAdress, iOutputStartAdress
@@ -99,7 +110,12 @@ Public Sub SPSZuweisenKanal()
             ' Korrektur FESTO Ventilinsel
             Set dataResult = dataResult.correctFestoMPA(dataMPAconfig)
             ' adressieren
+            iTmpInputAdressUsed = iInputStartAdress
+            iTmpOutputAdressUsed = iOutputStartAdress
             Set dataResultAdress = dataResult.AdressPerSlottyp(iInputStartAdress, iOutputStartAdress, pStation, pKartentyp)
+            ' Benutzte Adressen ermitteln
+            iInputAdressUsed = iInputAdressUsed + iInputStartAdress - iTmpInputAdressUsed
+            iOutputAdressUsed = iOutputAdressUsed + iOutputStartAdress - iTmpOutputAdressUsed
             'Datensätze der Stationskonfiguration anhängen
             Set dataPLCConfigResult = dataPLCConfigResult.ConfigPLCToDataset(dataResultAdress)
             dataPLCConfigResultOutput.Append dataPLCConfigResult
@@ -125,6 +141,10 @@ Public Sub SPSZuweisenKanal()
     CPXDatenErgaenzen
     '##### Seitenzahl schreiben #####
     SeitenZahlschreiben
+    
+    '##### Ausgabe Übersicht #####
+    dataPLCOverview.Add 0, 0, "", "", iInputAdressUsed, iOutputAdressUsed
+    dataPLCOverview.writePLCOverviewToExcel "Übersicht"
 
     MsgBox "Zuweisen fertig"
     
