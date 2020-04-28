@@ -1,9 +1,8 @@
 Attribute VB_Name = "mSPSRackBMK"
 ' Skript zur Ermittlung der Anlagen und Ortskennzeichen der IO-Racks
-' V0.6
-' nicht fertig
-' 03.04.2020
-' angepasst für MH04
+' V0.7
+' angepasst Anlagenkennzeichen ohne Punkt
+' 28.04.2020
 '
 ' Christian Langrock
 ' christian.langrock@actemium.de
@@ -26,6 +25,7 @@ Public Sub SPS_RackBMK()
     Dim sSpalteStationPerSignal As String
     Dim dataAnlagenkennzeichen As String
     Dim dataRackAnlagenkennzeichen As String
+    Dim dataRackAnlagenkennzeichenFull As String
     Dim iSpalteRackBMKperSignal As Long
     Dim iSpalteStationPerSignal As Long
     Dim tmpSpalteStationsnummer As Long
@@ -76,22 +76,27 @@ Public Sub SPS_RackBMK()
             ' Daten schreiben
             For i = 3 To zeilenanzahl
                 ' lesen von Feld Anlagenkennzeichen, führende Leerzeichen entfernen
-                dataAnlagenkennzeichen = LTrim$(.Cells.Item(i, spalteAnlagenkennzeichen))
+                If InStr(2, .Cells.Item(i, spalteAnlagenkennzeichen), ".") Then
+                    dataAnlagenkennzeichen = LTrim$(.Cells.Item(i, spalteAnlagenkennzeichen))
+                    dataRackAnlagenkennzeichen = "=" + Left$(dataAnlagenkennzeichen, InStr(1, dataAnlagenkennzeichen, "."))
+                Else
+                    dataAnlagenkennzeichen = .Cells.Item(i, spalteAnlagenkennzeichen)
+                    dataRackAnlagenkennzeichen = "=" & dataAnlagenkennzeichen & "."
+                End If
                 ' Prüfe ob Stationsnummer mit Eintrag
                 If .Cells.Item(i, SpalteStationsnummer) <> vbNullString Then
                     ' Anlagenkennzeichen ermitteln
-                    dataRackAnlagenkennzeichen = "=" + Left$(dataAnlagenkennzeichen, InStr(1, dataAnlagenkennzeichen, "."))
                     If Len(.Cells.Item(i, SpalteStationsnummer)) = 1 Then
-                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen & "A.S0" & .Cells.Item(i, SpalteStationsnummer)
+                        dataRackAnlagenkennzeichenFull = dataRackAnlagenkennzeichen & "A.S0" & .Cells.Item(i, SpalteStationsnummer)
                     Else
-                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen & "A.S" & .Cells.Item(i, SpalteStationsnummer)
+                        dataRackAnlagenkennzeichenFull = dataRackAnlagenkennzeichen & "A.S" & .Cells.Item(i, SpalteStationsnummer)
                     End If
                     ' wenn Einbauort nicht leer
                     If .Cells.Item(i, spalteEinbauortRack) <> vbNullString Then
-                        dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen & "+" & .Cells.Item(i, spalteEinbauortRack)
+                        dataRackAnlagenkennzeichenFull = dataRackAnlagenkennzeichenFull & "+" & .Cells.Item(i, spalteEinbauortRack)
                     End If
                     ' Daten schreiben
-                    .Cells.Item(i, spalteRackAnlagenkennzeichen) = dataRackAnlagenkennzeichen
+                    .Cells.Item(i, spalteRackAnlagenkennzeichen) = dataRackAnlagenkennzeichenFull
                 Else
                     ' Daten leeren
                     .Cells.Item(i, spalteRackAnlagenkennzeichen) = vbNullString
@@ -106,17 +111,12 @@ Public Sub SPS_RackBMK()
                     
                         If Not (sResult Is Nothing) Then ' prüfen ob etwas zurück kam
                             If sResult.Count > 0 Then ' nur weiter wenn Datensatz wirklich da
-                                ' lesen von Feld Anlagenkennzeichen, führende Leerzeichen entfernen
-                                dataAnlagenkennzeichen = LTrim$(.Cells.Item(i, spalteAnlagenkennzeichen))
-                                ' Anlagenkennzeichen ermitteln
-                                dataRackAnlagenkennzeichen = "=" + Left$(dataAnlagenkennzeichen, InStr(1, dataAnlagenkennzeichen, "."))
                                 If Len(.Cells.Item(i, tmpSpalteStationsnummer)) = 1 Then
-                                    dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen & "A.S0" & .Cells.Item(i, tmpSpalteStationsnummer)
+                                    dataRackAnlagenkennzeichenFull = dataRackAnlagenkennzeichen & "A.S0" & .Cells.Item(i, tmpSpalteStationsnummer)
                                 Else
-                                    dataRackAnlagenkennzeichen = dataRackAnlagenkennzeichen & "A.S" & .Cells.Item(i, tmpSpalteStationsnummer)
+                                    dataRackAnlagenkennzeichenFull = dataRackAnlagenkennzeichen & "A.S" & .Cells.Item(i, tmpSpalteStationsnummer)
                                 End If
-                    
-                                .Cells.Item(i, iSpalteRackBMKperSignal + (14 * (iSignal - 1))) = dataRackAnlagenkennzeichen & "+" & sResult.Item(1).Einbauort
+                                .Cells.Item(i, iSpalteRackBMKperSignal + (14 * (iSignal - 1))) = dataRackAnlagenkennzeichenFull & "+" & sResult.Item(1).Einbauort
                             End If
                         Else
                             ' makiere fehlende / falsche Steckplatz Daten
@@ -128,8 +128,6 @@ Public Sub SPS_RackBMK()
         Else
             MsgBox "Bitte Skript Stationsnummer ausführen und prüfen!"
         End If
-    
     End With
-
 End Sub
 
