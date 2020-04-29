@@ -174,7 +174,7 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCtyp As Stri
         End If
         
         ' Daten einschreiben
-        Set ws1 = ThisWorkbook.Sheets(tablename)
+        Set ws1 = ThisWorkbook.Sheets.[_Default](tablename)
         With ws1
             If PLCtyp = "ET200SP" Then
                 .Tab.ColorIndex = 28
@@ -189,47 +189,47 @@ Public Sub writePLCConfigToExcel(ByVal tablename As String, ByVal PLCtyp As Stri
             End If
                  
             ' Tabellenkopf
-            .Cells(1, 1) = "Stationsnummer"
-            .Cells(1, 2) = "Steckplatz"
-            .Cells(1, 3) = "Unter Steckplatz"
-            .Cells(1, 4) = "Kartentyp"
-            .Cells(1, 5) = "Eingangsadresse Start"
-            .Cells(1, 6) = "Ausgangsadresse Start"
+            .Cells.Item(1, 1) = "Stationsnummer"
+            .Cells.Item(1, 2) = "Steckplatz"
+            .Cells.Item(1, 3) = "Unter Steckplatz"
+            .Cells.Item(1, 4) = "Kartentyp"
+            .Cells.Item(1, 5) = "Eingangsadresse Start"
+            .Cells.Item(1, 6) = "Ausgangsadresse Start"
             
             If Not (Me Is Nothing) Then
                 If Me.Count > 0 Then
                     If Me.Item(1).Kartentyp.PLCtyp = "IFM IO-LINK MASTER" Or Me.Item(1).Kartentyp.PLCtyp = "FU" Or Me.Item(1).Kartentyp.PLCtyp = "Profibus" Then
-                        .Cells(1, 7) = "KWS BMK"
+                        .Cells.Item(1, 7) = "KWS BMK"
                     ElseIf Me.Item(1).Kartentyp.PLCtyp = "FESTO MPA" Or Me.Item(1).Kartentyp.PLCtyp = "FESTO CPX" Then
-                        .Cells(1, 7) = "freie Kanäle"
-                        .Cells(1, 8) = "KWS BMK"
+                        .Cells.Item(1, 7) = "freie Kanäle"
+                        .Cells.Item(1, 8) = "KWS BMK"
                     Else
-                        .Cells(1, 7) = "freie Kanäle"
+                        .Cells.Item(1, 7) = "freie Kanäle"
                     End If
                     i = 2
                     For Each wdata In Me
                         If wdata.Kartentyp.Kartentyp <> "TBEN-S IO" Then
-                            .Cells(i, 1) = wdata.Stationsnummer
-                            .Cells(i, 2) = wdata.Steckplatz
-                            .Cells(i, 3) = wdata.SubSlot
-                            .Cells(i, 4) = wdata.Kartentyp.Kartentyp
+                            .Cells.Item(i, 1) = wdata.Stationsnummer
+                            .Cells.Item(i, 2) = wdata.Steckplatz
+                            .Cells.Item(i, 3) = wdata.SubSlot
+                            .Cells.Item(i, 4) = wdata.Kartentyp.Kartentyp
                             If wdata.Kartentyp.PLCtyp = "IFM IO-LINK MASTER" Then
-                                .Cells(i, 5) = wdata.InputAdress
-                                .Cells(i, 6) = wdata.OutputAdress
+                                .Cells.Item(i, 5) = wdata.InputAdress
+                                .Cells.Item(i, 6) = wdata.OutputAdress
                             Else
                                 If wdata.Kartentyp.InputAdressLength > 0 Or wdata.Kartentyp.InputAdressDiagnosticLength > 0 Then
-                                    .Cells(i, 5) = wdata.FirstInputAdress
+                                    .Cells.Item(i, 5) = wdata.FirstInputAdress
                                     End If
                                 If wdata.Kartentyp.OutputAdressLength > 0 Or wdata.Kartentyp.OutputAdressDiagnosticLength > 0 Then
-                                    .Cells(i, 6) = wdata.FirstOutputAdress
+                                    .Cells.Item(i, 6) = wdata.FirstOutputAdress
                                 End If
                             End If
                             If wdata.Kartentyp.PLCtyp = "IFM IO-LINK MASTER" Or wdata.Kartentyp.PLCtyp = "FU" Or wdata.Kartentyp.PLCtyp = "Profibus" Then
-                                .Cells(i, 7) = wdata.KWSBMK
+                                .Cells.Item(i, 7) = wdata.KWSBMK
                             ElseIf wdata.Kartentyp.PLCtyp = "FESTO MPA" Then
-                                .Cells(i, 8) = wdata.KWSBMK
+                                .Cells.Item(i, 8) = wdata.KWSBMK
                             Else
-                                .Cells(i, 7) = wdata.Kartentyp.MaxChannelPerSlot - wdata.UsedChannels
+                                .Cells.Item(i, 7) = wdata.Kartentyp.MaxChannelPerSlot - wdata.UsedChannels
                             End If
                         End If
                         i = i + 1
@@ -272,21 +272,21 @@ Public Sub writePLCOverviewToExcel(ByVal tablename As String)
         End If
         
         ' Daten einschreiben
-        Set ws1 = ThisWorkbook.Sheets(tablename)
+        Set ws1 = ThisWorkbook.Sheets.[_Default](tablename)
         With ws1
             .Tab.ColorIndex = 48
                        
             ' Tabellenkopf
-            .Cells(1, 1) = "Belegte Eingangsadressen"
-            .Cells(1, 2) = "Belegte Ausgangsadressen"
+            .Cells.Item(1, 1) = "Belegte Eingangsadressen"
+            .Cells.Item(1, 2) = "Belegte Ausgangsadressen"
             
             If Not (Me Is Nothing) Then
                 If Me.Count > 0 Then
                   
                     i = 2
                     For Each wdata In Me
-                        .Cells(i, 1) = wdata.FirstInputAdress
-                        .Cells(i, 2) = wdata.FirstOutputAdress
+                        .Cells.Item(i, 1) = wdata.FirstInputAdress
+                        .Cells.Item(i, 2) = wdata.FirstOutputAdress
                         i = i + 1
                     Next
                     i = 0

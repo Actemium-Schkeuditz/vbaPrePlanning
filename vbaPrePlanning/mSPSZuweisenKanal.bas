@@ -143,7 +143,7 @@ Public Sub SPSZuweisenKanal()
     SeitenZahlschreiben
     
     '##### Ausgabe Übersicht #####
-    dataPLCOverview.Add 0, 0, "", "", iInputAdressUsed, iOutputAdressUsed
+    dataPLCOverview.Add 0, 0, vbNullString, vbNullString, iInputAdressUsed, iOutputAdressUsed
     dataPLCOverview.writePLCOverviewToExcel "Übersicht"
 
     MsgBox "Zuweisen fertig"

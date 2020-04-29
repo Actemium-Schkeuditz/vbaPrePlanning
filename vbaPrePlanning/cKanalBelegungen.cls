@@ -1318,7 +1318,7 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
                 iInputStartAdress = iInputStartAdress + sDataTurck.Kartentyp.InputAdressLength + sDataTurck.Kartentyp.InputAdressDiagnosticLength
                 iOutputStartAdress = iOutputStartAdress + sDataTurck.Kartentyp.OutputAdressLength + sDataTurck.Kartentyp.OutputAdressDiagnosticLength
             Else
-                sDataTurck.Adress = ""
+                sDataTurck.Adress = vbNullString
             End If
             rData.Addobj sDataTurck
         Next
@@ -1570,4 +1570,5 @@ Public Sub symbolischeAdressen()
     Next
     
 End Sub
+
 
