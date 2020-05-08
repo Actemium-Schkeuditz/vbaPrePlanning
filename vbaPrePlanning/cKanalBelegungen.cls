@@ -1238,16 +1238,16 @@ Public Function AdressPerSlottyp(ByRef iInputStartAdress As Long, ByRef iOutputS
             If sDataFesto.Kartentyp.Kartentyp = "FESTO MPA1S" Then
                 If sDataFesto.Kartentyp.Datatyp = "Byte" Then
                     If sDataFesto.Kartentyp.SignalDirection = "Input" Or sDataFesto.Kartentyp.SignalDirection = "InOut" Then
-                        iInputStartAdress = iInputStartAdress + sDataFesto.Kartentyp.InputAdressLength + sDataFesto.Kartentyp.InputAdressDiagnosticLength
                         sDataFesto.Adress = "EB" & iInputStartAdress
                         sDataFesto.InputAdressPerSlot = iInputStartAdress
+                        iInputStartAdress = iInputStartAdress + sDataFesto.Kartentyp.InputAdressLength + sDataFesto.Kartentyp.InputAdressDiagnosticLength
                     ElseIf sDataFesto.Kartentyp.SignalDirection = "Output" Then
-                        iOutputStartAdress = iOutputStartAdress + sDataFesto.Kartentyp.OutputAdressLength + sDataFesto.Kartentyp.OutputAdressDiagnosticLength
                         sDataFesto.Adress = "AB" & iOutputStartAdress
                         sDataFesto.OutputAdressPerSlot = iOutputStartAdress
-                    ElseIf sDataFesto.Kartentyp.SignalDirection = "InOut" Then
                         iOutputStartAdress = iOutputStartAdress + sDataFesto.Kartentyp.OutputAdressLength + sDataFesto.Kartentyp.OutputAdressDiagnosticLength
-                        sDataFesto.OutputAdressPerSlot = iOutputStartAdress
+                    ElseIf sDataFesto.Kartentyp.SignalDirection = "InOut" Then
+                         sDataFesto.OutputAdressPerSlot = iOutputStartAdress
+                        iOutputStartAdress = iOutputStartAdress + sDataFesto.Kartentyp.OutputAdressLength + sDataFesto.Kartentyp.OutputAdressDiagnosticLength
                     Else
                         MsgBox "Datentyp der Karte passt nicht: " & sDataFesto.Kartentyp.Kartentyp
                     End If
