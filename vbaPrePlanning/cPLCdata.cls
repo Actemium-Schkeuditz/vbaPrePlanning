@@ -403,8 +403,8 @@ Public Property Let Kartentyp(ByVal Value As String)
         ' Adress
         pDatatyp = "Bit"
         pSignalDirection = "Output"
-        pInputAdressLength = 1
-        pOutputAdressLength = 0
+        pInputAdressLength = 0
+        pOutputAdressLength = 1
         pInputMinLength = 0
         pInputMaxLength = 0
         pOutputMinLength = 1
@@ -469,8 +469,8 @@ Public Property Let Kartentyp(ByVal Value As String)
         ' Adress
         pDatatyp = "Bit"
         pSignalDirection = "Output"
-        pInputAdressLength = 1
-        pOutputAdressLength = 0
+        pInputAdressLength = 0
+        pOutputAdressLength = 1
         pInputMinLength = 0
         pInputMaxLength = 0
         pOutputMinLength = 2
