@@ -850,7 +850,9 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
             Else
                 iKanal = 0
                 iSteckplatz = iSteckplatz + 1
-                ' rData.Add "LEER1", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
+                If dataPLCConfig.Item(i).Kartentyp.MaxChannelPerSlot = 0 And dataPLCConfig.Item(i).Kartentyp.PLCtyp <> "FESTO MPA" Then
+                    rData.Add "LEER1", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
+                End If
             End If
             iReserveChannelsBefor = iReserveChannelsBefor - 1
         Loop
@@ -891,7 +893,6 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
         Loop
     End If
     ' hier die Reserven und Diagnosen anfügen
-    ' If dataPLCConfig.Item(i).Kartentyp.PLCTyp = "Turck TBEN-S" Then
     If pKartentyp = "TBEN-S-RFID" Then
         rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "TBEN-S-DIAG", iSteckplatz + OffsetSlot, iKanal
     End If
