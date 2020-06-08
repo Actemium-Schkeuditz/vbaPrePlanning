@@ -1,6 +1,6 @@
 Attribute VB_Name = "mEinbauorte"
 ' Skript zur Ermittlung der Anlagen und Ortskennzeichen der IO-Racks
-' V0.6
+' V0.7
 ' abgetrennt aus SPSRackBMK
 ' 02.03.2020
 ' angepasst für MH04

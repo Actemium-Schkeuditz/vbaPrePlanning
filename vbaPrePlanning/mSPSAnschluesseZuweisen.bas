@@ -17,12 +17,18 @@ Public Sub SPS_KartenAnschluss()
     Dim TabelleDaten As String
       
     ' Class einbinden
-    Dim dataAnschluesse As New CSPSAnschluesse
-    Dim dataKanaele As New cKanalBelegungen
-    Dim sData As New cBelegung
-    Dim rData As New cKanalBelegungen
-    Dim dataResult As New cAnschluss
-    Dim ExcelConfig As New cExcelConfig
+    Dim dataAnschluesse As CSPSAnschluesse
+    Set dataAnschluesse = New CSPSAnschluesse
+    Dim dataKanaele As cKanalBelegungen
+    Set dataKanaele = New cKanalBelegungen
+    Dim sData As cBelegung
+    Set sData = New cBelegung
+    Dim rData As cKanalBelegungen
+    Set rData = New cKanalBelegungen
+    Dim dataResult As cAnschluss
+    Set dataResult = New cAnschluss
+    Dim ExcelConfig As cExcelConfig
+    Set ExcelConfig = New cExcelConfig
     
     ' Tabellen definieren
     TabelleDaten = ExcelConfig.TabelleDaten

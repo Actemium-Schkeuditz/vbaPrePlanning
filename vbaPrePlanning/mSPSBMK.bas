@@ -20,7 +20,6 @@ Public Sub SPS_BMK()
     Dim zeilenanzahl As Long
     Dim i As Long
     Dim y As Long
-    Dim spalteSPSKartentyp As Long
     Dim spaltePLCtyp As Long
     
     Dim sPLCtyp As String
@@ -30,7 +29,6 @@ Public Sub SPS_BMK()
         
     ' Tabellen definieren
     TabelleDaten = ExcelConfig.TabelleDaten
-
     Set ws1 = Worksheets.[_Default](TabelleDaten)
    
     Application.ScreenUpdating = False
@@ -46,7 +44,6 @@ Public Sub SPS_BMK()
             '*********** SPS-BMK erzeugen ******************
             ' Auswahl der Spalten pro SPS Kanal
             '**************** SPS-BMK für Signal 1 bis 6 ****************
-            spalteSPSKartentyp = SpaltenBuchstaben2Int(ExcelConfig.Kartentyp) + 14 * (y - 1)
             spalteSPSBMK = SpaltenBuchstaben2Int(ExcelConfig.SPSBMK) + 14 * (y - 1)
             spalteSPSSteckplatz = SpaltenBuchstaben2Int(ExcelConfig.Steckplatz) + 14 * (y - 1)
             spaltePLCtyp = SpaltenBuchstaben2Int(ExcelConfig.PLCtyp) + 14 * (y - 1)

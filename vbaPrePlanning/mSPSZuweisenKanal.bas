@@ -104,22 +104,13 @@ Public Sub SPSZuweisenKanal()
             Set dataConfigPerPLCTyp = Nothing
             Set dataConfigPerPLCTyp = dataPLCConfigStation.returnDatasetPerSlottyp(pStation, pKartentyp)
             Set dataSearchPlcTyp = dataSort.searchDatasetPlcModules(pKartentyp)
-            ' Prüfen ob Projekt MH04.TRP
-            If Left(dataSearchPlcTyp.Item(1).KWSBMK, 4) = "TRP." And pStation = 3 Then
-                Set dataResult = dataSearchPlcTyp
-            Else
-                Set dataResult = dataSearchPlcTyp.zuweisenKanal(OffsetSlot, pKartentyp, dataConfigPerPLCTyp)
-            End If
-            
+            ' ##### Zuweisen der Kanäle #####
+            Set dataResult = dataSearchPlcTyp.zuweisenKanal(OffsetSlot, pKartentyp, dataConfigPerPLCTyp)
             PLCtyp = dataResult.Item(1).Kartentyp.PLCtyp
             OffsetSlot = dataResult.returnLastSlotNumber
             ' Korrektur FESTO Ventilinsel
-             ' Prüfen ob Projekt MH04.TRP
-            If Left(dataSearchPlcTyp.Item(1).KWSBMK, 4) = "TRP." And pStation = 3 Then
-                Set dataResult = dataResult
-            Else
                 Set dataResult = dataResult.correctFestoMPA(dataMPAconfig)
-            End If
+
             ' adressieren
             iTmpInputAdressUsed = iInputStartAdress
             iTmpOutputAdressUsed = iOutputStartAdress
