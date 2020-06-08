@@ -156,6 +156,8 @@ Public Function readEinbauorte(ByVal TabelleDaten As String) As cEinbauorte
                 tablennameEinbauorte = "Einbauorte_MH03.TRP03"
             ElseIf Left$(dataKWSBMK, 5) = "EPD02" Then
                 tablennameEinbauorte = "Einbauorte_H05.EPD02"
+            ElseIf Left$(dataKWSBMK, 4) = "TRP." Then
+                tablennameEinbauorte = "Einbauorte_MH04.TRP"
             Else
                 MsgBox "Keine passenden Daten mit Einbauorten gefunden, für KWS-BMK: " & dataKWSBMK
                 tablennameEinbauorte = vbNullString
