@@ -14,7 +14,8 @@ Public Sub ArtikelBearbeiten()
     Dim TabelleDaten As String
     Dim zeilenanzahl As Long
     Dim i As Long
-    Dim ExcelConfig As New cExcelConfig
+    Dim ExcelConfig As cExcelConfig
+    Set ExcelConfig = New cExcelConfig
       
     ' Tabellen definieren
     TabelleDaten = ExcelConfig.TabelleDaten
@@ -35,15 +36,14 @@ Public Sub ArtikelBearbeiten()
 
 
         '*********** Artikel schreiben und umkopieren ******************
-
         For i = 3 To zeilenanzahl
  
             If .Cells.Item(i, ExcelConfig.ArtikelKWS) <> "." Then
                 'Prüfen ob am Ende ein Punkt ist
                 If Right$(.Cells.Item(i, ExcelConfig.ArtikelKWS), 1) <> "." Then
                     .Cells.Item(i, ExcelConfig.Artikel) = .Cells.Item(i, ExcelConfig.ArtikelKWS)
-                ElseIf .Cells.Item(i, ExcelConfig.B_Art_nr) <> vbNullString Then
-                    .Cells.Item(i, ExcelConfig.Artikel) = .Cells.Item(i, ExcelConfig.ArtikelKWS) & .Cells.Item(i, ExcelConfig.B_Art_nr)
+                ElseIf .Cells.Item(i, ExcelConfig.BestellArtNr) <> vbNullString Then
+                    .Cells.Item(i, ExcelConfig.Artikel) = .Cells.Item(i, ExcelConfig.ArtikelKWS) & .Cells.Item(i, ExcelConfig.BestellArtNr)
                 End If
             End If
             ' Artikel die nicht gewollt sind entfernen
@@ -64,10 +64,7 @@ Public Sub ArtikelBearbeiten()
             .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "IFM.IS 5001", "IFM.IS5001")
             .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "RECH.KA 0655", "RECH.KA0655")
             .Cells.Item(i, ExcelConfig.Artikel) = Replace(.Cells.Item(i, ExcelConfig.Artikel), "Vega.VEGAMIP R61 MPR61.DKAGA1TAMX", "VEGA.MPR61.******T***")
-    
-        
         Next i
 
     End With
 End Sub
-

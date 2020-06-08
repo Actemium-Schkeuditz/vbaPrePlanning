@@ -110,7 +110,6 @@ Public Sub SPSZuweisenKanal()
             OffsetSlot = dataResult.returnLastSlotNumber
             ' Korrektur FESTO Ventilinsel
                 Set dataResult = dataResult.correctFestoMPA(dataMPAconfig)
-
             ' adressieren
             iTmpInputAdressUsed = iInputStartAdress
             iTmpOutputAdressUsed = iOutputStartAdress

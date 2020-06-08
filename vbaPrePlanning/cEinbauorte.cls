@@ -30,8 +30,9 @@ End Sub
 
 Public Sub Add(ByRef Stationsnummer As Integer, Optional ByRef Einbauort As String, Optional ByRef Geraetetyp As String, Optional ByRef BMK As String)
     'create a new Dataset Einbauorte and add to collection
-
-    Dim p As New cEinbauort
+    Dim p As cEinbauort
+    Set p = New cEinbauort
+    
     p.Stationsnummer = Stationsnummer
     p.Einbauort = Einbauort
     p.Geraetetyp = Geraetetyp
@@ -42,8 +43,9 @@ End Sub
 
 Public Sub AddDataSet(ByRef dataSet As cEinbauort)
     'create a Dataset and add to collection
-
-    Dim p As New cEinbauort
+    Dim p As cEinbauort
+    Set p = New cEinbauort
+    
     p.Stationsnummer = dataSet.Stationsnummer
     p.Einbauort = dataSet.Einbauort
     p.Geraetetyp = dataSet.Geraetetyp
@@ -151,8 +153,10 @@ End Function
 
 Public Function searchEinbauortDataset(ByVal pStationsnumer As Integer) As cEinbauorte
     ' Suchen nach dem Einbauort passend zur Stationsnummer
-     Dim sData As cEinbauort
-    Dim rData As New cEinbauorte
+    Dim sData As cEinbauort
+    Dim rData As cEinbauorte
+    Set rData = New cEinbauorte
+    
     For Each sData In Me
         If sData.Stationsnummer = pStationsnumer Then
             '        Debug.Print Data.Einbauort; vbTab; Data.Stationsnummer
@@ -162,4 +166,3 @@ Public Function searchEinbauortDataset(ByVal pStationsnumer As Integer) As cEinb
     Next
     Set searchEinbauortDataset = rData
 End Function
-

@@ -291,7 +291,7 @@ Public Sub ReadExcelDataChanelToCollection(ByRef tablename As String, ByRef data
     
     On Error GoTo ErrorHandle
 
-    iSpalteStationsnummer = SpaltenBuchstaben2Int(ExcelConfig.StationsnummerSignal_1) - 1
+    iSpalteStationsnummer = SpaltenBuchstaben2Int(ExcelConfig.StationsnummerSignal) - 1
     iSpalteEingangsAdress = SpaltenBuchstaben2Int(ExcelConfig.EingangsAdress) - 1
     iSpalteAusgangsAdress = SpaltenBuchstaben2Int(ExcelConfig.AusgangsAdress) - 1
     iSpalteSymbolischeAdresse = SpaltenBuchstaben2Int(ExcelConfig.SympolischeAdresse) - 1
@@ -660,7 +660,7 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
     iOldKanal = 0
     
     'Kopfstation dazu
-    If (pKartentyp = "CPX-8DE-D" Or pKartentyp = "CPX-4DA" Or pKartentyp = "CPX-4AE-T" Or pKartentyp = "CPX 2x3/2 mono" Or pKartentyp = "CPX 5/2 mono" Or pKartentyp = "CPX 5/2 bistabil") And (iSteckplatz + OffsetSlot) = 0 Then
+    If (pKartentyp = "CPX-8DE-D" Or pKartentyp = "CPX-4DA" Or pKartentyp = "CPX-8DA" Or pKartentyp = "CPX-4AE-T" Or pKartentyp = "CPX 2x3/2 mono" Or pKartentyp = "CPX 5/2 mono" Or pKartentyp = "CPX 5/2 bistabil") And (iSteckplatz + OffsetSlot) = 0 Then
         rData.Add "LEER", "LEER", 0, dataPLCConfig.Item(i).Stationsnummer, "FB43", iSteckplatz + OffsetSlot, iKanal
     End If
         
@@ -765,7 +765,7 @@ Public Function zuweisenKanal(ByRef OffsetSlot As Integer, ByVal pKartentyp As S
             rData.Add "RESERVE", "RESERVE", "1", dataPLCConfig.Item(i).Stationsnummer, dataPLCConfig.Item(i).Kartentyp.Kartentyp, iSteckplatz + OffsetSlot, iKanal
         Loop
         
-    ElseIf pKartentyp = "CPX-8DE-D" Then
+    ElseIf pKartentyp = "CPX-8DE-D" Or pKartentyp = "CPX-8DA" Then
         
         Do While iReserveChannelsBefor > 0
             If iKanal < dataPLCConfig.Item(i).Kartentyp.MaxChannelPerSlot - iReserveChannelPerSlot Then
@@ -1571,5 +1571,7 @@ Public Sub symbolischeAdressen()
     Next
     
 End Sub
+
+
 
 

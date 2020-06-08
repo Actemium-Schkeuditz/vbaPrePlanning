@@ -28,7 +28,9 @@ End Sub
 Public Sub Add(ByVal Kartentyp As String, ByVal Kanal As Integer, Optional ByVal Anschluss1 As String, Optional ByVal Anschluss2 As String, Optional ByVal Anschluss3 As String, Optional ByVal Anschluss4 As String, Optional ByVal AnschlussVS As String, Optional ByVal AnschlussM As String)
     'create a new Dataset and add to collection
 
-    Dim p As New cAnschluss
+    Dim p As cAnschluss
+    Set p = New cAnschluss
+    
     p.Kartentyp.Kartentyp = Kartentyp
     p.Kanal = Kanal
     p.Anschluss1 = Anschluss1
@@ -44,7 +46,9 @@ End Sub
 Public Sub AddDataSet(ByRef dataSet As cAnschluss)
     'create a Dataset and add to collection
 
-    Dim p As New cAnschluss
+    Dim p As cAnschluss
+    Set p = New cAnschluss
+    
     p.Kartentyp.Kartentyp = dataSet.Kartentyp.Kartentyp
     p.Kanal = dataSet.Kanal
     p.Anschluss1 = dataSet.Anschluss1
@@ -85,8 +89,10 @@ Public Sub ReadExcelDataConnectionToCollection(ByRef dataColection As CSPSAnschl
     Dim rCell As Range
     Dim rTable As Range
     Dim tablename As String
-    Dim ExcelConfig As New cExcelConfig
-
+    
+    Dim ExcelConfig As cExcelConfig
+    Set ExcelConfig = New cExcelConfig
+    
     On Error GoTo ErrorHandle
     tablename = ExcelConfig.TabelleSPSAnschluesse
 
@@ -139,8 +145,11 @@ End Sub
 
 Public Function searchAnschluss(ByVal pKartentyp As String, ByVal pKanal As Integer, ByVal data As CSPSAnschluesse) As cAnschluss ' only ByVal works
     ' Suchen nach den Anschlüssen passend zum Kartentyp und zum Kanal
-    Dim sData As New cAnschluss
-    Dim rData As New cAnschluss
+    Dim sData As cAnschluss
+    Set sData = New cAnschluss
+    Dim rData As cAnschluss
+    Set rData = New cAnschluss
+    
     Dim bResultOK As Boolean
     Set searchAnschluss = Nothing
     
@@ -174,9 +183,3 @@ Public Function searchAnschluss(ByVal pKartentyp As String, ByVal pKanal As Inte
     'Test der Suche
     '  Debug.Print searchAnschluss.Item(1).Kartentyp; vbTab; searchAnschluss.Item(1).Kanal; vbTab; searchAnschluss.Item(1).Anschluss_1; vbTab; searchAnschluss.Item(1).Anschluss_2; vbTab; searchAnschluss.Item(1).Anschluss_3; vbTab; searchAnschluss.Item(1).Anschluss_4; vbTab; searchAnschluss.Item(1).Anschluss_M; vbTab; searchAnschluss.Item(1).Anschluss_VS
 End Function
-
-
-
-
-
-

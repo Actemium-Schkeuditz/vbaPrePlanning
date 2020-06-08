@@ -134,8 +134,8 @@ Public Sub CRC_Zeile()
      
     Dim sText As String
     Dim sTextGesamt As String
-    Dim ExcelConfig As New cExcelConfig
-    
+    Dim ExcelConfig As cExcelConfig
+    Set ExcelConfig = New cExcelConfig
     ' Tabellen definieren
     TabelleDaten = ExcelConfig.TabelleDaten
     sSpalteCRC = ExcelConfig.CRC
@@ -215,5 +215,3 @@ ErrorHandle:
     Resume BeforeExit
     
 End Sub
-
-

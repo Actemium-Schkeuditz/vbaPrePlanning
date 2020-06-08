@@ -44,8 +44,8 @@ Private pSPSRackEinbauort As String
 Private pSPSRackBMK As String
 
 'Signale 1 bis 6
-Private pStationsnummerSignal_1 As String
-Private pSPSRackBMKSignal_1 As String
+Private pStationsnummerSignal As String
+Private pSPSRackBMKSignal As String
 Private pSPSBMK As String
 Private pSteckplatz As String
 Private pKanal As String
@@ -81,8 +81,8 @@ Private Sub Class_Initialize()
     pSPSRackEinbauort = "BW"
     pSPSRackBMK = "BX"
   
-    pStationsnummerSignal_1 = "BY"
-    pSPSRackBMKSignal_1 = "BZ"
+    pStationsnummerSignal = "BY"
+    pSPSRackBMKSignal = "BZ"
     pPLCtyp = "CA"
     pKartentyp = "CB"
     pSPSBMK = "CC"
@@ -129,8 +129,8 @@ End Property
 ''''''''''''''''''''''
 ' B_Art_nr
 ''''''''''''''''''''''
-Public Property Get B_Art_nr() As String
-    B_Art_nr = pB_Art_nr
+Public Property Get BestellArtNr() As String
+    BestellArtNr = pB_Art_nr
 End Property
 
 ''''''''''''''''''''''
@@ -251,17 +251,17 @@ Public Property Get Seite() As String
 End Property
 
 ''''''''''''''''''''''
-'StationsnummerSignal_1
+'StationsnummerSignal1
 ''''''''''''''''''''''
-Public Property Get StationsnummerSignal_1() As String
-    StationsnummerSignal_1 = pStationsnummerSignal_1
+Public Property Get StationsnummerSignal() As String
+    StationsnummerSignal = pStationsnummerSignal
 End Property
 
 ''''''''''''''''''''''
 'pSPSRackBMKSignal_1
 ''''''''''''''''''''''
-Public Property Get SPSRackBMKSignal_1() As String
-    SPSRackBMKSignal_1 = pSPSRackBMKSignal_1
+Public Property Get SPSRackBMKSignal() As String
+    SPSRackBMKSignal = pSPSRackBMKSignal
 End Property
 ''''''''''''''''''''''
 'SPSBMK property

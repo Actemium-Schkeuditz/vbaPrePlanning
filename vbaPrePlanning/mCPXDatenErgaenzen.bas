@@ -15,20 +15,30 @@ Attribute VB_Name = "mCPXDatenErgaenzen"
 Public Sub CPXDatenErgaenzen()
 
     Dim TabelleDaten As String
-    Dim dataKanaele As New cKanalBelegungen
-    Dim sKanaele As New cBelegung
-    Dim sPerPLCtypKanaele As New cBelegung
-    Dim sortKanaele As New cKanalBelegungen
-    Dim dataSearchPlcTyp As New cKanalBelegungen 'neu  CL
-    Dim rData As New cKanalBelegungen
-    Dim sResult As New cBelegung                 'neu CL
-    Dim sKartentyp As New Collection
     Dim Karten As Variant
-    Dim bAdressLaenge As Long                 'benötigte Adresslaenge für Berechnungen
-    Dim bLastAdressPos As Long                'benötigte Letzte Adress-Stelle für Berechnungen
+    Dim bAdressLaenge As Long                    'benötigte Adresslaenge für Berechnungen
+    Dim bLastAdressPos As Long                   'benötigte Letzte Adress-Stelle für Berechnungen
     Dim sPerPLCtypKanaeleAdress2 As String       'Adresse für SPSKanal 2
     Dim iSubAnschluss As Long
-    Dim ExcelConfig As New cExcelConfig
+    
+    Dim ExcelConfig As cExcelConfig
+    Set ExcelConfig = New cExcelConfig
+    Dim sKartentyp As Collection
+    Set sKartentyp = New Collection
+    Dim dataKanaele As cKanalBelegungen
+    Set dataKanaele = New cKanalBelegungen
+    Dim sKanaele As cBelegung
+    Set sKanaele = New cBelegung
+    Dim sPerPLCtypKanaele As cBelegung
+    Set sPerPLCtypKanaele = New cBelegung
+    Dim sortKanaele As cKanalBelegungen
+    'Set sortKanaele = New cKanalBelegungen
+    Dim dataSearchPlcTyp As cKanalBelegungen     'neu  CL
+    Set dataSearchPlcTyp = New cKanalBelegungen
+    Dim rData As cKanalBelegungen
+    Set rData = New cKanalBelegungen
+    Dim sResult As cBelegung
+    Set sResult = New cBelegung
    
     ' Tabellen definieren
     TabelleDaten = ExcelConfig.TabelleDaten
@@ -115,4 +125,5 @@ Public Sub CPXDatenErgaenzen()
     '####### Zurückschreiben der Daten in ursprüngliche Excelliste #######
     rData.writeDatsetsToExcel TabelleDaten
 End Sub
+
 

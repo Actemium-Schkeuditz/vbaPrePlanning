@@ -32,7 +32,9 @@ End Sub
 Public Sub Add(ByVal Stationsnummer As Integer, ByVal Steckplatz As Integer, ByVal Kartentyp As String, Optional ByVal Key As String, Optional ByVal FirstInputAdress As Long, Optional ByVal FirstOutputAdress As Long, Optional ByVal ReserveChannelsBefor As Long, Optional ByVal ReserveChannelsAfter As Long, Optional ByVal ReserveChannel As Long, Optional ByVal ReserveSlot As Long, Optional ByVal SubSlot As Integer, Optional ByVal UsedChannels As Long, Optional ByVal InputAdress As String, Optional ByVal OutputAdress As String, Optional ByVal KWSBMK As String)
     'create a new Dataset and add to collection
 
-    Dim p As New cPLCconfigData
+    Dim p As cPLCconfigData
+    Set p = New cPLCconfigData
+    
     p.Key = Key
     p.Stationsnummer = Stationsnummer
     p.Steckplatz = Steckplatz
@@ -55,7 +57,9 @@ End Sub
 Public Sub AddDataSet(ByRef dataSet As cPLCconfigData)
     'create a Dataset and add to collection
 
-    Dim p As New cPLCconfigData
+    Dim p As cPLCconfigData
+    Set p = New cPLCconfigData
+    
     p.Key = dataSet.Key
     p.Stationsnummer = dataSet.Stationsnummer
     p.Steckplatz = dataSet.Steckplatz

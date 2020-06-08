@@ -23,7 +23,9 @@ Public Sub RACK_STATIONSNUMMERN()
     Dim spalteKWS_StationsNummer As String
     Dim sSpalteStationsnummerSignal As String
     Dim iSpalteStationsnummerSignal As Long
-    Dim ExcelConfig As New cExcelConfig
+    
+    Dim ExcelConfig As cExcelConfig
+    Set ExcelConfig = New cExcelConfig
       
     ' Tabellen definieren
     TabelleDaten = ExcelConfig.TabelleDaten
@@ -40,7 +42,7 @@ Public Sub RACK_STATIONSNUMMERN()
  
         spalteKWS_StationsNummer = ExcelConfig.StationsnummerKWS
         SpalteStationsnummer = ExcelConfig.Stationsnummer
-        sSpalteStationsnummerSignal = ExcelConfig.StationsnummerSignal_1
+        sSpalteStationsnummerSignal = ExcelConfig.StationsnummerSignal
         
         iSpalteStationsnummerSignal = SpaltenBuchstaben2Int(sSpalteStationsnummerSignal)
     
