@@ -1488,6 +1488,7 @@ Public Function correctFestoMPA(ByRef MPAconfig As cFestoMPA) As cKanalBelegunge
     Dim cData As New cKanalBelegungen
     Dim iSubSlot As Long
     Dim iSubAnschluss As Long
+    Dim iZwischeneinspeisung As Long            ' Steckplatz der Zwischeneinspeisung
     
     'sort by channel
     Set cData = Me.SortChannel
@@ -1499,6 +1500,11 @@ Public Function correctFestoMPA(ByRef MPAconfig As cFestoMPA) As cKanalBelegunge
        MPAconfig.KanalMPA = 1
     End If
     iSubSlot = 0
+    iZwischeneinspeisung = 4
+    
+    If Left(cData.Item(1).KWSBMK, 4) = "TRP." Then
+        iZwischeneinspeisung = 3
+    End If
     
     For Each sData In cData
         If sData.Kartentyp.PLCtyp = "FESTO MPA" Then
@@ -1510,7 +1516,7 @@ Public Function correctFestoMPA(ByRef MPAconfig As cFestoMPA) As cKanalBelegunge
             '#### MPA Anschlussplatten ermitteln ####
             If MPAconfig.SteckplatzMPA > 4 Then
                 MPAconfig.AnschlussplatteMPA = MPAconfig.AnschlussplatteMPA + 1
-                If MPAconfig.AnschlussplatteMPA = 4 Or MPAconfig.AnschlussplatteMPA = 8 Or MPAconfig.AnschlussplatteMPA = 12 Or MPAconfig.AnschlussplatteMPA = 16 Or MPAconfig.AnschlussplatteMPA = 20 Then
+                If MPAconfig.AnschlussplatteMPA Mod iZwischeneinspeisung = 0 Then
                     rData.Add "ADRESS", "FESTO_MPA", 0, sData.Stationsnummer, "VMPA1-FB-SPU", MPAconfig.AnschlussplatteMPA 'Versorgungsplatte
                     MPAconfig.AnschlussplatteMPA = MPAconfig.AnschlussplatteMPA + 1
                     MPAconfig.ZwischeneinspeisungMPA = MPAconfig.ZwischeneinspeisungMPA + 1
@@ -1565,13 +1571,10 @@ End Function
 
 Public Sub symbolischeAdressen()
 
-    Dim sData As New cBelegung
+    Dim sData As cBelegung
+    'Set sData = New cBelegung
+    
     For Each sData In Me
         sData.SymbolischeAdresse = Trim$(sData.KWSBMK)
     Next
-    
 End Sub
-
-
-
-
